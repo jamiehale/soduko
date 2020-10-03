@@ -21,6 +21,7 @@ const Container = styled.div`
 const Board = ({
   game,
   selectedCells,
+  draggedCells,
   onMouseDown,
   onMouseUp,
   onMouseOver,
@@ -30,6 +31,7 @@ const Board = ({
       key={cellKey(rowFromCount(i), columnFromCount(i))}
       cell={cell}
       selected={R.includes(i, selectedCells)}
+      dragged={R.includes(i, draggedCells)}
       onMouseDown={R.thunkify(onMouseDown)(i)}
       onMouseUp={R.thunkify(onMouseUp)(i)}
       onMouseOver={R.thunkify(onMouseOver)(i)}
