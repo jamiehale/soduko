@@ -8,13 +8,16 @@ const Container = styled(({ selected, ...props }) => <div {...props} />)`
   align-items: center;
   background-color: ${({ selected }) => (selected ? 'yellow' : 'white')};
   cursor: pointer;
+  user-select: none;
 `;
 
 const Cell = ({
   className,
   cell,
   selected,
-  onClick,
+  onMouseDown,
+  onMouseUp,
+  onMouseOver,
 }) => {
   const value = cell.value === '.' ? '' : cell.value;
 
@@ -22,7 +25,9 @@ const Cell = ({
     <Container
       className={className}
       selected={selected}
-      onClick={onClick}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onMouseOver={onMouseOver}
     >
       {value}
     </Container>

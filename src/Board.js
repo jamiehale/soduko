@@ -20,15 +20,19 @@ const Container = styled.div`
 
 const Board = ({
   game,
-  selectedCell,
-  onSelectCell,
+  selectedCells,
+  onMouseDown,
+  onMouseUp,
+  onMouseOver,
 }) => {
   const cells = game.map((cell, i) => (
     <Cell
       key={cellKey(rowFromCount(i), columnFromCount(i))}
       cell={cell}
-      selected={i === selectedCell}
-      onClick={R.thunkify(onSelectCell)(i)}
+      selected={R.includes(i, selectedCells)}
+      onMouseDown={R.thunkify(onMouseDown)(i)}
+      onMouseUp={R.thunkify(onMouseUp)(i)}
+      onMouseOver={R.thunkify(onMouseOver)(i)}
     />
   ));
 
