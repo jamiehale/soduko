@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import * as R from 'ramda';
 import UnstyledCell from './Cell';
 
 const rowFromCount = count => Math.floor(count / 9) + 1;
@@ -18,12 +19,16 @@ const Container = styled.div`
 `;
 
 const Board = ({
-  game
+  game,
+  selectedCell,
+  onSelectCell,
 }) => {
   const cells = game.map((cell, i) => (
     <Cell
       key={cellKey(rowFromCount(i), columnFromCount(i))}
       cell={cell}
+      selected={i === selectedCell}
+      onClick={R.thunkify(onSelectCell)(i)}
     />
   ));
 
