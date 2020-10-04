@@ -28,10 +28,12 @@ const isBoardCell = R.compose(
 
 const isUserCell = R.propEq('boardValue', '.');
 
+const isSetUserCell = cell => isUserCell(cell) && !R.isEmpty(cell.userValue);
+
 const addMarkToCell = R.curry((mark, cell) => R.uniq(R.append(mark, cell.marks)));
 
 const addMark = (mark, cellIndicesToUpdate, allCells) => R.addIndex(R.map)(
-  (cell, i) => (R.includes(i, cellIndicesToUpdate) ? { ...cell, marks: R.ifElse(isUserCell, addMarkToCell(mark), R.prop('marks'))(cell) } : cell),
+  (cell, i) => ((R.includes(i, cellIndicesToUpdate) && !isBoardCell(cell) && !isSetUserCell(cell)) ? { ...cell, marks: addMarkToCell(mark, cell) } : cell),
   allCells,
 );
 
@@ -40,18 +42,18 @@ const clearMark = (mark, cellIndicesToUpdate, allCells) => R.addIndex(R.map)(
   allCells,
 );
 
-const allCellsHaveMark = (mark, cellIndicesToCheck, allCells) => R.addIndex(R.reduce)(
-  (acc, cell, i) => (acc && (R.includes(i, cellIndicesToCheck) ? (isBoardCell(cell) || R.includes(mark, cell.marks)) : false)),
+const cellHasMark = (mark, cell) => (isBoardCell(cell) || R.includes(mark, cell.marks));
+
+const allCellsHaveMark = (mark, cellIndicesToCheck, allCells) => R.reduce(
+  (acc, cellIndex) => (acc && cellHasMark(mark, allCells[cellIndex])),
   true,
-  allCells,
+  cellIndicesToCheck,
 );
 
 const toggleMark = (mark, cellIndicesToToggle, allCells) => {
   if (allCellsHaveMark(mark, cellIndicesToToggle, allCells)) {
-    console.log('clearing mark');
     return clearMark(mark, cellIndicesToToggle, allCells);
   }
-  console.log('setting mark');
   return addMark(mark, cellIndicesToToggle, allCells);
 };
 
@@ -109,7 +111,7 @@ const reducer = (state, action) => {
         return {
           ...state,
           board: R.addIndex(R.map)(
-            (cell, i) => (R.includes(i, state.selectedCells) ? { ...cell, userValue: key } : cell),
+            (cell, i) => ((R.includes(i, state.selectedCells) && isUserCell(cell)) ? { ...cell, userValue: cell.userValue === key ? '' : key } : cell),
             state.board,
           ),
         };
@@ -172,7 +174,7 @@ const App = () => {
   const highlight = useHighlight(state.selectedCells, state.draggedCells, state.board);
 
   console.log(state);
-  console.log(highlight);
+  console.log('DEBUG', R.map(isBoardCell, state.board));
 
   const handleMouseDown = cell => {
     dispatch({ type: 'mouseDown', payload: { cell } });
@@ -188,7 +190,7 @@ const App = () => {
 
   const handleKeyDown = (event) => {
     if (R.includes(event.key, ['1', '2', '3', '4', '5', '6', '7', '8', '9'])) {
-      dispatch({ type: 'keyDown', payload: { key: event.key } });
+      dispatch({ type: 'keyDown', payload: { key: parseInt(event.key, 10) } });
     } else if (event.key === 'Escape') {
       dispatch({ type: 'clearSelection' });
     }

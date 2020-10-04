@@ -23,7 +23,7 @@ const MarkedCell = ({
   marks,
 }) => {
   const items = R.map(
-    i => (R.includes(`${i}`, marks) ? <Typography key={i} color="secondary">{i}</Typography> : <div key={i} />),
+    i => (R.includes(i, marks) ? <Typography key={i} color="secondary">{i}</Typography> : <div key={i} />),
     R.range(1, 10),
   );
 
