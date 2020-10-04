@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import * as R from 'ramda';
+import Typography from '@material-ui/core/Typography';
+import MarkedCell from './MarkedCell';
 
 const Container = styled(({ selected, dragged, ...props }) => <div {...props} />)`
   border: 1px solid red;
@@ -9,16 +12,25 @@ const Container = styled(({ selected, dragged, ...props }) => <div {...props} />
   background-color: ${({ selected, dragged }) => (dragged ? 'lightblue' : selected ? 'yellow' : 'white')};
   cursor: pointer;
   user-select: none;
+  padding: 4px;
 `;
 
-const displayValue = cell => {
+const BoardCell = styled(Typography).attrs({
+  color: 'primary',
+})``;
+
+const UserCell = styled(Typography).attrs({
+  color: 'secondary',
+})``;
+
+const cellType = (cell) => {
   if (cell.boardValue !== '.') {
-    return cell.boardValue;
+    return <BoardCell>{cell.boardValue}</BoardCell>;
   }
   if (cell.userValue !== '') {
-    return cell.userValue;
+    return <UserCell>{cell.userValue}</UserCell>;
   }
-  return '';
+  return <MarkedCell marks={cell.marks} />
 };
 
 const Cell = ({
@@ -29,21 +41,17 @@ const Cell = ({
   onMouseDown,
   onMouseUp,
   onMouseOver,
-}) => {
-  const value = displayValue(cell);
-
-  return (
-    <Container
-      className={className}
-      selected={selected}
-      dragged={dragged}
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
-      onMouseOver={onMouseOver}
-    >
-      {value}
-    </Container>
-  );
-};
+}) => (
+  <Container
+    className={className}
+    selected={selected}
+    dragged={dragged}
+    onMouseDown={onMouseDown}
+    onMouseUp={onMouseUp}
+    onMouseOver={onMouseOver}
+  >
+    {cellType(cell)}
+  </Container>
+);
 
 export default Cell;

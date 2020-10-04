@@ -119,6 +119,12 @@ const reducer = (state, action) => {
       }
       return state;
     }
+    case 'clearSelection': {
+      return {
+        ...state,
+        selectedCells: [],
+      };
+    }
     default: {
       return state;
     }
@@ -152,6 +158,8 @@ const App = () => {
   const handleKeyDown = (event) => {
     if (R.includes(event.key, ['1', '2', '3', '4', '5', '6', '7', '8', '9'])) {
       dispatch({ type: 'keyDown', payload: { key: event.key } });
+    } else if (event.key === 'Escape') {
+      dispatch({ type: 'clearSelection' });
     }
   };
 
