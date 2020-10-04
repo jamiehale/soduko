@@ -18,6 +18,40 @@ const board = `
 
 const parseValue = s => parseInt(s, 10);
 
+const isBoardCell = R.compose(
+  R.not,
+  R.propEq('boardValue', '.'),
+);
+
+const isUserCell = R.propEq('boardValue', '.');
+
+const addMarkToCell = R.curry((mark, cell) => R.uniq(R.append(mark, cell.marks)));
+
+const addMark = (mark, cellIndicesToUpdate, allCells) => R.addIndex(R.map)(
+  (cell, i) => (R.includes(i, cellIndicesToUpdate) ? { ...cell, marks: R.ifElse(isUserCell, addMarkToCell(mark), R.prop('marks'))(cell) } : cell),
+  allCells,
+);
+
+const clearMark = (mark, cellIndicesToUpdate, allCells) => R.addIndex(R.map)(
+  (cell, i) => (R.includes(i, cellIndicesToUpdate) ? { ...cell, marks: R.without([mark], cell.marks) } : cell),
+  allCells,
+);
+
+const allCellsHaveMark = (mark, cellIndicesToCheck, allCells) => R.addIndex(R.reduce)(
+  (acc, cell, i) => (acc && (R.includes(i, cellIndicesToCheck) ? (isBoardCell(cell) || R.includes(mark, cell.marks)) : false)),
+  true,
+  allCells,
+);
+
+const toggleMark = (mark, cellIndicesToToggle, allCells) => {
+  if (allCellsHaveMark(mark, cellIndicesToToggle, allCells)) {
+    console.log('clearing mark');
+    return clearMark(mark, cellIndicesToToggle, allCells);
+  }
+  console.log('setting mark');
+  return addMark(mark, cellIndicesToToggle, allCells);
+};
+
 const extractBoard = R.compose(
   R.map(value => ({
     boardValue: value,
@@ -62,14 +96,26 @@ const reducer = (state, action) => {
     }
     case 'keyDown': {
       const { key } = action.payload;
-      if (state.dragging) {
-        return state;
+      if (!R.isEmpty(state.draggedCells)) {
+        return {
+          ...state,
+          board: toggleMark(key, state.draggedCells, state.board),
+        };
       }
-      if (R.isEmpty(state.draggedCells)) {
-        return state;
+      if (R.length(state.selectedCells) === 1) {
+        return {
+          ...state,
+          board: R.addIndex(R.map)(
+            (cell, i) => (R.includes(i, state.selectedCells) ? { ...cell, userValue: key } : cell),
+            state.board,
+          ),
+        };
       }
-      if (R.length(state.draggedCells) === 1) {
-        return...
+      if (R.length(state.selectedCells) > 1) {
+        return {
+          ...state,
+          board: toggleMark(key, state.selectedCells, state.board),
+        };
       }
       return state;
     }
@@ -88,6 +134,8 @@ const initialState = (board = []) => ({
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState(extractBoard(board)));
+
+  console.log(state);
 
   const handleMouseDown = cell => {
     dispatch({ type: 'mouseDown', payload: { cell } });

@@ -11,6 +11,16 @@ const Container = styled(({ selected, dragged, ...props }) => <div {...props} />
   user-select: none;
 `;
 
+const displayValue = cell => {
+  if (cell.boardValue !== '.') {
+    return cell.boardValue;
+  }
+  if (cell.userValue !== '') {
+    return cell.userValue;
+  }
+  return '';
+};
+
 const Cell = ({
   className,
   cell,
@@ -20,7 +30,7 @@ const Cell = ({
   onMouseUp,
   onMouseOver,
 }) => {
-  const value = cell.boardValue === '.' ? '' : cell.boardValue;
+  const value = displayValue(cell);
 
   return (
     <Container
