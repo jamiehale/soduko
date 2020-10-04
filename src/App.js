@@ -3,6 +3,7 @@ import * as R from 'ramda';
 import Container from '@material-ui/core/Container';
 import useEventListener from '@use-it/event-listener';
 import Board from './Board';
+import { boardCellValue } from './logic';
 
 const board = `
 9...5...2
@@ -72,6 +73,9 @@ const reducer = (state, action) => {
         selectedCells: [],
         draggedCells: [cell],
         dragging: true,
+        highlightRow: undefined,
+        highlightColumn: undefined,
+        highlightValue: undefined,
       };
     }
     case 'mouseUp': {
@@ -81,6 +85,9 @@ const reducer = (state, action) => {
         selectedCells: R.uniq(R.append(cell, state.draggedCells)),
         draggedCells: [],
         dragging: false,
+        highlightRow: R.length(state.draggedCells) === 1 ? Math.floor(cell / 9) : undefined,
+        highlightColumn: R.length(state.draggedCells) === 1 ? (cell % 9) : undefined,
+        highlightValue: R.length(state.draggedCells) === 1 ? boardCellValue(state.board, cell) : undefined,
       };
     }
     case 'mouseOver': {
@@ -171,6 +178,9 @@ const App = () => {
         game={state.board}
         selectedCells={state.selectedCells}
         draggedCells={state.draggedCells}
+        highlightRow={state.highlightRow}
+        highlightColumn={state.highlightColumn}
+        highlightValue={state.highlightValue}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseOver={handleMouseOver}

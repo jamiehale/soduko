@@ -4,12 +4,12 @@ import * as R from 'ramda';
 import Typography from '@material-ui/core/Typography';
 import MarkedCell from './MarkedCell';
 
-const Container = styled(({ selected, dragged, ...props }) => <div {...props} />)`
+const Container = styled(({ selected, dragged, highlight, ...props }) => <div {...props} />)`
   border: 1px solid red;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ selected, dragged }) => (dragged ? 'lightblue' : selected ? 'yellow' : 'white')};
+  background-color: ${({ selected, dragged, highlight }) => (highlight ? 'red' : dragged ? 'lightblue' : selected ? 'yellow' : 'white')};
   cursor: pointer;
   user-select: none;
   padding: 4px;
@@ -38,6 +38,7 @@ const Cell = ({
   cell,
   selected,
   dragged,
+  highlight,
   onMouseDown,
   onMouseUp,
   onMouseOver,
@@ -46,6 +47,7 @@ const Cell = ({
     className={className}
     selected={selected}
     dragged={dragged}
+    highlight={highlight}
     onMouseDown={onMouseDown}
     onMouseUp={onMouseUp}
     onMouseOver={onMouseOver}

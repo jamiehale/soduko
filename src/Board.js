@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import * as R from 'ramda';
 import UnstyledCell from './Cell';
+import { cellValue } from './logic';
 
-const rowFromCount = count => Math.floor(count / 9) + 1;
-const columnFromCount = count => count % 9 + 1;
+const rowFromCount = count => Math.floor(count / 9);
+const columnFromCount = count => count % 9;
 const cellKey = (row, column) => `${row}|${column}`;
 
 const Cell = styled(UnstyledCell)``;
@@ -22,6 +23,9 @@ const Board = ({
   game,
   selectedCells,
   draggedCells,
+  highlightRow,
+  highlightColumn,
+  highlightValue,
   onMouseDown,
   onMouseUp,
   onMouseOver,
@@ -32,6 +36,7 @@ const Board = ({
       cell={cell}
       selected={R.includes(i, selectedCells)}
       dragged={R.includes(i, draggedCells)}
+      highlight={highlightRow === rowFromCount(i) || highlightColumn === columnFromCount(i) || (!R.isNil(highlightValue) && highlightValue === cellValue(cell))}
       onMouseDown={R.thunkify(onMouseDown)(i)}
       onMouseUp={R.thunkify(onMouseUp)(i)}
       onMouseOver={R.thunkify(onMouseOver)(i)}
