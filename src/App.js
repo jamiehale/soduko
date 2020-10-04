@@ -1,9 +1,11 @@
 import React, { useReducer, useState } from 'react';
+import { ThemeProvider } from 'styled-components';
 import * as R from 'ramda';
 import Container from '@material-ui/core/Container';
 import useEventListener from '@use-it/event-listener';
 import Board from './Board';
-import { boardCellValue } from './logic';
+import { boardCellValue, rowFromCount, columnFromCount, sectionFromCount } from './logic';
+import theme from './theme';
 
 const board = `
 9...5...2
@@ -73,9 +75,6 @@ const reducer = (state, action) => {
         selectedCells: [],
         draggedCells: [cell],
         dragging: true,
-        highlightRow: undefined,
-        highlightColumn: undefined,
-        highlightValue: undefined,
       };
     }
     case 'mouseUp': {
@@ -85,9 +84,6 @@ const reducer = (state, action) => {
         selectedCells: R.uniq(R.append(cell, state.draggedCells)),
         draggedCells: [],
         dragging: false,
-        highlightRow: R.length(state.draggedCells) === 1 ? Math.floor(cell / 9) : undefined,
-        highlightColumn: R.length(state.draggedCells) === 1 ? (cell % 9) : undefined,
-        highlightValue: R.length(state.draggedCells) === 1 ? boardCellValue(state.board, cell) : undefined,
       };
     }
     case 'mouseOver': {
@@ -145,10 +141,38 @@ const initialState = (board = []) => ({
   board,
 });
 
+const useHighlight = (selectedCells, draggedCells, board) => {
+  if (R.isEmpty(selectedCells) && R.isEmpty(draggedCells)) {
+    return {};
+  }
+
+  const consideredCells = R.isEmpty(selectedCells) ? draggedCells : selectedCells;
+
+  const selectedRows = R.uniq(R.map(rowFromCount, consideredCells));
+  const highlightRow = R.length(selectedRows) === 1 ? R.head(selectedRows) : undefined;
+
+  const selectedColumns = R.uniq(R.map(columnFromCount, consideredCells));
+  const highlightColumn = R.length(selectedColumns) === 1 ? R.head(selectedColumns) : undefined;
+
+  const selectedSections = R.uniq(R.map(sectionFromCount, consideredCells));
+  const highlightSection = R.length(selectedSections) === 1 ? R.head(selectedSections) : undefined;
+
+  const highlightValue = R.length(consideredCells) === 1 ? boardCellValue(board, R.head(consideredCells)) : undefined;
+
+  return {
+    highlightRow,
+    highlightColumn,
+    highlightSection,
+    highlightValue,
+  };
+};
+
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState(extractBoard(board)));
+  const highlight = useHighlight(state.selectedCells, state.draggedCells, state.board);
 
   console.log(state);
+  console.log(highlight);
 
   const handleMouseDown = cell => {
     dispatch({ type: 'mouseDown', payload: { cell } });
@@ -173,19 +197,18 @@ const App = () => {
   useEventListener('keydown', handleKeyDown);
 
   return (
-    <Container>
-      <Board
-        game={state.board}
-        selectedCells={state.selectedCells}
-        draggedCells={state.draggedCells}
-        highlightRow={state.highlightRow}
-        highlightColumn={state.highlightColumn}
-        highlightValue={state.highlightValue}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseOver={handleMouseOver}
-      />
-    </Container>
+    <ThemeProvider theme={theme}>
+      <Container>
+        <Board
+          game={state.board}
+          selectedCells={R.isEmpty(state.selectedCells) ? state.draggedCells : state.selectedCells}
+          highlight={highlight}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseOver={handleMouseOver}
+        />
+      </Container>
+    </ThemeProvider>
   );
 };
 

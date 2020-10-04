@@ -4,12 +4,15 @@ import * as R from 'ramda';
 import Typography from '@material-ui/core/Typography';
 import MarkedCell from './MarkedCell';
 
-const Container = styled(({ selected, dragged, highlight, ...props }) => <div {...props} />)`
-  border: 1px solid red;
+const Container = styled(({ highlight, borderLeft, borderRight, borderTop, borderBottom, ...props }) => <div {...props} />)`
+  border-left: ${({ borderLeft }) => (borderLeft ? '3px solid darkgrey' : '1px solid lightgrey')};
+  border-right: ${({ borderRight }) => (borderRight ? '3px solid darkgrey' : '1px solid lightgrey')};
+  border-top: ${({ borderTop }) => (borderTop ? '3px solid darkgrey' : '1px solid lightgrey')};
+  border-bottom: ${({ borderBottom }) => (borderBottom ? '3px solid darkgrey' : '1px solid lightgrey')};
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ selected, dragged, highlight }) => (highlight ? 'red' : dragged ? 'lightblue' : selected ? 'yellow' : 'white')};
+  background-color: ${({ highlight, theme }) => (highlight ? theme.colors[highlight] : 'white')};
   cursor: pointer;
   user-select: none;
   padding: 4px;
@@ -36,21 +39,25 @@ const cellType = (cell) => {
 const Cell = ({
   className,
   cell,
-  selected,
-  dragged,
   highlight,
+  borderLeft,
+  borderRight,
+  borderTop,
+  borderBottom,
   onMouseDown,
   onMouseUp,
   onMouseOver,
 }) => (
   <Container
     className={className}
-    selected={selected}
-    dragged={dragged}
     highlight={highlight}
     onMouseDown={onMouseDown}
     onMouseUp={onMouseUp}
     onMouseOver={onMouseOver}
+    borderLeft={borderLeft}
+    borderRight={borderRight}
+    borderTop={borderTop}
+    borderBottom={borderBottom}
   >
     {cellType(cell)}
   </Container>
