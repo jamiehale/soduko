@@ -20,7 +20,7 @@ const Cell = ({
   onMouseUp,
   onMouseOver,
 }) => {
-  const value = cell.value === '.' ? '' : cell.value;
+  const value = cell.boardValue === '.' ? '' : cell.boardValue;
 
   return (
     <Container

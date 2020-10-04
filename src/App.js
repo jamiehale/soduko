@@ -4,23 +4,37 @@ import Container from '@material-ui/core/Container';
 import useEventListener from '@use-it/event-listener';
 import Board from './Board';
 
-const game = [
-  1,2,3,'.','.','.',7,8,9,
-  1,2,3,4,5,6,7,8,9,
-  1,2,3,4,5,6,7,8,9,
-  1,2,3,4,5,6,7,8,9,
-  1,2,3,4,5,6,7,8,9,
-  1,2,3,4,5,6,7,8,9,
-  1,2,3,4,5,6,7,8,9,
-  1,2,3,4,5,6,7,8,9,
-  1,2,3,4,5,6,7,8,9,
-].map(value => ({ value }));
+const board = `
+9...5...2
+......38.
+..291..6.
+..1......
+4.3.2.7.5
+......8..
+.1..952..
+.48......
+7...6...4
+`;
+
+const parseValue = s => parseInt(s, 10);
+
+const extractBoard = R.compose(
+  R.map(value => ({
+    boardValue: value,
+    userValue: '',
+    marks: [],
+  })),
+  R.map(R.when(R.complement(R.equals('.')), parseValue)),
+  R.split(''),
+  R.replace(/\n/g, ''),
+);
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'mouseDown': {
       const { cell } = action.payload;
       return {
+        ...state,
         selectedCells: [],
         draggedCells: [cell],
         dragging: true,
@@ -29,6 +43,7 @@ const reducer = (state, action) => {
     case 'mouseUp': {
       const { cell } = action.payload;
       return {
+        ...state,
         selectedCells: R.uniq(R.append(cell, state.draggedCells)),
         draggedCells: [],
         dragging: false,
@@ -49,9 +64,14 @@ const reducer = (state, action) => {
       const { key } = action.payload;
       if (state.dragging) {
         return state;
-      } else {
+      }
+      if (R.isEmpty(state.draggedCells)) {
         return state;
       }
+      if (R.length(state.draggedCells) === 1) {
+        return...
+      }
+      return state;
     }
     default: {
       return state;
@@ -59,8 +79,15 @@ const reducer = (state, action) => {
   }
 };
 
+const initialState = (board = []) => ({
+  selectedCells: [],
+  draggedCells: [],
+  dragging: false,
+  board,
+});
+
 const App = () => {
-  const [state, dispatch] = useReducer(reducer, { selectedCells: [], draggedCells: [], board: game });
+  const [state, dispatch] = useReducer(reducer, initialState(extractBoard(board)));
 
   const handleMouseDown = cell => {
     dispatch({ type: 'mouseDown', payload: { cell } });
@@ -85,7 +112,7 @@ const App = () => {
   return (
     <Container>
       <Board
-        game={game}
+        game={state.board}
         selectedCells={state.selectedCells}
         draggedCells={state.draggedCells}
         onMouseDown={handleMouseDown}
