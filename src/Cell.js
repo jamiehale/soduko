@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MarkedCell from './MarkedCell';
+import { isPuzzleCell, isSetUserCell, boardCellValue, boardCellMarks } from './util/cell';
 
 const Container = styled(({ highlight, borderLeft, borderRight, borderTop, borderBottom, ...props }) => <div {...props} />)`
   border-left: ${({ borderLeft }) => (borderLeft ? '3px solid darkgrey' : '1px solid lightgrey')};
@@ -19,20 +20,24 @@ const Container = styled(({ highlight, borderLeft, borderRight, borderTop, borde
 
 const BoardCell = styled(Typography).attrs({
   color: 'primary',
-})``;
+})`
+  font-size: 1.5rem;
+`;
 
 const UserCell = styled(Typography).attrs({
   color: 'secondary',
-})``;
+})`
+  font-size: 1.5rem;
+`;
 
 const cellType = (cell) => {
-  if (cell.boardValue !== '.') {
-    return <BoardCell>{cell.boardValue}</BoardCell>;
+  if (isPuzzleCell(cell)) {
+    return <BoardCell>{boardCellValue(cell)}</BoardCell>;
   }
-  if (cell.userValue !== '') {
-    return <UserCell>{cell.userValue}</UserCell>;
+  if (isSetUserCell(cell)) {
+    return <UserCell>{boardCellValue(cell)}</UserCell>;
   }
-  return <MarkedCell marks={cell.marks} />
+  return <MarkedCell marks={boardCellMarks(cell)} />
 };
 
 const Cell = ({
