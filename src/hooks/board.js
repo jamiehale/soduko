@@ -1,6 +1,7 @@
 import * as R from 'ramda';
 import useLoggingReducer from './logging-reducer';
 import { isUserCell, isSetUserCell, boardCellMarks, isPuzzleCell, cellHasMark, boardCellValue } from '../util/cell';
+import { useCallback, useEffect } from 'react';
 
 const boardCell = (type, value) => ({ type, value });
 
@@ -52,7 +53,7 @@ const boardWithSetValue = (value, cellIndex, board) => {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'reset': {
+    case 'initialize': {
       const { board } = action.payload;
       return initializedBoard(board);
     }
@@ -64,23 +65,96 @@ const reducer = (state, action) => {
       const { cell, value } = action.payload;
       return boardWithSetValue(value, cell, state);
     }
+    case 'reset': {
+      const { newState } = action.payload;
+      return newState;
+    }
     default: {
       return state;
     }
   }
 };
 
+const undoReducer = (state, action) => {
+  switch (action.type) {
+    case 'push': {
+      const { value } = action.payload;
+      return {
+        values: R.append(value, state.values),
+        index: state.index + 1,
+      };
+    }
+    case 'undo': {
+      return {
+        ...state,
+        index: Math.max(0, state.index - 1),
+      };
+    }
+    case 'redo': {
+      return {
+        ...state,
+        index: Math.min(R.length(state.values) - 1, state.index + 1),
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+const useUndo = (currentValue) => {
+  const [state, dispatch] = useLoggingReducer(undoReducer, { values: [currentValue], index: 0 });
+
+  const activeValue = state.values[state.index];
+
+  useEffect(() => {
+    if (!R.equals(currentValue, activeValue)) {
+      dispatch({ type: 'push', payload: { value: currentValue } });
+    }
+  }, [dispatch, currentValue, activeValue]);
+
+  const undo = useCallback(() => {
+    dispatch({ type: 'undo' });
+  }, [dispatch]);
+
+  const redo = useCallback(() => {
+    dispatch({ type: 'redo' });
+  }, [dispatch]);
+
+  return {
+    activeValue,
+    canUndo: state.index > 0,
+    undo,
+    canRedo: state.index < (R.length(state.values) - 1),
+    redo,
+  };
+};
+
 const useBoard = (initialBoard) => {
   const [state, dispatch] = useLoggingReducer(reducer, initializedBoard(initialBoard || []));
+  const { activeValue, canUndo, undo, canRedo, redo } = useUndo(state);
+
+  useEffect(() => {
+    if (!R.equals(state, activeValue)) {
+      console.log('HERE', state, activeValue);
+      dispatch({ type: 'reset', payload: { newState: activeValue } });
+      console.log('AND HERE');
+      debugger;
+    }
+  }, [state, dispatch, activeValue]);
 
   return {
     dispatch,
     board: state,
+    canUndo,
+    undo,
+    canRedo,
+    redo,
   };
 };
 
 export const resetBoard = (dispatch, board) => {
-  dispatch({ type: 'reset', payload: { board } });
+  dispatch({ type: 'initialize', payload: { board } });
 };
 
 export const toggleCellMark = (dispatch, cells, mark) => {
