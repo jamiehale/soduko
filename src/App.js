@@ -12,6 +12,7 @@ import theme from './theme';
 import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection } from './hooks/selection';
 import useHighlight from './hooks/highlight';
 import useBoard, { resetBoard, toggleCellMark, setCellValue } from './hooks/board';
+import useGame from './hooks/game';
 
 const stockBoard = `
 9...5...2
@@ -36,9 +37,9 @@ const extractBoard = R.compose(
 const App = () => {
   const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
   const { dispatch: boardDispatch, board, undo, canUndo, redo, canRedo } = useBoard();
+  const { isComplete } = useGame(board);
+  console.log(isComplete);
   const highlight = useHighlight(selectedCells, board);
-
-  console.log('HIGHLIGHT', highlight);
 
   useEffect(() => {
     resetBoard(boardDispatch, extractBoard(stockBoard));

@@ -2,6 +2,7 @@ import * as R from 'ramda';
 
 export const isPuzzleCell = R.propEq('type', 'puzzle');
 export const isUserCell = R.complement(isPuzzleCell);
+export const isValueCell = cell => isPuzzleCell(cell) || isSetUserCell(cell);
 export const isSetUserCell = R.propIs(Number, 'value');
 export const cellHasValue = cell => (isPuzzleCell(cell) || isSetUserCell(cell));
 

@@ -87,7 +87,7 @@ const reducer = (state, action) => {
 };
 
 const useBoard = (initialBoard) => {
-  const [state, dispatch] = useLoggingReducer(reducer, initializedBoard(initialBoard || []));
+  const [state, dispatch] = useLoggingReducer(reducer, initializedBoard(initialBoard || R.repeat('.', 81)));
   const handleReset = useCallback((value) => {
     dispatch({ type: 'reset', payload: { newState: value } });
   }, [dispatch]);
