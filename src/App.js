@@ -3,6 +3,9 @@ import { ThemeProvider } from 'styled-components';
 import * as R from 'ramda';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import UndoIcon from '@material-ui/icons/Undo';
+import RedoIcon from '@material-ui/icons/Redo';
 import useEventListener from '@use-it/event-listener';
 import Board from './Board';
 import theme from './theme';
@@ -32,7 +35,7 @@ const extractBoard = R.compose(
 
 const App = () => {
   const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
-  const { dispatch: boardDispatch, board, undo, canUndo } = useBoard();
+  const { dispatch: boardDispatch, board, undo, canUndo, redo, canRedo } = useBoard();
   const highlight = useHighlight(selectedCells, board);
 
   console.log('HIGHLIGHT', highlight);
@@ -84,7 +87,8 @@ const App = () => {
           onMouseOver={handleMouseOver}
         />
         <Button onClick={handleReset}>Reset</Button>
-        <Button onClick={undo} disabled={!canUndo}>Undo</Button>
+        <IconButton onClick={undo} disabled={!canUndo}><UndoIcon /></IconButton>
+        <IconButton onClick={redo} disabled={!canRedo}><RedoIcon /></IconButton>
       </Container>
     </ThemeProvider>
   );
