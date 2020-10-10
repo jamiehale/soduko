@@ -3,6 +3,7 @@ import * as R from 'ramda';
 import { isUserCell, isSetUserCell, boardCellMarks, isPuzzleCell, cellHasMark, boardCellValue } from '../util/cell';
 import useLoggingReducer from './logging-reducer';
 import useUndo from './undo';
+import { columnFromCount, rowFromCount, sectionFromCount } from '../logic';
 
 const boardCell = (type, value) => ({ type, value });
 
@@ -52,6 +53,15 @@ const boardWithSetValue = (value, cellIndex, board) => {
   return R.adjust(cellIndex, cellWithValue(value), board);
 };
 
+const shouldClear = (cellIndex, i) => rowFromCount(cellIndex) === rowFromCount(i)
+  || columnFromCount(cellIndex) === columnFromCount(i)
+  || sectionFromCount(cellIndex) === sectionFromCount(i);
+
+const boardWithClearedMarks = (value, cellIndex, board) => R.addIndex(R.map)(
+  (cell, i) => ((shouldClear(cellIndex, i) && !isPuzzleCell(cell) && !isSetUserCell(cell)) ? cellWithoutMark(value, cell) : cell),
+  board,
+);
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'initialize': {
@@ -63,8 +73,8 @@ const reducer = (state, action) => {
       return boardWithToggledMark(mark, cells, state);
     }
     case 'set': {
-      const { cell, value } = action.payload;
-      return boardWithSetValue(value, cell, state);
+      const { cellIndex, value } = action.payload;
+      return boardWithClearedMarks(value, cellIndex, boardWithSetValue(value, cellIndex, state));
     }
     case 'reset': {
       const { newState } = action.payload;
@@ -101,8 +111,8 @@ export const toggleCellMark = (dispatch, cells, mark) => {
   dispatch({ type: 'toggleMark', payload: { cells, mark } });
 };
 
-export const setCellValue = (dispatch, cell, value) => {
-  dispatch({ type: 'set', payload: { cell, value } });
+export const setCellValue = (dispatch, cellIndex, value) => {
+  dispatch({ type: 'set', payload: { cellIndex, value } });
 };
 
 export default useBoard;
