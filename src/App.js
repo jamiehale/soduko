@@ -32,8 +32,10 @@ const extractBoard = R.compose(
 
 const App = () => {
   const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
-  const { dispatch: boardDispatch, board } = useBoard();
+  const { dispatch: boardDispatch, board, undo, canUndo } = useBoard();
   const highlight = useHighlight(selectedCells, board);
+
+  console.log('HIGHLIGHT', highlight);
 
   useEffect(() => {
     resetBoard(boardDispatch, extractBoard(stockBoard));
@@ -82,6 +84,7 @@ const App = () => {
           onMouseOver={handleMouseOver}
         />
         <Button onClick={handleReset}>Reset</Button>
+        <Button onClick={undo} disabled={!canUndo}>Undo</Button>
       </Container>
     </ThemeProvider>
   );

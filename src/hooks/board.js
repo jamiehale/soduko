@@ -102,10 +102,14 @@ const undoReducer = (state, action) => {
   }
 };
 
-const useUndo = (currentValue) => {
+const useUndo = (currentValue, onChange) => {
   const [state, dispatch] = useLoggingReducer(undoReducer, { values: [currentValue], index: 0 });
 
   const activeValue = state.values[state.index];
+  const canUndo = state.index > 0;
+  const undoValue = canUndo ? state.values[state.index - 1] : undefined;
+  const canRedo = state.index < (R.length(state.values) - 1);
+  const redoValue = canRedo ? state.values[state.index + 1] : undefined;
 
   useEffect(() => {
     if (!R.equals(currentValue, activeValue)) {
@@ -114,34 +118,33 @@ const useUndo = (currentValue) => {
   }, [dispatch, currentValue, activeValue]);
 
   const undo = useCallback(() => {
-    dispatch({ type: 'undo' });
-  }, [dispatch]);
+    if (canUndo) {
+      dispatch({ type: 'undo' });
+      onChange(undoValue);
+    }
+  }, [dispatch, canUndo, undoValue, onChange]);
 
   const redo = useCallback(() => {
-    dispatch({ type: 'redo' });
-  }, [dispatch]);
+    if (canRedo) {
+      dispatch({ type: 'redo' });
+      onChange(redoValue);
+    }
+  }, [dispatch, canRedo, redoValue, onChange]);
 
   return {
-    activeValue,
-    canUndo: state.index > 0,
+    canUndo,
     undo,
-    canRedo: state.index < (R.length(state.values) - 1),
+    canRedo,
     redo,
   };
 };
 
 const useBoard = (initialBoard) => {
   const [state, dispatch] = useLoggingReducer(reducer, initializedBoard(initialBoard || []));
-  const { activeValue, canUndo, undo, canRedo, redo } = useUndo(state);
-
-  useEffect(() => {
-    if (!R.equals(state, activeValue)) {
-      console.log('HERE', state, activeValue);
-      dispatch({ type: 'reset', payload: { newState: activeValue } });
-      console.log('AND HERE');
-      debugger;
-    }
-  }, [state, dispatch, activeValue]);
+  const handleReset = useCallback((value) => {
+    dispatch({ type: 'reset', payload: { newState: value } });
+  }, [dispatch]);
+  const { canUndo, undo, canRedo, redo } = useUndo(state, handleReset);
 
   return {
     dispatch,
