@@ -1,8 +1,6 @@
-import { useCallback } from 'react';
 import * as R from 'ramda';
 import { isUserCell, isSetUserCell, boardCellMarks, isPuzzleCell, cellHasMark, boardCellValue } from '../util/cell';
 import useLoggingReducer from './logging-reducer';
-import useUndo from './undo';
 import { columnFromCount, rowFromCount, sectionFromCount } from '../logic';
 
 const boardCell = (type, value) => ({ type, value });
