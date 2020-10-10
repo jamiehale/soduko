@@ -30,7 +30,7 @@ const undoReducer = (state, action) => {
 };
 
 const useUndo = (currentValue, onChange) => {
-  const [state, dispatch] = useLoggingReducer(undoReducer, { values: [currentValue], index: 0 }, false);
+  const [state, dispatch] = useLoggingReducer(undoReducer, { values: [currentValue], index: 0 }, 'useUndo');
 
   const activeValue = state.values[state.index];
   const canUndo = state.index > 0;
@@ -40,6 +40,7 @@ const useUndo = (currentValue, onChange) => {
 
   useEffect(() => {
     if (!R.equals(currentValue, activeValue)) {
+      console.log('PUSHING', currentValue, activeValue);
       dispatch({ type: 'push', payload: { value: currentValue } });
     }
   }, [dispatch, currentValue, activeValue]);

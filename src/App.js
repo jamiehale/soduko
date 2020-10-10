@@ -11,7 +11,7 @@ import Board from './Board';
 import theme from './theme';
 import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection } from './hooks/selection';
 import useHighlight from './hooks/highlight';
-import useBoard, { resetBoard, toggleCellMark, setCellValue } from './hooks/board';
+import useBoard, { resetBoard, toggleCellMark, setCellValue, undo, redo } from './hooks/board';
 import useGame from './hooks/game';
 
 const stockBoard = `
@@ -26,6 +26,18 @@ const stockBoard = `
 7...6...4
 `;
 
+const solved = `
+967358412
+154276389
+832914567
+521789643
+483621795
+679543821
+316495278
+248137956
+795862134
+`;
+
 const parseValue = s => parseInt(s, 10);
 
 const extractBoard = R.compose(
@@ -36,7 +48,7 @@ const extractBoard = R.compose(
 
 const App = () => {
   const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
-  const { dispatch: boardDispatch, board, undo, canUndo, redo, canRedo } = useBoard();
+  const { dispatch: boardDispatch, board, canUndo, canRedo } = useBoard();
   const { isComplete } = useGame(board);
   console.log(isComplete);
   const highlight = useHighlight(selectedCells, board);
@@ -76,6 +88,14 @@ const App = () => {
 
   useEventListener('keydown', handleKeyDown);
 
+  const handleUndo = useCallback(() => {
+    undo(boardDispatch);
+  }, [boardDispatch]);
+
+  const handleRedo = useCallback(() => {
+    redo(boardDispatch);
+  }, [boardDispatch]);
+
   return (
     <ThemeProvider theme={theme}>
       <Container>
@@ -88,8 +108,8 @@ const App = () => {
           onMouseOver={handleMouseOver}
         />
         <Button onClick={handleReset}>Reset</Button>
-        <IconButton onClick={undo} disabled={!canUndo}><UndoIcon /></IconButton>
-        <IconButton onClick={redo} disabled={!canRedo}><RedoIcon /></IconButton>
+        <IconButton onClick={handleUndo} disabled={!canUndo}><UndoIcon /></IconButton>
+        <IconButton onClick={handleRedo} disabled={!canRedo}><RedoIcon /></IconButton>
       </Container>
     </ThemeProvider>
   );

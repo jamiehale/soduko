@@ -66,15 +66,59 @@ const reducer = (state, action) => {
   switch (action.type) {
     case 'initialize': {
       const { board } = action.payload;
-      return initializedBoard(board);
+      return {
+        board: initializedBoard(board),
+        history: [],
+        future: [],
+      };
     }
     case 'toggleMark': {
       const { cells, mark } = action.payload;
-      return boardWithToggledMark(mark, cells, state);
+      return {
+        board: boardWithToggledMark(mark, cells, state.board),
+        history: R.prepend(
+          state.board,
+          state.history,
+        ),
+        future: [],
+      };
     }
     case 'set': {
       const { cellIndex, value } = action.payload;
-      return boardWithClearedMarks(value, cellIndex, boardWithSetValue(value, cellIndex, state));
+      return {
+        board: boardWithClearedMarks(value, cellIndex, boardWithSetValue(value, cellIndex, state.board)),
+        history: R.prepend(
+          state.board,
+          state.history,
+        ),
+        future: [],
+      };
+    }
+    case 'undo': {
+      if (R.isEmpty(state.history)) {
+        return state;
+      }
+      return {
+        board: R.head(state.history),
+        history: R.tail(state.history),
+        future: R.prepend(
+          state.board,
+          state.future,
+        ),
+      };
+    }
+    case 'redo': {
+      if (R.isEmpty(state.future)) {
+        return state;
+      }
+      return {
+        board: R.head(state.future),
+        history: R.prepend(
+          state.board,
+          state.history,
+        ),
+        future: R.tail(state.future),
+      };
     }
     case 'reset': {
       const { newState } = action.payload;
@@ -87,19 +131,20 @@ const reducer = (state, action) => {
 };
 
 const useBoard = (initialBoard) => {
-  const [state, dispatch] = useLoggingReducer(reducer, initializedBoard(initialBoard || R.repeat('.', 81)));
-  const handleReset = useCallback((value) => {
-    dispatch({ type: 'reset', payload: { newState: value } });
-  }, [dispatch]);
-  const { canUndo, undo, canRedo, redo } = useUndo(state, handleReset);
+  const [state, dispatch] = useLoggingReducer(reducer, {
+    board: initializedBoard(initialBoard || R.repeat('.', 81)),
+    history: [],
+    index: -1,
+  }, 'useBoard', true);
+
+  const canUndo = !R.isEmpty(state.history);
+  const canRedo = !R.isEmpty(state.future);
 
   return {
     dispatch,
-    board: state,
+    board: state.board,
     canUndo,
-    undo,
     canRedo,
-    redo,
   };
 };
 
@@ -113,6 +158,14 @@ export const toggleCellMark = (dispatch, cells, mark) => {
 
 export const setCellValue = (dispatch, cellIndex, value) => {
   dispatch({ type: 'set', payload: { cellIndex, value } });
+};
+
+export const undo = (dispatch) => {
+  dispatch({ type: 'undo' });
+};
+
+export const redo = (dispatch) => {
+  dispatch({ type: 'redo' });
 };
 
 export default useBoard;
