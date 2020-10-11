@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import * as R from 'ramda';
 import Container from '@material-ui/core/Container';
@@ -49,6 +49,7 @@ const extractBoard = R.compose(
 );
 
 const App = () => {
+  const [puzzle, setPuzzle] = useState(stockBoard);
   const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
   const { dispatch: boardDispatch, board, canUndo, canRedo } = useBoard();
   const { isComplete } = useGame(board);
@@ -56,13 +57,13 @@ const App = () => {
   const highlight = useHighlight(selectedCells, board);
   
   useEffect(() => {
-    resetBoard(boardDispatch, extractBoard(stockBoard));
-  }, [boardDispatch]);
+    resetBoard(boardDispatch, extractBoard(puzzle));
+  }, [boardDispatch, puzzle]);
   
   const handleReset = useCallback(() => {
-    resetBoard(boardDispatch, extractBoard(stockBoard));
+    resetBoard(boardDispatch, extractBoard(puzzle));
     clearSelection(selectionDispatch);
-  }, [boardDispatch, selectionDispatch]);
+  }, [boardDispatch, selectionDispatch, puzzle]);
 
   const { confirming, confirm, handleConfirm, handleCancel } = useConfirmation(handleReset);
 
