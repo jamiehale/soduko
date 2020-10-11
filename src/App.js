@@ -13,6 +13,8 @@ import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection } from './h
 import useHighlight from './hooks/highlight';
 import useBoard, { resetBoard, toggleCellMark, setCellValue, undo, redo } from './hooks/board';
 import useGame from './hooks/game';
+import useConfirmation from './hooks/confirmation';
+import ConfirmationDialog from './ConfirmationDialog';
 
 const stockBoard = `
 9...5...2
@@ -52,15 +54,17 @@ const App = () => {
   const { isComplete } = useGame(board);
   console.log(isComplete);
   const highlight = useHighlight(selectedCells, board);
-
+  
   useEffect(() => {
     resetBoard(boardDispatch, extractBoard(stockBoard));
   }, [boardDispatch]);
-
+  
   const handleReset = useCallback(() => {
     resetBoard(boardDispatch, extractBoard(stockBoard));
     clearSelection(selectionDispatch);
   }, [boardDispatch, selectionDispatch]);
+
+  const { confirming, confirm, handleConfirm, handleCancel } = useConfirmation(handleReset);
 
   const handleMouseDown = cell => {
     mouseDown(selectionDispatch, cell);
@@ -107,10 +111,18 @@ const App = () => {
           onMouseUp={handleMouseUp}
           onMouseOver={handleMouseOver}
         />
-        <Button onClick={handleReset}>Reset</Button>
+        <Button onClick={confirm}>Reset</Button>
         <IconButton onClick={handleUndo} disabled={!canUndo}><UndoIcon /></IconButton>
         <IconButton onClick={handleRedo} disabled={!canRedo}><RedoIcon /></IconButton>
       </Container>
+      {confirming && (
+        <ConfirmationDialog
+          text="This will clear all your progress. Are you sure?"
+          confirmText="Reset"
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+      )}
     </ThemeProvider>
   );
 };
