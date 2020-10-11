@@ -11,10 +11,10 @@ const Cell = styled(UnstyledCell)``;
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: repeat(9, 40px);
+  grid-template-columns: repeat(9, 50px);
 
   ${Cell} {
-    height: 40px;
+    height: 50px;
   }
 `;
 

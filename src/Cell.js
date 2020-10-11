@@ -15,19 +15,18 @@ const Container = styled(({ highlight, borderLeft, borderRight, borderTop, borde
   background-color: ${({ highlight, theme }) => (highlight ? theme.colors[highlight] : 'white')};
   cursor: pointer;
   user-select: none;
-  padding: 4px;
 `;
 
 const BoardCell = styled(Typography).attrs({
   color: 'primary',
 })`
-  font-size: 1.5rem;
+  font-size: 2rem;
 `;
 
 const UserCell = styled(Typography).attrs({
   color: 'secondary',
 })`
-  font-size: 1.5rem;
+  font-size: 2rem;
 `;
 
 const cellType = (cell) => {

@@ -15,7 +15,8 @@ const Container = styled.div`
   ${Typography} {
     margin: 0px;
     padding: 0px;
-    font-size: 0.65rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
   }
 `;
 
@@ -23,7 +24,7 @@ const MarkedCell = ({
   marks,
 }) => {
   const items = R.map(
-    i => (R.includes(i, marks) ? <Typography key={i} color="secondary">{i}</Typography> : <div key={i} />),
+    i => (R.includes(i, marks) ? <Typography key={i} align="center" color="secondary">{i}</Typography> : <div key={i} />),
     R.range(1, 10),
   );
 
