@@ -15,6 +15,7 @@ import useBoard, { resetBoard, toggleCellMark, setCellValue, undo, redo } from '
 import useGame from './hooks/game';
 import useConfirmation from './hooks/confirmation';
 import ConfirmationDialog from './ConfirmationDialog';
+import NewGameDialog from './NewGameDialog';
 
 const stockBoard = `
 9...5...2
@@ -44,6 +45,7 @@ const parseValue = s => parseInt(s, 10);
 
 const extractBoard = R.compose(
   R.map(R.when(R.complement(R.equals('.')), parseValue)),
+  R.map(R.when(R.equals('0'), R.always('.'))),
   R.split(''),
   R.replace(/\n/g, ''),
 );
@@ -66,6 +68,8 @@ const App = () => {
   }, [boardDispatch, selectionDispatch, puzzle]);
 
   const { confirming, confirm, handleConfirm, handleCancel } = useConfirmation(handleReset);
+
+  const { confirming: showNewGame, confirm: confirmNewGame, handleConfirm: handleNewGame, handleCancel: handleCancelNewGame } = useConfirmation(setPuzzle);
 
   const handleMouseDown = cell => {
     mouseDown(selectionDispatch, cell);
@@ -112,6 +116,7 @@ const App = () => {
           onMouseUp={handleMouseUp}
           onMouseOver={handleMouseOver}
         />
+        <Button onClick={confirmNewGame}>New Game</Button>
         <Button onClick={confirm}>Reset</Button>
         <IconButton onClick={handleUndo} disabled={!canUndo}><UndoIcon /></IconButton>
         <IconButton onClick={handleRedo} disabled={!canRedo}><RedoIcon /></IconButton>
@@ -122,6 +127,12 @@ const App = () => {
           confirmText="Reset"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
+        />
+      )}
+      {showNewGame && (
+        <NewGameDialog
+          onNewGame={handleNewGame}
+          onCancel={handleCancelNewGame}
         />
       )}
     </ThemeProvider>

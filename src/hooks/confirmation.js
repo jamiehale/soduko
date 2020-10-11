@@ -7,9 +7,9 @@ const useConfirmation = (onConfirm) => {
     setConfirming(true);
   }, [setConfirming]);
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = useCallback((...args) => {
     setConfirming(false);
-    onConfirm();
+    onConfirm(...args);
   }, [setConfirming, onConfirm]);
 
   const handleCancel = useCallback(() => {
