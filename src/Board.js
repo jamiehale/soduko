@@ -37,6 +37,7 @@ const Board = ({
   game,
   selectedCells,
   highlight,
+  errorCells,
   onMouseDown,
   onMouseUp,
   onMouseOver,
@@ -48,6 +49,7 @@ const Board = ({
       key={cellKey(rowFromCount(i), columnFromCount(i))}
       cell={cell}
       highlight={highlightLevel(rowFromCount(i), columnFromCount(i), sectionFromCount(i), cell, R.includes(i, selectedCells), highlight)}
+      error={R.includes(i, errorCells)}
       onMouseDown={R.thunkify(onMouseDown)(i)}
       onMouseUp={R.thunkify(onMouseUp)(i)}
       onMouseOver={R.thunkify(onMouseOver)(i)}

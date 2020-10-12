@@ -26,7 +26,7 @@ import HelpDialog from './HelpDialog';
 const App = () => {
   const { dispatch: boardDispatch, board, canUndo, canRedo } = useBoard();
   const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
-  const { isComplete } = useGame(board);
+  const { isSolved, errorCells } = useGame(board);
   const highlight = useHighlight(selectedCells, board);
   const [showHelp, setShowHelp] = useState(false);
   
@@ -89,6 +89,7 @@ const App = () => {
               game={board}
               selectedCells={selectedCells}
               highlight={highlight}
+              errorCells={errorCells}
               onMouseDown={handleMouseDown}
               onMouseUp={handleMouseUp}
               onMouseOver={handleMouseOver}
@@ -102,7 +103,7 @@ const App = () => {
               <IconButton onClick={R.thunkify(setShowHelp)(true)}><HelpIcon /></IconButton>
             </Grid>
             <Grid item>
-              {isComplete && (
+              {isSolved && (
                 <Typography variant="h5" align="center">Solved</Typography>
               )}
             </Grid>

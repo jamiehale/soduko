@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import MarkedCell from './MarkedCell';
 import { isPuzzleCell, isSetUserCell, boardCellValue, boardCellMarks } from './util/cell';
 
-const Container = styled(({ highlight, borderLeft, borderRight, borderTop, borderBottom, ...props }) => <div {...props} />)`
+const Container = styled(({ highlight, error, borderLeft, borderRight, borderTop, borderBottom, ...props }) => <div {...props} />)`
   border-left: ${({ borderLeft }) => (borderLeft ? '3px solid darkgrey' : '1px solid lightgrey')};
   border-right: ${({ borderRight }) => (borderRight ? '3px solid darkgrey' : '1px solid lightgrey')};
   border-top: ${({ borderTop }) => (borderTop ? '3px solid darkgrey' : '1px solid lightgrey')};
@@ -12,7 +12,7 @@ const Container = styled(({ highlight, borderLeft, borderRight, borderTop, borde
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ highlight, theme }) => (highlight ? theme.colors[highlight] : 'white')};
+  background-color: ${({ error, highlight, theme }) => (error ? 'red' : highlight ? theme.colors[highlight] : 'white')};
   cursor: pointer;
   user-select: none;
 `;
@@ -43,6 +43,7 @@ const Cell = ({
   className,
   cell,
   highlight,
+  error,
   borderLeft,
   borderRight,
   borderTop,
@@ -54,6 +55,7 @@ const Cell = ({
   <Container
     className={className}
     highlight={highlight}
+    error={error}
     onMouseDown={onMouseDown}
     onMouseUp={onMouseUp}
     onMouseOver={onMouseOver}
