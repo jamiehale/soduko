@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
 import * as R from 'ramda';
 import useLocalStorage from './local-storage';
 import { isUserCell, isSetUserCell, boardCellMarks, isPuzzleCell, cellHasMark, boardCellValue } from '../util/cell';
-import useLoggingReducer from './logging-reducer';
 import { columnFromCount, rowFromCount, sectionFromCount } from '../util/logic';
 
 const boardCell = (type, value) => ({ type, value });
@@ -141,7 +140,7 @@ const reducer = (state, action) => {
 const useBoard = () => {
   const [storedState, setStoredState] = useLocalStorage('soduko', null);
 
-  const [state, dispatch] = useLoggingReducer(
+  const [state, dispatch] = useReducer(
     reducer,
     storedState || {
       board: initializedBoard(R.repeat('.', 81)),
@@ -149,8 +148,6 @@ const useBoard = () => {
       future: [],
       index: -1,
     },
-    'useBoard',
-    true,
   );
 
   useEffect(() => {
