@@ -97,20 +97,20 @@ const App = () => {
           </Grid>
           <Grid item xs={12}>
             <Grid container justify="space-between" alignItems="center">
-            <Grid item>
-              <Button onClick={confirmNewGame}>New</Button>
-              <Button onClick={confirm}>Reset</Button>
-              <IconButton onClick={R.thunkify(setShowHelp)(true)}><HelpIcon /></IconButton>
-            </Grid>
-            <Grid item>
-              {isSolved && (
-                <Typography variant="h5" align="center">Solved</Typography>
-              )}
-            </Grid>
-            <Grid item>
-              <IconButton onClick={handleUndo} disabled={!canUndo}><UndoIcon /></IconButton>
-              <IconButton onClick={handleRedo} disabled={!canRedo}><RedoIcon /></IconButton>
-            </Grid>
+              <Grid item xs={4}>
+                <Button onClick={confirmNewGame}>New</Button>
+                <Button onClick={confirm}>Reset</Button>
+              </Grid>
+              <Grid item xs={4}>
+                {isSolved && (
+                  <Typography variant="h5" align="center">Solved</Typography>
+                  )}
+              </Grid>
+              <Grid item xs={4}>
+                <IconButton onClick={R.thunkify(setShowHelp)(true)}><HelpIcon /></IconButton>
+                <IconButton onClick={handleUndo} disabled={!canUndo}><UndoIcon /></IconButton>
+                <IconButton onClick={handleRedo} disabled={!canRedo}><RedoIcon /></IconButton>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
