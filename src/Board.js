@@ -4,6 +4,7 @@ import * as R from 'ramda';
 import UnstyledCell from './Cell';
 import { rowFromCount, columnFromCount, sectionFromCount } from './logic';
 import { cellValueEquals, cellHasMark } from './util/cell';
+import useBorder from './hooks/border';
 
 const cellKey = (row, column) => `${row}|${column}`;
 
@@ -17,19 +18,6 @@ const Container = styled.div`
     height: 50px;
   }
 `;
-
-const useBorder = () => {
-  const borderPropsFor = i => ({
-    borderLeft: R.includes(columnFromCount(i), [0, 3, 6]),
-    borderRight: columnFromCount(i) === 8,
-    borderTop: R.includes(rowFromCount(i), [0, 3, 6]),
-    borderBottom: rowFromCount(i) === 8,
-  });
-
-  return {
-    borderPropsFor,
-  };
-};
 
 const highlightLevel = (row, column, section, cell, selected, highlight) => {
   const { highlightRow, highlightColumn, highlightSection, highlightValue } = highlight;
