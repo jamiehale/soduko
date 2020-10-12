@@ -13,7 +13,7 @@ const NewGameDialog = ({
   const [puzzle, setPuzzle] = useState('');
 
   const handleChangePuzzle = useCallback((e) => {
-    setPuzzle(R.replace(/[^0-9]/g, '', e.target.value));
+    setPuzzle(R.replace(/[^0-9\.]/g, '', e.target.value));
   }, [setPuzzle]);
 
   const handleNewGame = useCallback(() => {
