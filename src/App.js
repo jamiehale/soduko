@@ -57,7 +57,6 @@ const App = () => {
   const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
   const { dispatch: boardDispatch, board, canUndo, canRedo } = useBoard();
   const { isComplete } = useGame(board);
-  console.log(isComplete);
   const highlight = useHighlight(selectedCells, board);
   
   const handleReset = useCallback(() => {
