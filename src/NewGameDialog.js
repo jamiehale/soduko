@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import * as R from 'ramda';
+import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import MenuItem from '@material-ui/core/MenuItem';
+import MiniPuzzle from './MiniBoard';
 import stockPuzzles from './puzzles/top95';
 
 const TabPanel = ({
@@ -69,7 +71,14 @@ const NewGameDialog = ({
         key={i + 1}
         value={stockPuzzle}
       >
-        {i + 1}:&nbsp;<pre style={{ display: 'inline' }}>{R.slice(0, 20, stockPuzzle)}...</pre>
+        <Grid container justify="space-between" alignItems="center">
+          <Grid item>
+            {i + 1}:
+          </Grid>
+          <Grid item>
+            <MiniPuzzle puzzle={stockPuzzle} />
+          </Grid>
+        </Grid>
       </MenuItem>
     ),
     stockPuzzles,
