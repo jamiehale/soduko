@@ -7,14 +7,23 @@ const selectionReducer = (state, action) => {
       const { cell } = action.payload;
       return {
         selectedCells: [],
+        previouslySelectedCells: state.selectedCells,
         draggedCells: [cell],
         isMouseDown: true,
       };
     }
     case 'mouseUp': {
       const { cell } = action.payload;
+      const draggedCells = R.uniq(R.append(cell, state.draggedCells));
+      if (R.length(state.previouslySelectedCells) === 1 && R.equals(state.previouslySelectedCells, draggedCells)) {
+        return {
+          selectedCells: [],
+          draggedCells: [],
+          isMouseDown: false,
+        };
+      }
       return {
-        selectedCells: R.uniq(R.append(cell, state.draggedCells)),
+        selectedCells: draggedCells,
         draggedCells: [],
         isMouseDown: false,
       };
