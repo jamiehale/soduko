@@ -5,6 +5,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
 import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
 import useEventListener from '@use-it/event-listener';
@@ -12,7 +13,7 @@ import Board from './Board';
 import theme from './theme';
 import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection } from './hooks/selection';
 import useHighlight from './hooks/highlight';
-import useBoard, { resetBoard, toggleCellMark, setCellValue, undo, redo } from './hooks/board';
+import useBoard, { reset, toggleCellMark, setCellValue, undo, redo, newGame } from './hooks/board';
 import useGame from './hooks/game';
 import useConfirmation from './hooks/confirmation';
 import ConfirmationDialog from './ConfirmationDialog';
@@ -53,25 +54,24 @@ const extractBoard = R.compose(
 );
 
 const App = () => {
-  const [puzzle, setPuzzle] = useState(stockBoard);
   const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
   const { dispatch: boardDispatch, board, canUndo, canRedo } = useBoard();
   const { isComplete } = useGame(board);
   console.log(isComplete);
   const highlight = useHighlight(selectedCells, board);
   
-  useEffect(() => {
-    resetBoard(boardDispatch, extractBoard(puzzle));
-  }, [boardDispatch, puzzle]);
-  
   const handleReset = useCallback(() => {
-    resetBoard(boardDispatch, extractBoard(puzzle));
+    reset(boardDispatch);
     clearSelection(selectionDispatch);
-  }, [boardDispatch, selectionDispatch, puzzle]);
+  }, [boardDispatch, selectionDispatch]);
 
   const { confirming, confirm, handleConfirm, handleCancel } = useConfirmation(handleReset);
 
-  const { confirming: showNewGame, confirm: confirmNewGame, handleConfirm: handleNewGame, handleCancel: handleCancelNewGame } = useConfirmation(setPuzzle);
+  const handleNewGame = (puzzle) => {
+    newGame(boardDispatch, extractBoard(puzzle));
+  };
+
+  const { confirming: showNewGame, confirm: confirmNewGame, handleConfirm: handleConfirmNewGame, handleCancel: handleCancelNewGame } = useConfirmation(handleNewGame);
 
   const handleMouseDown = cell => {
     mouseDown(selectionDispatch, cell);
@@ -125,10 +125,15 @@ const App = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Grid container justify="space-between">
+            <Grid container justify="space-between" alignItems="center">
             <Grid item>
               <Button onClick={confirmNewGame}>New</Button>
               <Button onClick={confirm}>Reset</Button>
+            </Grid>
+            <Grid item>
+              {isComplete && (
+                <Typography variant="h5" align="center">Solved</Typography>
+              )}
             </Grid>
             <Grid item>
               <IconButton onClick={handleUndo} disabled={!canUndo}><UndoIcon /></IconButton>
@@ -148,7 +153,7 @@ const App = () => {
       )}
       {showNewGame && (
         <NewGameDialog
-          onNewGame={handleNewGame}
+          onNewGame={handleConfirmNewGame}
           onCancel={handleCancelNewGame}
         />
       )}

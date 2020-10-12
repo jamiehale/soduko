@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import * as R from 'ramda';
+import useLocalStorage from './local-storage';
 import { isUserCell, isSetUserCell, boardCellMarks, isPuzzleCell, cellHasMark, boardCellValue } from '../util/cell';
 import useLoggingReducer from './logging-reducer';
 import { columnFromCount, rowFromCount, sectionFromCount } from '../logic';
@@ -60,12 +62,21 @@ const boardWithClearedMarks = (value, cellIndex, board) => R.addIndex(R.map)(
   board,
 );
 
+const resetBoard = R.map(R.when(R.propEq('type', 'user'), R.always(boardCell('user', []))));
+
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'initialize': {
+    case 'newGame': {
       const { board } = action.payload;
       return {
         board: initializedBoard(board),
+        history: [],
+        future: [],
+      };
+    }
+    case 'reset': {
+      return {
+        board: resetBoard(state.board),
         history: [],
         future: [],
       };
@@ -128,12 +139,24 @@ const reducer = (state, action) => {
   }
 };
 
-const useBoard = (initialBoard) => {
-  const [state, dispatch] = useLoggingReducer(reducer, {
-    board: initializedBoard(initialBoard || R.repeat('.', 81)),
-    history: [],
-    index: -1,
-  }, 'useBoard', true);
+const useBoard = () => {
+  const [storedState, setStoredState] = useLocalStorage('soduko', null);
+
+  const [state, dispatch] = useLoggingReducer(
+    reducer,
+    storedState || {
+      board: initializedBoard(R.repeat('.', 81)),
+      history: [],
+      future: [],
+      index: -1,
+    },
+    'useBoard',
+    true,
+  );
+
+  useEffect(() => {
+    setStoredState(state);
+  }, [setStoredState, state]);
 
   const canUndo = !R.isEmpty(state.history);
   const canRedo = !R.isEmpty(state.future);
@@ -146,8 +169,12 @@ const useBoard = (initialBoard) => {
   };
 };
 
-export const resetBoard = (dispatch, board) => {
-  dispatch({ type: 'initialize', payload: { board } });
+export const newGame = (dispatch, board) => {
+  dispatch({ type: 'newGame', payload: { board } });
+};
+
+export const reset = (dispatch, board) => {
+  dispatch({ type: 'reset', payload: { board } });
 };
 
 export const toggleCellMark = (dispatch, cells, mark) => {
