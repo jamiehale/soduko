@@ -17,7 +17,7 @@ const Container = styled(({ highlight, borderLeft, borderRight, borderTop, borde
   user-select: none;
 `;
 
-const BoardCell = styled(Typography).attrs({
+const PuzzleCell = styled(Typography).attrs({
   color: 'primary',
 })`
   font-size: 2rem;
@@ -31,7 +31,7 @@ const UserCell = styled(Typography).attrs({
 
 const cellType = (cell) => {
   if (isPuzzleCell(cell)) {
-    return <BoardCell>{boardCellValue(cell)}</BoardCell>;
+    return <PuzzleCell>{boardCellValue(cell)}</PuzzleCell>;
   }
   if (isSetUserCell(cell)) {
     return <UserCell>{boardCellValue(cell)}</UserCell>;

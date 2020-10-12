@@ -10,22 +10,22 @@ import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
 import HelpIcon from '@material-ui/icons/Help';
 import useEventListener from '@use-it/event-listener';
-import Board from './Board';
-import theme from './theme';
+import { decodeBoard } from './util/board';
 import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection } from './hooks/selection';
 import useHighlight from './hooks/highlight';
 import useBoard, { reset, toggleCellMark, setCellValue, undo, redo, newGame } from './hooks/board';
 import useGame from './hooks/game';
 import useConfirmation from './hooks/confirmation';
+import Board from './Board';
+import theme from './theme';
 import ConfirmationDialog from './ConfirmationDialog';
 import NewGameDialog from './NewGameDialog';
 import Header from './Header';
 import HelpDialog from './HelpDialog';
-import { extractBoard } from './util/board';
 
 const App = () => {
-  const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
   const { dispatch: boardDispatch, board, canUndo, canRedo } = useBoard();
+  const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
   const { isComplete } = useGame(board);
   const highlight = useHighlight(selectedCells, board);
   const [showHelp, setShowHelp] = useState(false);
@@ -38,7 +38,7 @@ const App = () => {
   const { confirming, confirm, handleConfirm, handleCancel } = useConfirmation(handleReset);
 
   const handleNewGame = (puzzle) => {
-    newGame(boardDispatch, extractBoard(puzzle));
+    newGame(boardDispatch, decodeBoard(puzzle));
   };
 
   const { confirming: showNewGame, confirm: confirmNewGame, handleConfirm: handleConfirmNewGame, handleCancel: handleCancelNewGame } = useConfirmation(handleNewGame);
