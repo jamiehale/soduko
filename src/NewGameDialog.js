@@ -9,10 +9,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import stockPuzzles from './puzzles/top95';
-import { Typography } from '@material-ui/core';
 
 const TabPanel = ({
   children,
@@ -44,7 +42,7 @@ const NewGameDialog = ({
   const [stockPuzzle, setStockPuzzle] = useState('');
 
   const handleChangePuzzle = useCallback((e) => {
-    setPuzzle(R.replace(/[^0-9\.]/g, '', e.target.value));
+    setPuzzle(R.replace(/[^0-9.]/g, '', e.target.value));
   }, [setPuzzle]);
 
   const handleNewGame = useCallback(() => {
@@ -53,7 +51,7 @@ const NewGameDialog = ({
     } else {
       onNewGame(puzzle);
     }
-  }, [onNewGame, puzzle, stockPuzzle]);
+  }, [tab, onNewGame, puzzle, stockPuzzle]);
 
   const isValid = (tab === 0 && !R.isEmpty(stockPuzzle)) || (tab === 1 && R.length(puzzle) === 81);
 

@@ -132,10 +132,6 @@ const reducer = (state, action) => {
         future: R.tail(state.future),
       };
     }
-    case 'reset': {
-      const { newState } = action.payload;
-      return newState;
-    }
     default: {
       return state;
     }

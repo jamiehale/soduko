@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import * as R from 'ramda';
 import Container from '@material-ui/core/Container';
@@ -21,30 +21,6 @@ import ConfirmationDialog from './ConfirmationDialog';
 import NewGameDialog from './NewGameDialog';
 import Header from './Header';
 import HelpDialog from './HelpDialog';
-
-const stockBoard = `
-9...5...2
-......38.
-..291..6.
-..1......
-4.3.2.7.5
-......8..
-.1..952..
-.48......
-7...6...4
-`;
-
-const solved = `
-967358412
-154276389
-832914567
-521789643
-483621795
-679543821
-316495278
-248137956
-795862134
-`;
 
 const parseValue = s => parseInt(s, 10);
 
