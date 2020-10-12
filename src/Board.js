@@ -22,10 +22,10 @@ const Container = styled.div`
 const highlightLevel = (row, column, section, cell, selected, highlight) => {
   const { highlightRow, highlightColumn, highlightSection, highlightValue } = highlight;
   if ((!R.isNil(highlightValue) && cellValueEquals(highlightValue, cell)) || selected) {
-    return 'dark';
+    return 'selected';
   }
   if (row === highlightRow || column === highlightColumn || section === highlightSection) {
-    return 'light';
+    return 'peer';
   }
   if (cellHasMark(highlightValue, cell)) {
     return 'related';

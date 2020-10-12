@@ -20,11 +20,17 @@ const Container = styled.div`
   }
 `;
 
+const Mark = styled(Typography).attrs({
+  align: 'center',
+})`
+  color: ${({ theme }) => theme.colors.mark.text};
+`;
+
 const MarkedCell = ({
   marks,
 }) => {
   const items = R.map(
-    i => (R.includes(i, marks) ? <Typography key={i} align="center" color="secondary">{i}</Typography> : <div key={i} />),
+    i => (R.includes(i, marks) ? <Mark key={i}>{i}</Mark> : <div key={i} />),
     R.range(1, 10),
   );
 

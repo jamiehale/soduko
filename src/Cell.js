@@ -12,20 +12,18 @@ const Container = styled(({ highlight, error, borderLeft, borderRight, borderTop
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ error, highlight, theme }) => (error ? 'red' : highlight ? theme.colors[highlight] : 'white')};
+  background-color: ${({ error, highlight, theme }) => (error ? theme.colors.error.cell : highlight ? theme.colors[highlight].cell : 'white')};
   cursor: pointer;
   user-select: none;
 `;
 
-const PuzzleCell = styled(Typography).attrs({
-  color: 'primary',
-})`
+const PuzzleCell = styled(Typography)`
+  color: ${({ theme }) => theme.colors.puzzle.text};
   font-size: 2rem;
 `;
 
-const UserCell = styled(Typography).attrs({
-  color: 'secondary',
-})`
+const UserCell = styled(Typography)`
+  color: ${({ theme }) => theme.colors.user.text};
   font-size: 2rem;
 `;
 
