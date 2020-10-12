@@ -44,7 +44,7 @@ const NewGameDialog = ({
   const [stockPuzzle, setStockPuzzle] = useState('');
 
   const handleChangePuzzle = useCallback((e) => {
-    setPuzzle(R.replace(/[^[0-9]\.]/g, '', e.target.value));
+    setPuzzle(R.replace(/[^0-9\.]/g, '', e.target.value));
   }, [setPuzzle]);
 
   const handleNewGame = useCallback(() => {
@@ -89,13 +89,15 @@ const NewGameDialog = ({
           <Tab label="Custom" />
         </Tabs>
         <TabPanel value={tab} index={0}>
-          <Select
+          <TextField
+            label="Puzzle"
+            select
             value={stockPuzzle}
             fullWidth
             onChange={handleChangeStockPuzzle}
           >
             {stockPuzzleOptions}
-          </Select>
+          </TextField>
         </TabPanel>
         <TabPanel value={tab} index={1}>
           <TextField
