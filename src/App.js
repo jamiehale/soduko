@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
+import HelpIcon from '@material-ui/icons/Help';
 import useEventListener from '@use-it/event-listener';
 import Board from './Board';
 import theme from './theme';
@@ -19,6 +20,7 @@ import useConfirmation from './hooks/confirmation';
 import ConfirmationDialog from './ConfirmationDialog';
 import NewGameDialog from './NewGameDialog';
 import Header from './Header';
+import HelpDialog from './HelpDialog';
 
 const stockBoard = `
 9...5...2
@@ -58,6 +60,7 @@ const App = () => {
   const { dispatch: boardDispatch, board, canUndo, canRedo } = useBoard();
   const { isComplete } = useGame(board);
   const highlight = useHighlight(selectedCells, board);
+  const [showHelp, setShowHelp] = useState(false);
   
   const handleReset = useCallback(() => {
     reset(boardDispatch);
@@ -128,6 +131,7 @@ const App = () => {
             <Grid item>
               <Button onClick={confirmNewGame}>New</Button>
               <Button onClick={confirm}>Reset</Button>
+              <IconButton onClick={R.thunkify(setShowHelp)(true)}><HelpIcon /></IconButton>
             </Grid>
             <Grid item>
               {isComplete && (
@@ -154,6 +158,11 @@ const App = () => {
         <NewGameDialog
           onNewGame={handleConfirmNewGame}
           onCancel={handleCancelNewGame}
+        />
+      )}
+      {showHelp && (
+        <HelpDialog
+          onClose={R.thunkify(setShowHelp)(false)}
         />
       )}
     </ThemeProvider>
