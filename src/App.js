@@ -21,15 +21,7 @@ import ConfirmationDialog from './ConfirmationDialog';
 import NewGameDialog from './NewGameDialog';
 import Header from './Header';
 import HelpDialog from './HelpDialog';
-
-const parseValue = s => parseInt(s, 10);
-
-const extractBoard = R.compose(
-  R.map(R.when(R.complement(R.equals('.')), parseValue)),
-  R.map(R.when(R.equals('0'), R.always('.'))),
-  R.split(''),
-  R.replace(/\n/g, ''),
-);
+import { extractBoard } from './util/board';
 
 const App = () => {
   const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
