@@ -30,7 +30,7 @@ const HelpDialog = ({
         Custom boards should be 81 characters long, using 1-9 and either "." or "0" for blanks.
       </DialogContentText>
       <DialogContentText>
-        Stock boards were shamelessly stolen from <Link href="http://magictour.free.fr/top95" target="_new">http://magictour.free.fr/top95</Link>.
+        Stock boards were shamelessly stolen from <Link href="http://norvig.com/top95.txt" target="_new">http://norvig.com/top95.txt</Link>.
       </DialogContentText>
     </DialogContent>
     <DialogActions>
