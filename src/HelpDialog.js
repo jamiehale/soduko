@@ -18,7 +18,7 @@ const HelpDialog = ({
     <DialogTitle>soduko v{version}</DialogTitle>
     <DialogContent>
       <DialogContentText>
-        This is a tool for helping solve Sudoku puzzles. Play with the stock boards or enter a custom board.
+        This is a tool to help solve Sudoku puzzles. Start a new game with a stock board, or enter a custom board.
       </DialogContentText>
       <DialogContentText>
         Click to select a single cell. Click and drag to select multiple cells.
