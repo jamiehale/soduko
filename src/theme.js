@@ -24,6 +24,10 @@ const theme = {
       text: '#3f51b5',
       cell: 'white',
     },
+    error: {
+      text: 'white',
+      cell: '#ff5252',
+    }
   },
 };
 
