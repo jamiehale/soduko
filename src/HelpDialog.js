@@ -5,6 +5,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
+import Link from '@material-ui/core/Link';
 import { version } from '../package.json';
 
 const HelpDialog = ({
@@ -27,6 +28,9 @@ const HelpDialog = ({
       </DialogContentText>
       <DialogContentText>
         Custom boards should be 81 characters long, using 1-9 and either "." or "0" for blanks.
+      </DialogContentText>
+      <DialogContentText>
+        Stock boards were shamelessly stolen from <Link href="http://magictour.free.fr/top95" target="_new">http://magictour.free.fr/top95</Link>.
       </DialogContentText>
     </DialogContent>
     <DialogActions>
