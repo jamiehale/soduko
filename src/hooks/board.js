@@ -3,7 +3,7 @@ import * as R from 'ramda';
 import useLocalStorage from './local-storage';
 import { isUserCell, isSetUserCell, boardCellMarks, isPuzzleCell, cellHasMark, boardCellValue } from '../util/cell';
 import useLoggingReducer from './logging-reducer';
-import { columnFromCount, rowFromCount, sectionFromCount } from '../logic';
+import { columnFromCount, rowFromCount, sectionFromCount } from '../util/logic';
 
 const boardCell = (type, value) => ({ type, value });
 

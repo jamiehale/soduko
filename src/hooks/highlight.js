@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { rowFromCount, columnFromCount, sectionFromCount } from '../logic';
+import { rowFromCount, columnFromCount, sectionFromCount } from '../util/logic';
 import { boardCellValue, cellHasValue } from '../util/cell';
 
 const useHighlight = (selectedCells, board) => {

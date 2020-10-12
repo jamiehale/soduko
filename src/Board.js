@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import * as R from 'ramda';
 import UnstyledCell from './Cell';
-import { rowFromCount, columnFromCount, sectionFromCount } from './logic';
+import { rowFromCount, columnFromCount, sectionFromCount } from './util/logic';
 import { cellValueEquals, cellHasMark } from './util/cell';
 import useBorder from './hooks/border';
 
