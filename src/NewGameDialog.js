@@ -38,30 +38,30 @@ const NewGameDialog = ({
   onCancel,
 }) => {
   const [tab, setTab] = useState(0);
-  const [puzzle, setPuzzle] = useState('');
+  const [customPuzzle, setCustomPuzzle] = useState('');
   const [stockPuzzle, setStockPuzzle] = useState('');
-
-  const handleChangePuzzle = useCallback((e) => {
-    setPuzzle(R.replace(/[^0-9.]/g, '', e.target.value));
-  }, [setPuzzle]);
 
   const handleNewGame = useCallback(() => {
     if (tab === 0) {
       onNewGame(stockPuzzle);
     } else {
-      onNewGame(puzzle);
+      onNewGame(customPuzzle);
     }
-  }, [tab, onNewGame, puzzle, stockPuzzle]);
+  }, [tab, onNewGame, customPuzzle, stockPuzzle]);
 
-  const isValid = (tab === 0 && !R.isEmpty(stockPuzzle)) || (tab === 1 && R.length(puzzle) === 81);
-
-  const handleChangeTab = (e, newValue) => {
+  const handleChangeTab = useCallback((e, newValue) => {
     setTab(newValue);
-  };
+  }, [setTab]);
+  
+  const handleChangePuzzle = useCallback((e) => {
+    setCustomPuzzle(R.replace(/[^0-9.]/g, '', e.target.value));
+  }, [setCustomPuzzle]);
 
-  const handleChangeStockPuzzle = (e) => {
+  const handleChangeStockPuzzle = useCallback((e) => {
     setStockPuzzle(e.target.value);
-  };
+  }, [setStockPuzzle]);
+
+  const isValid = (tab === 0 && !R.isEmpty(stockPuzzle)) || (tab === 1 && R.length(customPuzzle) === 81);
 
   const stockPuzzleOptions = R.addIndex(R.map)(
     (stockPuzzle, i) => (
@@ -100,7 +100,7 @@ const NewGameDialog = ({
         <TabPanel value={tab} index={1}>
           <TextField
             label="Puzzle"
-            value={puzzle}
+            value={customPuzzle}
             InputProps={{ inputProps: { maxLength: 81 } }}
             placeholder="123456789..."
             fullWidth
