@@ -94,6 +94,9 @@ const reducer = (state, action) => {
     }
     case 'set': {
       const { cellIndex, value } = action.payload;
+      if (isPuzzleCell(state.board[cellIndex])) {
+        return state;
+      }
       return {
         board: boardWithClearedMarks(value, cellIndex, boardWithSetValue(value, cellIndex, state.board)),
         history: R.prepend(
