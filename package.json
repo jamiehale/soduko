@@ -1,6 +1,7 @@
 {
   "name": "soduko",
   "version": "0.2.1",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
