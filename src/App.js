@@ -22,6 +22,7 @@ import ConfirmationDialog from './ConfirmationDialog';
 import NewGameDialog from './NewGameDialog';
 import Header from './Header';
 import HelpDialog from './HelpDialog';
+import GitHubLink from './GitHubLink';
 
 const App = () => {
   const { dispatch: boardDispatch, board, canUndo, canRedo } = useBoard();
@@ -80,6 +81,10 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Container maxWidth="sm">
+        <GitHubLink
+          href="https://github.com/jamiehale/soduko"
+          target="_new"
+        />
         <Grid container direction="column" alignContent="center" spacing={1}>
           <Grid item xs={12}>
             <Header />
