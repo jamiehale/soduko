@@ -1,74 +1,58 @@
 import { useEffect, useReducer } from 'react';
 import * as R from 'ramda';
 import useLocalStorage from './local-storage';
-import { isUserCell, isUserCellWithValue, getCellMarks, isPuzzleCell, cellHasMark, getCellValue } from '../util/cell';
-import { columnFromCount, rowFromCount, sectionFromCount } from '../util/board';
+import {
+  setUserValue,
+  clearUserValue,
+  isPuzzleCell,
+  getCellValue,
+  isUserCellWithMarks,
+} from '../util/cell';
+import {
+  makeBoard,
+  resetBoard,
+  allCellsHaveMark,
+  boardWithMarkSet,
+  boardWithMarkCleared,
+  boardWithClearedMarks,
+} from '../util/board';
 
-const boardCell = (type, value) => ({ type, value });
-
-const cellIsMarkable = cell => (isUserCell(cell) && !isUserCellWithValue(cell));
-
-const cellWithValue = R.curry((value, cell) => R.assoc('value', value, cell));
-const cellWithoutValue = R.assoc('value', []);
-const cellWithMark = R.curry((mark, cell) => R.assoc('value', R.uniq(R.append(mark, getCellMarks(cell))), cell));
-const cellWithoutMark = R.curry((mark, cell) => R.assoc('value', R.without([mark], getCellMarks(cell)), cell));
-
-const initializedBoard = R.map(value => boardCell(value === '.' ? 'user' : 'puzzle', value === '.' ? [] : value));
-
-const boardWithMarkAddedToCells = (mark, cellIndicesToUpdate, allCells) => R.addIndex(R.map)(
-  (cell, i) => ((R.includes(i, cellIndicesToUpdate) && !isPuzzleCell(cell) && !isUserCellWithValue(cell)) ? cellWithMark(mark, cell) : cell),
-  allCells,
-);
-
-const boardWithMarkClearedFromCells = (mark, cellIndicesToUpdate, allCells) => R.addIndex(R.map)(
-  (cell, i) => ((R.includes(i, cellIndicesToUpdate) && !isPuzzleCell(cell) && !isUserCellWithValue(cell)) ? cellWithoutMark(mark, cell) : cell),
-  allCells,
-);
-
-const allCellsHaveMark = (mark, cells) => R.all(cellHasMark(mark))(cells);
-
-const onlyMarkableCells = (cellIndices, allCells) => R.filter(
-  cellIsMarkable,
+const onlyMarkableCells = (cellIndices, board) => R.filter(
+  isUserCellWithMarks,
   R.addIndex(R.filter)(
     (_, i) => R.includes(i, cellIndices),
-    allCells,
+    board,
   ),
 );
 
-const boardWithToggledMark = (mark, cellIndicesToToggle, allCells) => {
-  if (allCellsHaveMark(mark, onlyMarkableCells(cellIndicesToToggle, allCells))) {
-    return boardWithMarkClearedFromCells(mark, cellIndicesToToggle, allCells);
+const boardWithToggledMark = R.curry((mark, cellIndices, board) => {
+  if (allCellsHaveMark(mark, onlyMarkableCells(cellIndices, board))) {
+    return boardWithMarkCleared(mark, cellIndices, board);
   }
-  return boardWithMarkAddedToCells(mark, cellIndicesToToggle, allCells);
-};
+  return boardWithMarkSet(mark, cellIndices, board);
+});
 
-const boardWithSetValue = (value, cellIndex, board) => {
+const boardWithToggledValue = R.curry((value, cellIndex, board) => {
   if (isPuzzleCell(board[cellIndex])) {
     return board;
   }
   if (getCellValue(board[cellIndex]) === value) {
-    return R.adjust(cellIndex, cellWithoutValue, board);
+    return R.adjust(cellIndex, clearUserValue, board);
   }
-  return R.adjust(cellIndex, cellWithValue(value), board);
-};
+  return R.adjust(cellIndex, setUserValue(value), board);
+});
 
-const shouldClear = (cellIndex, i) => rowFromCount(cellIndex) === rowFromCount(i)
-  || columnFromCount(cellIndex) === columnFromCount(i)
-  || sectionFromCount(cellIndex) === sectionFromCount(i);
-
-const boardWithClearedMarks = (value, cellIndex, board) => R.addIndex(R.map)(
-  (cell, i) => ((shouldClear(cellIndex, i) && !isPuzzleCell(cell) && !isUserCellWithValue(cell)) ? cellWithoutMark(value, cell) : cell),
-  board,
-);
-
-const resetBoard = R.map(R.when(R.propEq('type', 'user'), R.always(boardCell('user', []))));
+const boardWithSetValue = (value, cellIndex, board) => R.compose(
+  boardWithClearedMarks(value, cellIndex),
+  boardWithToggledValue(value, cellIndex),
+)(board);
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'newGame': {
       const { board } = action.payload;
       return {
-        board: initializedBoard(board),
+        board: makeBoard(board),
         history: [],
         future: [],
       };
@@ -97,7 +81,7 @@ const reducer = (state, action) => {
         return state;
       }
       return {
-        board: boardWithClearedMarks(value, cellIndex, boardWithSetValue(value, cellIndex, state.board)),
+        board: boardWithSetValue(value, cellIndex, state.board),
         history: R.prepend(
           state.board,
           state.history,
@@ -143,7 +127,7 @@ const useBoard = () => {
   const [state, dispatch] = useReducer(
     reducer,
     storedState || {
-      board: initializedBoard(R.repeat('.', 81)),
+      board: makeBoard(R.repeat('.', 81)),
       history: [],
       future: [],
       index: -1,
