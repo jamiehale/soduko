@@ -10,7 +10,7 @@ import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
 import HelpIcon from '@material-ui/icons/Help';
 import useEventListener from '@use-it/event-listener';
-import { decodeBoard } from './util/board';
+import { decode } from './util/decoder';
 import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection } from './hooks/selection';
 import useHighlight from './hooks/highlight';
 import useBoard, { reset, toggleCellMark, setCellValue, undo, redo, newGame } from './hooks/board';
@@ -39,7 +39,7 @@ const App = () => {
   const { confirming, confirm, handleConfirm, handleCancel } = useConfirmation(handleReset);
 
   const handleNewGame = (puzzle) => {
-    newGame(boardDispatch, decodeBoard(puzzle));
+    newGame(boardDispatch, decode(puzzle));
   };
 
   const { confirming: showNewGame, confirm: confirmNewGame, handleConfirm: handleConfirmNewGame, handleCancel: handleCancelNewGame } = useConfirmation(handleNewGame);
