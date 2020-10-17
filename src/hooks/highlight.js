@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import { rowFromCount, columnFromCount, sectionFromCount } from '../util/logic';
-import { boardCellValue, cellHasValue } from '../util/cell';
+import { getCellValue, isCellWithValue } from '../util/cell';
 
 const useHighlight = (selectedCells, board) => {
   if (R.isEmpty(selectedCells)) {
@@ -16,7 +16,7 @@ const useHighlight = (selectedCells, board) => {
   const selectedSections = R.uniq(R.map(sectionFromCount, selectedCells));
   const highlightSection = R.length(selectedSections) === 1 ? R.head(selectedSections) : undefined;
 
-  const highlightValue = R.length(selectedCells) === 1 ? (cellHasValue(board[R.head(selectedCells)]) ? boardCellValue(board[R.head(selectedCells)]) : undefined) : undefined;
+  const highlightValue = R.length(selectedCells) === 1 ? (isCellWithValue(board[R.head(selectedCells)]) ? getCellValue(board[R.head(selectedCells)]) : undefined) : undefined;
 
   return {
     highlightRow,

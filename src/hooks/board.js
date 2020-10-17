@@ -1,27 +1,27 @@
 import { useEffect, useReducer } from 'react';
 import * as R from 'ramda';
 import useLocalStorage from './local-storage';
-import { isUserCell, isSetUserCell, boardCellMarks, isPuzzleCell, cellHasMark, boardCellValue } from '../util/cell';
+import { isUserCell, isUserCellWithValue, getCellMarks, isPuzzleCell, cellHasMark, getCellValue } from '../util/cell';
 import { columnFromCount, rowFromCount, sectionFromCount } from '../util/logic';
 
 const boardCell = (type, value) => ({ type, value });
 
-const cellIsMarkable = cell => (isUserCell(cell) && !isSetUserCell(cell));
+const cellIsMarkable = cell => (isUserCell(cell) && !isUserCellWithValue(cell));
 
 const cellWithValue = R.curry((value, cell) => R.assoc('value', value, cell));
 const cellWithoutValue = R.assoc('value', []);
-const cellWithMark = R.curry((mark, cell) => R.assoc('value', R.uniq(R.append(mark, boardCellMarks(cell))), cell));
-const cellWithoutMark = R.curry((mark, cell) => R.assoc('value', R.without([mark], boardCellMarks(cell)), cell));
+const cellWithMark = R.curry((mark, cell) => R.assoc('value', R.uniq(R.append(mark, getCellMarks(cell))), cell));
+const cellWithoutMark = R.curry((mark, cell) => R.assoc('value', R.without([mark], getCellMarks(cell)), cell));
 
 const initializedBoard = R.map(value => boardCell(value === '.' ? 'user' : 'puzzle', value === '.' ? [] : value));
 
 const boardWithMarkAddedToCells = (mark, cellIndicesToUpdate, allCells) => R.addIndex(R.map)(
-  (cell, i) => ((R.includes(i, cellIndicesToUpdate) && !isPuzzleCell(cell) && !isSetUserCell(cell)) ? cellWithMark(mark, cell) : cell),
+  (cell, i) => ((R.includes(i, cellIndicesToUpdate) && !isPuzzleCell(cell) && !isUserCellWithValue(cell)) ? cellWithMark(mark, cell) : cell),
   allCells,
 );
 
 const boardWithMarkClearedFromCells = (mark, cellIndicesToUpdate, allCells) => R.addIndex(R.map)(
-  (cell, i) => ((R.includes(i, cellIndicesToUpdate) && !isPuzzleCell(cell) && !isSetUserCell(cell)) ? cellWithoutMark(mark, cell) : cell),
+  (cell, i) => ((R.includes(i, cellIndicesToUpdate) && !isPuzzleCell(cell) && !isUserCellWithValue(cell)) ? cellWithoutMark(mark, cell) : cell),
   allCells,
 );
 
@@ -46,7 +46,7 @@ const boardWithSetValue = (value, cellIndex, board) => {
   if (isPuzzleCell(board[cellIndex])) {
     return board;
   }
-  if (boardCellValue(board[cellIndex]) === value) {
+  if (getCellValue(board[cellIndex]) === value) {
     return R.adjust(cellIndex, cellWithoutValue, board);
   }
   return R.adjust(cellIndex, cellWithValue(value), board);
@@ -57,7 +57,7 @@ const shouldClear = (cellIndex, i) => rowFromCount(cellIndex) === rowFromCount(i
   || sectionFromCount(cellIndex) === sectionFromCount(i);
 
 const boardWithClearedMarks = (value, cellIndex, board) => R.addIndex(R.map)(
-  (cell, i) => ((shouldClear(cellIndex, i) && !isPuzzleCell(cell) && !isSetUserCell(cell)) ? cellWithoutMark(value, cell) : cell),
+  (cell, i) => ((shouldClear(cellIndex, i) && !isPuzzleCell(cell) && !isUserCellWithValue(cell)) ? cellWithoutMark(value, cell) : cell),
   board,
 );
 
