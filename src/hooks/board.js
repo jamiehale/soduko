@@ -2,7 +2,7 @@ import { useEffect, useReducer } from 'react';
 import * as R from 'ramda';
 import useLocalStorage from './local-storage';
 import { isUserCell, isUserCellWithValue, getCellMarks, isPuzzleCell, cellHasMark, getCellValue } from '../util/cell';
-import { columnFromCount, rowFromCount, sectionFromCount } from '../util/logic';
+import { columnFromCount, rowFromCount, sectionFromCount } from '../util/board';
 
 const boardCell = (type, value) => ({ type, value });
 

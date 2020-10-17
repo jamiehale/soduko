@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import { isCellWithValue, getCellValue } from '../util/cell';
-import { columnFromCount, rowFromCount, sectionFromCount } from '../util/logic';
+import { columnFromCount, rowFromCount, sectionFromCount } from '../util/board';
 
 const collect = R.addIndex(R.reduce)(
   (acc, cell, i) => {
