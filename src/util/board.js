@@ -45,15 +45,15 @@ const shouldClear = (cellIndex, i) => sameRow(cellIndex, i)
   || sameColumn(cellIndex, i)
   || sameSection(cellIndex, i);
 
-export const boardWithRelatedMarksCleared = (mark, sourceCellIndex, board) => R.addIndex(R.map)(
+export const boardWithRelatedMarksCleared = R.curry((mark, sourceCellIndex, board) => R.addIndex(R.map)(
   (cell, i) => ((shouldClear(sourceCellIndex, i) && isUserCellWithMarks(cell)) ? clearMark(mark, cell) : cell),
   board,
-);
+));
 
-const cellSet = (cellIndices, board) => R.addIndex(R.filter)(
+const cellSet = R.curry((cellIndices, board) => R.addIndex(R.filter)(
   (_, i) => R.includes(i, cellIndices),
   board,
-);
+));
 
 const allMarkableCellsHaveMark = (mark, cellIndices, board) => R.compose(
   R.all(cellHasMark(mark)),
