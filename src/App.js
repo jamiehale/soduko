@@ -36,11 +36,16 @@ const App = () => {
     clearSelection(selectionDispatch);
   }, [boardDispatch, selectionDispatch]);
 
-  const { confirming, confirm, handleConfirm, handleCancel } = useConfirmation(handleReset);
+  const {
+    confirming: showReset,
+    confirm: confirmReset,
+    handleConfirm: handleConfirmReset,
+    handleCancel: handleCancelReset,
+  } = useConfirmation(handleReset);
 
-  const handleNewGame = (puzzle) => {
+  const handleNewGame = useCallback((puzzle) => {
     newGame(boardDispatch, decode(puzzle));
-  };
+  }, [boardDispatch]);
 
   const { confirming: showNewGame, confirm: confirmNewGame, handleConfirm: handleConfirmNewGame, handleCancel: handleCancelNewGame } = useConfirmation(handleNewGame);
 
@@ -104,7 +109,7 @@ const App = () => {
             <Grid container justify="space-between" alignItems="center">
               <Grid item xs={4}>
                 <Button onClick={confirmNewGame}>New</Button>
-                <Button onClick={confirm}>Reset</Button>
+                <Button onClick={confirmReset}>Reset</Button>
               </Grid>
               <Grid item xs={4}>
                 {isSolved && (
@@ -120,12 +125,12 @@ const App = () => {
           </Grid>
         </Grid>
       </Container>
-      {confirming && (
+      {showReset && (
         <ConfirmationDialog
           text="This will clear all your progress. Are you sure?"
           confirmText="Reset"
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
+          onConfirm={handleConfirmReset}
+          onCancel={handleCancelReset}
         />
       )}
       {showNewGame && (
