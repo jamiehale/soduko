@@ -8,6 +8,7 @@ import {
   allCellsHaveMark,
   boardWithMarkSet,
   boardWithMarkCleared,
+  boardWithRelatedMarksCleared,
 } from '../board';
 import { makeCell } from '../cell';
 
@@ -313,5 +314,117 @@ describe('boardWithMarkCleared', () => {
       makeCell('user', [4, 6]),
       makeCell('puzzle', 9),
     ]);
+  });
+});
+
+describe('boardWithRelatedMarksCleared', () => {
+  let board;
+  let boardToTest;
+  
+  beforeEach(() => {
+    board = [
+      makeCell('user', 1),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', 3),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('puzzle', 5),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('puzzle', 7),
+      makeCell('user', 4),
+      makeCell('user', [2, 3, 4, 5]),
+
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+      makeCell('user', [2, 3, 4, 5]),
+    ];
+
+    boardToTest = boardWithRelatedMarksCleared(4, 7, board);
+  });
+
+  it('clears from row', () => {
+    [1, 3, 5, 8].forEach((i) => {
+      expect(boardToTest[i].value).toStrictEqual([2, 3, 5]);
+    });
+  });
+
+  it('clears from column', () => {
+    [16, 25, 34].forEach((i) => {
+      expect(boardToTest[i].value).toStrictEqual([2, 3, 5]);
+    });
+  });
+
+  it('clears from section', () => {
+    [8, 15, 16, 17, 24, 25, 26].forEach((i) => {
+      expect(boardToTest[i].value).toStrictEqual([2, 3, 5]);
+    });
+  });
+  
+  [
+    0,
+    // 1, same row
+    2,
+    // 3, same row
+    4,
+    // 5, same row
+    6,
+    7,
+    // 8, same row, same section
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    // 15, same section
+    // 16, same column, same section
+    // 17, same section
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    // 24, same section
+    // 25, same column, same section
+    // 26, same section
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    // 34, same column
+    35,
+  ].forEach((i) => {
+    it(`leaves other cells alone (cell ${i})`, () => {
+      expect(boardToTest[i]).toStrictEqual(board[i]);
+    });
   });
 });

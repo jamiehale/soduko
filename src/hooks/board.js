@@ -14,16 +14,12 @@ import {
   allCellsHaveMark,
   boardWithMarkSet,
   boardWithMarkCleared,
-  boardWithClearedMarks,
+  boardWithRelatedMarksCleared,
+  rowFromCount,
+  columnFromCount,
+  sectionFromCount,
+  onlyMarkableCells,
 } from '../util/board';
-
-const onlyMarkableCells = (cellIndices, board) => R.filter(
-  isUserCellWithMarks,
-  R.addIndex(R.filter)(
-    (_, i) => R.includes(i, cellIndices),
-    board,
-  ),
-);
 
 const boardWithToggledMark = R.curry((mark, cellIndices, board) => {
   if (allCellsHaveMark(mark, onlyMarkableCells(cellIndices, board))) {
@@ -43,7 +39,7 @@ const boardWithToggledValue = R.curry((value, cellIndex, board) => {
 });
 
 const boardWithSetValue = (value, cellIndex, board) => R.compose(
-  boardWithClearedMarks(value, cellIndex),
+  boardWithRelatedMarksCleared(value, cellIndex),
   boardWithToggledValue(value, cellIndex),
 )(board);
 
