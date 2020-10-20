@@ -1,47 +1,13 @@
 import { useEffect, useReducer } from 'react';
 import * as R from 'ramda';
 import useLocalStorage from './local-storage';
-import {
-  setUserValue,
-  clearUserValue,
-  isPuzzleCell,
-  getCellValue,
-  isUserCellWithMarks,
-} from '../util/cell';
+import { isPuzzleCell } from '../util/cell';
 import {
   makeBoard,
   resetBoard,
-  allCellsHaveMark,
-  boardWithMarkSet,
-  boardWithMarkCleared,
-  boardWithRelatedMarksCleared,
-  rowFromCount,
-  columnFromCount,
-  sectionFromCount,
-  onlyMarkableCells,
+  boardWithToggledMark,
+  boardWithSetValue,
 } from '../util/board';
-
-const boardWithToggledMark = R.curry((mark, cellIndices, board) => {
-  if (allCellsHaveMark(mark, onlyMarkableCells(cellIndices, board))) {
-    return boardWithMarkCleared(mark, cellIndices, board);
-  }
-  return boardWithMarkSet(mark, cellIndices, board);
-});
-
-const boardWithToggledValue = R.curry((value, cellIndex, board) => {
-  if (isPuzzleCell(board[cellIndex])) {
-    return board;
-  }
-  if (getCellValue(board[cellIndex]) === value) {
-    return R.adjust(cellIndex, clearUserValue, board);
-  }
-  return R.adjust(cellIndex, setUserValue(value), board);
-});
-
-const boardWithSetValue = (value, cellIndex, board) => R.compose(
-  boardWithRelatedMarksCleared(value, cellIndex),
-  boardWithToggledValue(value, cellIndex),
-)(board);
 
 const reducer = (state, action) => {
   switch (action.type) {

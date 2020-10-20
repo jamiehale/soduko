@@ -6,7 +6,9 @@ import {
   setMark,
   clearMark,
   isPuzzleCell,
-  isUserCellWithValue,
+  getCellValue,
+  clearUserValue,
+  setUserValue,
 } from './cell';
 
 export const rowFromCount = count => Math.floor(count / 9);
@@ -25,7 +27,7 @@ export const makeBoard = R.map(R.ifElse(R.equals('.'), R.always(makeCell('user',
 
 export const resetBoard = R.map(R.when(R.propEq('type', 'user'), R.always(makeCell('user', []))));
 
-export const allCellsHaveMark = (mark, cells) => R.all(cellHasMark(mark), cells);
+export const allCellsHaveMark = R.curry((mark, cells) => R.all(cellHasMark(mark), cells));
 
 const isCandidateCell = (cellIndices, cell, index) => R.includes(index, cellIndices) && isUserCellWithMarks(cell);
 
@@ -48,9 +50,35 @@ export const boardWithRelatedMarksCleared = (mark, sourceCellIndex, board) => R.
   board,
 );
 
-export const onlyMarkableCells = (cellIndices, board) => R.compose(
+const cellSet = (cellIndices, board) => R.addIndex(R.filter)(
+  (_, i) => R.includes(i, cellIndices),
+  board,
+);
+
+const allMarkableCellsHaveMark = (mark, cellIndices, board) => R.compose(
+  R.all(cellHasMark(mark)),
   R.filter(isUserCellWithMarks),
-  R.addIndex(R.filter)(
-    (_, i) => R.includes(i, cellIndices),
-  ),
+  cellSet(cellIndices),
+)(board);
+
+export const boardWithToggledMark = R.curry((mark, cellIndices, board) => {
+  if (allMarkableCellsHaveMark(mark, cellIndices, board)) {
+    return boardWithMarkCleared(mark, cellIndices, board);
+  }
+  return boardWithMarkSet(mark, cellIndices, board);
+});
+
+export const boardWithToggledValue = R.curry((value, cellIndex, board) => {
+  if (isPuzzleCell(board[cellIndex])) {
+    return board;
+  }
+  if (getCellValue(board[cellIndex]) === value) {
+    return R.adjust(cellIndex, clearUserValue, board);
+  }
+  return R.adjust(cellIndex, setUserValue(value), board);
+});
+
+export const boardWithSetValue = (value, cellIndex, board) => R.compose(
+  boardWithRelatedMarksCleared(value, cellIndex),
+  boardWithToggledValue(value, cellIndex),
 )(board);
