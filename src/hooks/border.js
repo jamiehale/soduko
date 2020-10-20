@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { columnFromCount, rowFromCount } from '../util/logic';
+import { columnFromCount, rowFromCount } from '../util/board';
 
 const useBorder = () => {
   const borderPropsFor = i => ({

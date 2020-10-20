@@ -1,21 +1,21 @@
 import * as R from 'ramda';
-import { isValueCell, boardCellValue } from '../util/cell';
-import { columnFromCount, rowFromCount, sectionFromCount } from '../util/logic';
+import { isCellWithValue, getCellValue } from '../util/cell';
+import { columnFromCount, rowFromCount, sectionFromCount } from '../util/board';
 
 const collect = R.addIndex(R.reduce)(
   (acc, cell, i) => {
-    if (!isValueCell(cell)) {
+    if (!isCellWithValue(cell)) {
       return acc;
     }
     return R.assoc(
-      boardCellValue(cell),
+      getCellValue(cell),
       R.append(
         {
           row: rowFromCount(i),
           column: columnFromCount(i),
           section: sectionFromCount(i),
         },
-        R.propOr([], boardCellValue(cell), acc),
+        R.propOr([], getCellValue(cell), acc),
       ),
       acc,
     );

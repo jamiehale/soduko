@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import * as R from 'ramda';
-import { decodeBoard } from './util/board';
+import { decode } from './util/decoder';
 import useBorder from './hooks/border';
 
 const Cell = styled(({ borderLeft, borderRight, borderTop, borderBottom, ...props }) => <div {...props} />)`
@@ -37,7 +37,7 @@ const MiniPuzzle = ({
             {value === '.' ? '' : value}
           </Cell>
         ),
-        decodeBoard(puzzle),
+        decode(puzzle),
       )}
     </Container>
   );
