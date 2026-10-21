@@ -96,6 +96,7 @@ When true, every `mirror` gets `--dry-run`, which connects, logs in, verifies TL
 - `npx playwright install --with-deps chromium` (version from the lockfile), then `npm run test:e2e`.
 - Playwright's `webServer` starts the Vite dev server. `reuseExistingServer` is harmless on a clean runner.
 - If the visual specs fail on the runner with diffs from font or OS rendering alone (behavior specs pass), CI excludes `visual.spec.js`, and the visual suite stays a local pre-merge gate. This is documented in `CLAUDE.md`. Baselines are not regenerated on the runner: they would then differ from what local runs produce.
+- The visual specs pass on GitHub's `ubuntu-24.04` image, so the fallback isn't used. CI pins `runs-on: ubuntu-24.04`, because `ubuntu-latest` is moving to Ubuntu 26 and a new font stack would fail the visual suite for reasons unrelated to the code. Moving to a newer image is a deliberate change: check the visual suite on it first.
 - *Alternative:* run e2e in the official Playwright Docker image and regenerate baselines there. Rejected for now: every local baseline update would then need Docker.
 
 ## Risks / Trade-offs

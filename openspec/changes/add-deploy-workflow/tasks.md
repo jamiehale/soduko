@@ -11,8 +11,8 @@ Pushing branches, opening PRs, creating the GitHub environment, and running work
   - **Artifacts:** upload `build/` as artifact `build`, and the Playwright report on failure.
 
   Verify that `actionlint` (run via `go run` or its Docker image, not installed into the repo) reports no errors.
-- [ ] 1.2 Push a branch and open a draft PR, with user approval. Verify that the CI run passes on GitHub. If only `visual.spec.js` fails, and its diff images show font or rendering differences with the behavior specs passing, apply the Decision 9 fallback: exclude the visual spec in CI. Re-run until green.
-- [ ] 1.3 Update `CLAUDE.md` (Commands and Tests sections) and the README's Development section: CI runs on PRs, what it runs, and, if the 1.2 fallback applied, that the visual suite is local-only. Verify that the docs match `ci.yml`.
+- [x] 1.2 Push a branch and open a draft PR, with user approval. Verify that the CI run passes on GitHub. If only `visual.spec.js` fails, and its diff images show font or rendering differences with the behavior specs passing, apply the Decision 9 fallback: exclude the visual spec in CI. Re-run until green.
+- [x] 1.3 Update `CLAUDE.md` (Commands and Tests sections) and the README's Development section: CI runs on PRs, what it runs, and, if the 1.2 fallback applied, that the visual suite is local-only. Verify that the docs match `ci.yml`.
 
 ## 2. Deploy workflow
 
@@ -25,7 +25,7 @@ Pushing branches, opening PRs, creating the GitHub environment, and running work
     - Runs an `lftp` script from a here-doc. The script uses `--env-password`, `ftp:ssl-force` and the protect-data/list settings, and leaves certificate verification at its default. It runs the three mirror passes in Decision 6's order, against `FTP_REMOTE_DIR`. With `dry_run`, every pass gets `--dry-run`.
 
   Verify that `actionlint` reports no errors and that the script contains no `verify-certificate no` and no password on a command line.
-- [ ] 2.2 Update `CLAUDE.md` and the README:
+- [x] 2.2 Update `CLAUDE.md` and the README:
   - remove "deployed manually"
   - describe the deploy trigger, the `production` environment and its secrets (`FTP_USER`, `FTP_PASSWORD`) and variables (`FTP_HOST`, `FTP_PORT`, `FTP_REMOTE_DIR`)
   - describe the `dry_run` rehearsal and rollback by revert

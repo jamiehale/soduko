@@ -14,7 +14,8 @@ concurrency:
 
 jobs:
   test-and-build:
-    runs-on: ubuntu-latest
+    # Pinned: the visual baselines pass on this image; a new OS release can change font rendering
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
 
     steps:

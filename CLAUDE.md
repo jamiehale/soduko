@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Sudoku *helper* (not a solver or generator), served at soduko.me (deployed manually). Vite with React 19, MUI 9 (`@mui/material`, Emotion engine), styled-components 6, and Ramda 0.32. Plain JavaScript, no TypeScript.
+Sudoku *helper* (not a solver or generator), served at soduko.me (deployed by GitHub Actions; see CI and deployment below). Vite with React 19, MUI 9 (`@mui/material`, Emotion engine), styled-components 6, and Ramda 0.32. Plain JavaScript, no TypeScript.
 
 ## Commands
 
 Use npm (`package-lock.json`); Node version is pinned in `.nvmrc`.
 
 - `npm start` — Vite dev server on http://localhost:3000
-- `npm run build` — production build into `build/` (not Vite's default `dist/`; the site is deployed by hand from `build/`)
+- `npm run build` — production build into `build/` (not Vite's default `dist/`; the deploy uploads `build/`)
 - `npm run preview` — serve the production build on :3000
 - `npm test` — Vitest (watch mode in a terminal; runs once when `CI` is set)
 - `npx vitest run` — unit tests once
@@ -31,6 +31,21 @@ Source files containing JSX use `.jsx`; plain JS stays `.js`. `vite.config.mjs` 
 - DOM hooks for tests: `data-testid="board"`, `data-cell="<index>"` on each cell, and `data-testid` `help`/`undo`/`redo` on the icon buttons. Keep them when refactoring components.
 - `e2e/helpers.js` seeds a game by writing the saved-game format to `localStorage` before load (`open(page, puzzle, { values, marks, history, future })`) and reads cell value/marks/colors from the DOM. Assert highlight state through computed colors.
 - `e2e/fixtures/saved-game-v0.2.2.json` is a real v0.2.2 save; never regenerate it. `e2e/capture-fixture.js` exists only to capture fixtures for future formats.
+
+## CI and deployment
+
+- **`.github/workflows/ci.yml`** runs on every pull request and is also called by the deploy workflow. It runs `npm ci`, `npx vitest run`, `npm run lint`, `npm run build`, and `npm run test:e2e`, then uploads `build/` as the `build` artifact (and the Playwright report on failure). Node comes from `.nvmrc`. It is pinned to `runs-on: ubuntu-24.04` because the visual baselines pass there; moving to a newer image is a deliberate change that needs the visual suite checked first.
+- **`.github/workflows/deploy.yml`** runs on push to `main` and by hand (`workflow_dispatch`). It runs CI, then deploys that exact `build` artifact without rebuilding. The upload goes to the host over FTPS with `lftp`, against the `production` environment (only `main` may deploy). Deploys queue; they never overlap.
+- **Environment `production`:**
+  - secrets: `FTP_USER`, `FTP_PASSWORD`
+  - variables: `FTP_HOST`, `FTP_PORT` (default 21), `FTP_REMOTE_DIR` (the web root as the FTP user sees it, default `/`)
+  - the password reaches `lftp` through `LFTP_PASSWORD`/`--env-password`, never the command line
+- **Upload order:**
+  1. `assets/` first, so the live `index.html` never points at missing bundles
+  2. the root files, never deleting, so host files such as `.htaccess` survive
+  3. a `--delete` pass over `assets/` only, which prunes stale bundles
+- **Rehearsal:** run the workflow by hand with `dry_run` checked. It connects, verifies TLS, checks the web root exists, and lists what would change without writing. The script `cd`s into the web root before mirroring because `mirror --dry-run` alone exits 0 on connection and TLS errors.
+- **Rollback:** revert the commit on `main`; the push redeploys the previous build.
 
 ## Architecture
 
