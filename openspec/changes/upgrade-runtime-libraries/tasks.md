@@ -32,7 +32,7 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 ## 7. Keyboard listener
 
-- [ ] 7.1 Add `src/hooks/window-event.js` (`useWindowEvent(type, handler)` using `useEffect` plus a ref), use it in `App.jsx`, and uninstall `@use-it/event-listener`. Verify that `npm ls @use-it/event-listener` is empty and the change passes the gate. The e2e keyboard scenarios for values, marks, and Escape cover the behavior.
+- [x] 7.1 Add `src/hooks/window-event.js` (`useWindowEvent(type, handler)` using `useEffect` plus a ref), use it in `App.jsx`, and uninstall `@use-it/event-listener`. Verify that `npm ls @use-it/event-listener` is empty and the change passes the gate. The e2e keyboard scenarios for values, marks, and Escape cover the behavior.
 
 ## 8. React 19
 

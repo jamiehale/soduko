@@ -11,13 +11,13 @@ import Typography from '@mui/material/Typography';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import HelpIcon from '@mui/icons-material/Help';
-import useEventListener from '@use-it/event-listener';
 import { decode } from './util/decoder';
 import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection } from './hooks/selection';
 import useHighlight from './hooks/highlight';
 import useBoard, { reset, toggleCellMark, setCellValue, undo, redo, newGame } from './hooks/board';
 import useGame from './hooks/game';
 import useConfirmation from './hooks/confirmation';
+import useWindowEvent from './hooks/window-event';
 import Board from './Board';
 import theme from './theme';
 import ConfirmationDialog from './ConfirmationDialog';
@@ -75,7 +75,7 @@ const App = () => {
     }
   }, [isMouseDown, selectedCells, boardDispatch, selectionDispatch]);
 
-  useEventListener('keydown', handleKeyDown, window);
+  useWindowEvent('keydown', handleKeyDown);
 
   const handleUndo = useCallback(() => {
     undo(boardDispatch);
