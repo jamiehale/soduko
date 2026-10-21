@@ -46,7 +46,7 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 ## 10. Integration check
 
-- [ ] 10.1 From a clean checkout under Node 24, run `npm ci`, then the full gate, then the visual suite against `vite preview`. Verify that `npm outdated` lists no major-version lag for any direct dependency except `eslint` / `@eslint/js` (held at 9 because `eslint-plugin-react` does not support ESLint 10).
+- [x] 10.1 From a clean checkout under Node 24, run `npm ci`, then the full gate, then the visual suite against `vite preview`. Verify that `npm outdated` lists no major-version lag for any direct dependency except `eslint` / `@eslint/js` (held at 9 because `eslint-plugin-react` does not support ESLint 10).
 
 ## Workflow follow-up
 
