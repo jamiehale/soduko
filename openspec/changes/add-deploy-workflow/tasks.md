@@ -34,7 +34,7 @@ Pushing branches, opening PRs, creating the GitHub environment, and running work
 
 ## 3. Environment and first deploy
 
-- [ ] 3.1 With user approval, create the `production` environment with a deployment branch policy that allows only `main` (`gh api` or the web UI). Verify that `gh api repos/jamiehale/soduko/environments/production` shows the branch policy.
+- [x] 3.1 With user approval, create the `production` environment with a deployment branch policy that allows only `main` (`gh api` or the web UI). Verify that `gh api repos/jamiehale/soduko/environments/production` shows the branch policy.
 - [ ] 3.2 The user sets the `FTP_HOST`, `FTP_PORT` (if not 21), and `FTP_REMOTE_DIR` variables and the `FTP_USER` and `FTP_PASSWORD` secrets on the environment. Check from the workstation that `openssl s_client -connect "$FTP_HOST:${FTP_PORT:-21}" -starttls ftp -verify_return_error` verifies against that hostname. If it doesn't, follow design Decision 4. Verify that `gh variable list --env production` and `gh secret list --env production` show all five names.
 - [ ] 3.3 Merge to `main` with user approval. Verify that the push runs CI and then the deploy job against `production`.
 - [ ] 3.4 Run `deploy.yml` by hand with `dry_run: true`. Verify in the log that TLS negotiates with verification on, the login succeeds, and the paths `mirror` would write are under the intended web root. Investigate any `assets/` deletions it lists.
