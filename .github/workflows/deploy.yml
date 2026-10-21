@@ -1,0 +1,73 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Connect and list what would change, without writing to the host
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://soduko.me
+    # Queue deploys; never abort one halfway through an upload
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v8
+        with:
+          name: build
+          path: build
+
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Deploy via FTPS
+        env:
+          FTP_HOST: ${{ vars.FTP_HOST }}
+          FTP_PORT: ${{ vars.FTP_PORT }}
+          FTP_REMOTE_DIR: ${{ vars.FTP_REMOTE_DIR }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          DRY_RUN: ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: |
+          : "${FTP_HOST:?FTP_HOST is not set on the production environment}"
+          : "${FTP_USER:?FTP_USER is not set on the production environment}"
+          : "${LFTP_PASSWORD:?FTP_PASSWORD is not set on the production environment}"
+          dir="${FTP_REMOTE_DIR:-/}"
+          dir="${dir%/}"
+          # cd connects and checks the web root up front: mirror --dry-run
+          # swallows connection and TLS errors and still exits 0.
+          # Bundles first so the live index.html never points at missing files,
+          # then the root files (never deleting), then prune stale bundles only
+          lftp <<EOF
+          set cmd:fail-exit yes
+          set ftp:ssl-force true
+          set ftp:ssl-protect-data true
+          set ftp:ssl-protect-list true
+          set mirror:use-pget-n 5
+          open --env-password -u "$FTP_USER" -p "${FTP_PORT:-21}" "ftp://$FTP_HOST"
+          cd "$dir/"
+          mirror --reverse --verbose $DRY_RUN build/assets/ "$dir/assets/"
+          mirror --reverse --verbose $DRY_RUN build/ "$dir/"
+          mirror --reverse --delete --verbose $DRY_RUN build/assets/ "$dir/assets/"
+          bye
+          EOF
