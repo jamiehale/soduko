@@ -40,7 +40,7 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 ## 9. Cleanup and documentation
 
-- [ ] 9.1 Uninstall `@testing-library/jest-dom`, `@testing-library/react`, and `@testing-library/user-event`. Verify that `grep -rn @testing-library src e2e` finds nothing and the change passes the gate.
+- [x] 9.1 Uninstall `@testing-library/jest-dom`, `@testing-library/react`, and `@testing-library/user-event`. Verify that `grep -rn @testing-library src e2e` finds nothing and the change passes the gate.
 - [ ] 9.2 Bump `package.json` version to 0.3.0. Verify that the Help dialog title reads "soduko v0.3.0" and the masked Help baseline still passes.
 - [ ] 9.3 Update `CLAUDE.md`: the stack line with the new majors, the MUI theme overrides and why they exist (preserving the v4 look), `injectFirst` and the styled-components/Emotion layering, and `useWindowEvent`. Update the README's Development section. Verify the docs match `package.json`.
 
