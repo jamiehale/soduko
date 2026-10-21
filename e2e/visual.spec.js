@@ -107,9 +107,11 @@ test.describe('dialog screenshots', () => {
   test('help, version masked', async ({ page }) => {
     await open(page, PUZZLE);
     const dialog = await openDialog(page, page.getByTestId('help'));
-    await expect(page).toHaveScreenshot('help.png', {
-      mask: [dialog.getByText(/^soduko v/)],
+    // Replace the version with a placeholder so version bumps don't change the image
+    await dialog.getByText(/^soduko v/).evaluate((el) => {
+      el.textContent = 'soduko vX.Y.Z';
     });
+    await expect(page).toHaveScreenshot('help.png');
   });
 });
 

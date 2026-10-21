@@ -91,6 +91,13 @@ const cellValue = async (page, i) => (await cellState(page, i)).value;
 const cellMarks = async (page, i) => (await cellState(page, i)).marks;
 const cellBackground = async (page, i) => (await cellState(page, i)).background;
 
+// Waits for a frame plus a task, so React has re-rendered and run its effects
+// (the keyboard listener picks up new selection state in an effect) before the
+// next input. A person can't type within one frame of a click; a test can.
+const settle = (page) => page.evaluate(() => new Promise((resolve) => {
+  requestAnimationFrame(() => setTimeout(resolve, 0));
+}));
+
 const center = async (page, i) => {
   const box = await cell(page, i).boundingBox();
   return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
@@ -107,9 +114,13 @@ const drag = async (page, cells) => {
     await page.mouse.move(point.x, point.y, { steps: 2 });
   }
   await page.mouse.up();
+  await settle(page);
 };
 
-const click = (page, i) => cell(page, i).click();
+const click = async (page, i) => {
+  await cell(page, i).click();
+  await settle(page);
+};
 
 const savedState = (page) => page.evaluate((key) => JSON.parse(window.localStorage.getItem(key)), STORAGE_KEY);
 
@@ -129,6 +140,7 @@ module.exports = {
   cellValue,
   cellMarks,
   cellBackground,
+  settle,
   drag,
   click,
   savedState,

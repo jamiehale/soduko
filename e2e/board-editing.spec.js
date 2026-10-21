@@ -9,6 +9,7 @@ const {
   cellBackground,
   drag,
   click,
+  settle,
 } = require('./helpers');
 
 // In the default puzzle, cells 1 (8) and 4 (4) are clues; 0, 2, 3 are empty.
@@ -108,6 +109,7 @@ test.describe('toggle pencil marks across a selection', () => {
     const box = await cell(page, 0).boundingBox();
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
+    await settle(page);
     await page.keyboard.press('8');
     await page.mouse.up();
     expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [8] });

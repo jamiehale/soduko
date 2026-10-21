@@ -8,6 +8,7 @@ const {
   cellBackground,
   drag,
   click,
+  settle,
 } = require('./helpers');
 
 // Cell 40 is row 4, column 4, section 4. Its peers include 36 (row), 4 (column),
@@ -75,6 +76,7 @@ test.describe('drag to select', () => {
     await page.mouse.move(start.x, start.y);
     await page.mouse.down();
     await page.mouse.move(end.x, end.y, { steps: 2 });
+    await settle(page);
     expect(await backgrounds(page, [0, 1])).toEqual({ 0: COLORS.selected, 1: COLORS.selected });
     await page.mouse.up();
   });
