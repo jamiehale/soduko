@@ -18,7 +18,7 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 ## 4. React 18
 
-- [ ] 4.1 Upgrade `react`/`react-dom` to 18 and switch `src/index.jsx` to `createRoot`. Verify that the browser console shows no React deprecation warnings and the change passes the gate.
+- [x] 4.1 Upgrade `react`/`react-dom` to 18 and switch `src/index.jsx` to `createRoot`. Verify that the browser console shows no React deprecation warnings and the change passes the gate.
 
 ## 5. MUI v6 and v7
 
