@@ -36,7 +36,7 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 ## 8. React 19
 
-- [ ] 8.1 Upgrade `react`/`react-dom` to 19. Verify that `npm ls` reports no peer-dependency conflicts without `--legacy-peer-deps`, the browser console shows no React warnings, and the change passes the gate.
+- [x] 8.1 Upgrade `react`/`react-dom` to 19. Verify that `npm ls` reports no peer-dependency conflicts without `--legacy-peer-deps`, the browser console shows no React warnings, and the change passes the gate.
 
 ## 9. Cleanup and documentation
 
