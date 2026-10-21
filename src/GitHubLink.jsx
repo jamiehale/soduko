@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 // This code was adapted (read: stolen) from Tim Holman (https://tholman.com/github-corners/). I made it ugly.

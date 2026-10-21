@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import * as R from 'ramda';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';

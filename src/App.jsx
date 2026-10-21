@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import * as R from 'ramda';
 import Container from '@material-ui/core/Container';

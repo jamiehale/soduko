@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import * as R from 'ramda';
 import UnstyledCell from './Cell';

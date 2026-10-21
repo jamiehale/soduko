@@ -14,7 +14,7 @@
 
 ## 3. ESLint
 
-- [ ] 3.1 Add `eslint.config.js` (ESLint 9 flat config: `@eslint/js` recommended, `eslint-plugin-react` recommended + `jsx-runtime`, `eslint-plugin-react-hooks` recommended, browser globals, Vitest globals for `**/*.test.*`, `react/prop-types` off, `build/` ignored) and a `lint` script. Verify that `npm run lint` exits 0. Fix only trivial, behavior-neutral findings, and disable the rest per line with a reason.
+- [x] 3.1 Add `eslint.config.js` (ESLint 9 flat config: `@eslint/js` recommended, `eslint-plugin-react` recommended + `jsx-runtime`, `eslint-plugin-react-hooks` recommended, browser globals, Vitest globals for `**/*.test.*`, `react/prop-types` off, `build/` ignored) and a `lint` script. Verify that `npm run lint` exits 0. Fix only trivial, behavior-neutral findings, and disable the rest per line with a reason.
 
 ## 4. Cleanup and documentation
 
