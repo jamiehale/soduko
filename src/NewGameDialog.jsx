@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import * as R from 'ramda';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -71,14 +71,12 @@ const NewGameDialog = ({
         key={i + 1}
         value={stockPuzzle}
       >
-        <Grid container sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          <Grid item>
+        <Stack direction="row" sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
             {i + 1}:
-          </Grid>
-          <Grid item>
-            <MiniPuzzle puzzle={stockPuzzle} />
-          </Grid>
-        </Grid>
+          </div>
+          <MiniPuzzle puzzle={stockPuzzle} />
+        </Stack>
       </MenuItem>
     ),
     stockPuzzles,
@@ -110,7 +108,7 @@ const NewGameDialog = ({
           <TextField
             label="Puzzle"
             value={customPuzzle}
-            InputProps={{ inputProps: { maxLength: 81 } }}
+            slotProps={{ htmlInput: { maxLength: 81 } }}
             placeholder="123456789..."
             fullWidth
             onChange={handleChangePuzzle}

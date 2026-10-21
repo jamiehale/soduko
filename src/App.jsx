@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import * as R from 'ramda';
 import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -90,11 +92,12 @@ const App = () => {
           href="https://github.com/jamiehale/soduko"
           target="_new"
         />
-        <Grid container direction="column" spacing={1} sx={{ alignContent: 'center' }}>
-          <Grid item xs={12}>
-            <Header />
-          </Grid>
-          <Grid item xs={12}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Stack spacing={1}>
+            {/* Header is a fragment; keep title and subtitle in one Stack item */}
+            <div>
+              <Header />
+            </div>
             <Board
               game={board}
               selectedCells={selectedCells}
@@ -104,26 +107,24 @@ const App = () => {
               onMouseUp={handleMouseUp}
               onMouseOver={handleMouseOver}
             />
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-              <Grid item xs={4}>
+            <Grid container sx={{ alignItems: 'center' }}>
+              <Grid size={4}>
                 <Button onClick={confirmNewGame}>New</Button>
                 <Button onClick={confirmReset}>Reset</Button>
               </Grid>
-              <Grid item xs={4}>
+              <Grid size={4}>
                 {isSolved && (
                   <Typography variant="h5" align="center">Solved</Typography>
                   )}
               </Grid>
-              <Grid item xs={4}>
+              <Grid size={4}>
                 <IconButton data-testid="help" onClick={R.thunkify(setShowHelp)(true)}><HelpIcon /></IconButton>
                 <IconButton data-testid="undo" onClick={handleUndo} disabled={!canUndo}><UndoIcon /></IconButton>
                 <IconButton data-testid="redo" onClick={handleRedo} disabled={!canRedo}><RedoIcon /></IconButton>
               </Grid>
             </Grid>
-          </Grid>
-        </Grid>
+          </Stack>
+        </Box>
       </Container>
       {showReset && (
         <ConfirmationDialog
