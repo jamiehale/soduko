@@ -28,7 +28,7 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 ## 6. styled-components 6
 
-- [ ] 6.1 Upgrade `styled-components` to 6. Check that `.attrs()` in `Header` and `MarkedCell` still applies, and that the browser console shows no unknown-prop warnings. Optionally convert the `Cell`/`MiniBoard` prop-stripping wrappers to transient `$` props. Verify that the change passes the gate.
+- [x] 6.1 Upgrade `styled-components` to 6. Check that `.attrs()` in `Header` and `MarkedCell` still applies, and that the browser console shows no unknown-prop warnings. Optionally convert the `Cell`/`MiniBoard` prop-stripping wrappers to transient `$` props. Verify that the change passes the gate.
 
 ## 7. Keyboard listener
 

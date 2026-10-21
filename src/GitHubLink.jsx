@@ -49,7 +49,7 @@ const Link = styled.a`
 const GitHubLink = (props) => (
   <Link
     {...props}
-    ariaLabel="View source on GitHub"
+    aria-label="View source on GitHub"
   >
     <svg
       width="80"
