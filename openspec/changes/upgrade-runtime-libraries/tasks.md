@@ -20,10 +20,11 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 - [x] 4.1 Upgrade `react`/`react-dom` to 18 and switch `src/index.jsx` to `createRoot`. Verify that the browser console shows no React deprecation warnings and the change passes the gate.
 
-## 5. MUI v6 and v7
+## 5. MUI v6, v7, and v9
 
 - [x] 5.1 Upgrade to `@mui/material@6` / `@mui/icons-material@6` and run the v6 codemods the migration guide lists for the APIs in use. Verify that the change passes the gate.
 - [x] 5.2 Upgrade to `@mui/material@7` / `@mui/icons-material@7`. Migrate `App` and `NewGameDialog` layout to `Stack` and the new `Grid` (`size`), and `TextField` `InputProps` to `slotProps.htmlInput`, as in design Decision 5. Use `GridLegacy` only for diffs that can't otherwise be closed, with a code comment. Verify that the change passes the gate and that the visual suite also passes against `vite preview`.
+- [ ] 5.3 Upgrade to `@mui/material@9` / `@mui/icons-material@9` (MUI skipped v8) and run the v9 codemods that apply to the APIs in use. Verify that the change passes the gate, the visual suite also passes against `vite preview`, and the browser console shows no MUI warnings.
 
 ## 6. styled-components 6
 
@@ -45,7 +46,7 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 ## 10. Integration check
 
-- [ ] 10.1 From a clean checkout under Node 24, run `npm ci`, then the full gate, then the visual suite against `vite preview`. Verify that `npm outdated` lists no major-version lag for any direct dependency.
+- [ ] 10.1 From a clean checkout under Node 24, run `npm ci`, then the full gate, then the visual suite against `vite preview`. Verify that `npm outdated` lists no major-version lag for any direct dependency except `eslint` / `@eslint/js` (held at 9 because `eslint-plugin-react` does not support ESLint 10).
 
 ## Workflow follow-up
 

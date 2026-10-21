@@ -25,9 +25,9 @@ See proposal.md for why. State after `migrate-to-vite-vitest`:
 
 ## Decisions
 
-**1. Upgrade order: Ramda → React 17 → MUI 5 → React 18 → MUI 6 → MUI 7 → styled-components 6 → drop event-listener → React 19 → drop testing libs → version bump.**
+**1. Upgrade order: Ramda → React 17 → MUI 5 → React 18 → MUI 6 → MUI 7 → MUI 9 → styled-components 6 → drop event-listener → React 19 → drop testing libs → version bump.**
 - MUI v4's peer range stops at React 17, so React 18 has to wait for MUI 5.
-- Moving MUI to v7 before React 19 puts each package on a version that officially supports its partner.
+- Moving MUI to its current major before React 19 puts each package on a version that officially supports its partner. MUI skipped v8, so the step after v7 is v9.
 - styled-components 6 goes before React 19 because v5 predates it.
 - Ramda is independent and covered by unit tests, so it goes first as a warm-up.
 
@@ -73,6 +73,9 @@ Nothing imports them. Removing them drops three outdated packages, and future co
 
 **9. Version bump to 0.3.0.**
 The Help title shows it, and the visual baseline masks the version text, so no snapshot changes.
+
+**10. ESLint stays on 9.**
+ESLint 10 is out, but `eslint-plugin-react` (7.37) only supports ESLint up to 9. Keeping its React rules matters more than the ESLint major, so ESLint 9 is a recorded exception to "current majors" until the plugin catches up.
 
 ## Risks / Trade-offs
 

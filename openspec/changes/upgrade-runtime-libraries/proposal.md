@@ -12,7 +12,7 @@ The upgrade goes in steps, and each step must pass the full unit, e2e, and visua
 - **React** 16 → 17.
 - **Material-UI v4 → MUI v5**: rename packages to `@mui/material` / `@mui/icons-material`, add the Emotion styling engine, and configure the theme and component defaults so the v4 look is preserved.
 - **React** 17 → 18 (`createRoot`).
-- **MUI** v5 → v6 → v7, including the v7 `Grid` API and deprecated `InputProps`.
+- **MUI** v5 → v6 → v7 → v9 (MUI skipped v8), including the v7 `Grid` API and deprecated `InputProps`.
 - **styled-components** 5 → 6.
 - Replace **`@use-it/event-listener`** with a small local hook.
 - **React** 18 → 19.
