@@ -10,7 +10,7 @@
 
 ## 2. Vitest
 
-- [ ] 2.1 Replace `react-scripts` test with Vitest: add `vitest`, configure `test: { environment: 'node', globals: true, include: ['src/**/*.test.{js,jsx}'] }`, and set `test: vitest`. Verify that `npx vitest run` passes every existing unit test with no test-file edits and does not pick up `e2e/`.
+- [x] 2.1 Replace `react-scripts` test with Vitest: add `vitest`, configure `test: { environment: 'node', globals: true, include: ['src/**/*.test.{js,jsx}'] }`, and set `test: vitest`. Verify that `npx vitest run` passes every existing unit test with no test-file edits and does not pick up `e2e/`.
 
 ## 3. ESLint
 

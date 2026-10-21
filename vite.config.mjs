@@ -15,4 +15,9 @@ export default defineConfig({
     // Kept as build/ (not Vite's dist/) for the manual deploy
     outDir: 'build',
   },
+  test: {
+    environment: 'node',
+    globals: true,
+    include: ['src/**/*.test.{js,jsx}'],
+  },
 });
