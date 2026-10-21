@@ -24,7 +24,7 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 - [x] 5.1 Upgrade to `@mui/material@6` / `@mui/icons-material@6` and run the v6 codemods the migration guide lists for the APIs in use. Verify that the change passes the gate.
 - [x] 5.2 Upgrade to `@mui/material@7` / `@mui/icons-material@7`. Migrate `App` and `NewGameDialog` layout to `Stack` and the new `Grid` (`size`), and `TextField` `InputProps` to `slotProps.htmlInput`, as in design Decision 5. Use `GridLegacy` only for diffs that can't otherwise be closed, with a code comment. Verify that the change passes the gate and that the visual suite also passes against `vite preview`.
-- [ ] 5.3 Upgrade to `@mui/material@9` / `@mui/icons-material@9` (MUI skipped v8) and run the v9 codemods that apply to the APIs in use. Verify that the change passes the gate, the visual suite also passes against `vite preview`, and the browser console shows no MUI warnings.
+- [x] 5.3 Upgrade to `@mui/material@9` / `@mui/icons-material@9` (MUI skipped v8) and run the v9 codemods that apply to the APIs in use. Verify that the change passes the gate, the visual suite also passes against `vite preview`, and the browser console shows no MUI warnings.
 
 ## 6. styled-components 6
 
