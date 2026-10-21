@@ -1,0 +1,170 @@
+const { test, expect } = require('@playwright/test');
+const {
+  COLORS,
+  EMPTY,
+  open,
+  cell,
+  cellState,
+  cellBackground,
+  drag,
+  click,
+} = require('./helpers');
+
+// Cell 40 is row 4, column 4, section 4. Its peers include 36 (row), 4 (column),
+// and 30 (section). Cell 0 shares nothing with it.
+
+const backgrounds = async (page, cells) => {
+  const result = {};
+  for (const i of cells) {
+    result[i] = await cellBackground(page, i);
+  }
+  return result;
+};
+
+test.describe('click to select', () => {
+  test('selects one cell', async ({ page }) => {
+    await open(page, EMPTY);
+    await click(page, 40);
+    expect(await backgrounds(page, [40, 41, 0])).toEqual({
+      40: COLORS.selected,
+      41: COLORS.peer,
+      0: COLORS.white,
+    });
+  });
+
+  test('replaces a previous selection', async ({ page }) => {
+    await open(page, EMPTY);
+    await drag(page, [0, 1, 2]);
+    await click(page, 40);
+    expect(await backgrounds(page, [0, 1, 2, 40])).toEqual({
+      0: COLORS.white,
+      1: COLORS.white,
+      2: COLORS.white,
+      40: COLORS.selected,
+    });
+  });
+});
+
+test('clicking the only selected cell deselects it', async ({ page }) => {
+  await open(page, EMPTY);
+  await click(page, 40);
+  await click(page, 40);
+  expect(await backgrounds(page, [40, 41])).toEqual({ 40: COLORS.white, 41: COLORS.white });
+});
+
+test.describe('drag to select', () => {
+  test('selects every cell passed over', async ({ page }) => {
+    await open(page, EMPTY);
+    await drag(page, [0, 1, 2]);
+    expect(await backgrounds(page, [0, 1, 2, 3])).toEqual({
+      0: COLORS.selected,
+      1: COLORS.selected,
+      2: COLORS.selected,
+      3: COLORS.peer,
+    });
+  });
+
+  test('shows cells as selected while the drag is in progress', async ({ page }) => {
+    await open(page, EMPTY);
+    const point = async (i) => {
+      const box = await cell(page, i).boundingBox();
+      return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+    };
+    const start = await point(0);
+    const end = await point(1);
+    await page.mouse.move(start.x, start.y);
+    await page.mouse.down();
+    await page.mouse.move(end.x, end.y, { steps: 2 });
+    expect(await backgrounds(page, [0, 1])).toEqual({ 0: COLORS.selected, 1: COLORS.selected });
+    await page.mouse.up();
+  });
+
+  test('hovering without pressing changes nothing', async ({ page }) => {
+    await open(page, EMPTY);
+    await click(page, 40);
+    await cell(page, 41).hover();
+    await cell(page, 0).hover();
+    expect(await backgrounds(page, [40, 41, 0])).toEqual({
+      40: COLORS.selected,
+      41: COLORS.peer,
+      0: COLORS.white,
+    });
+  });
+});
+
+test('escape clears the selection without changing the board', async ({ page }) => {
+  await open(page, EMPTY, { values: { 40: 5 } });
+  await click(page, 40);
+  await page.keyboard.press('Escape');
+  expect(await backgrounds(page, [40, 41])).toEqual({ 40: COLORS.white, 41: COLORS.white });
+  expect((await cellState(page, 40)).value).toBe(5);
+});
+
+test.describe('peer highlighting', () => {
+  test("a single cell highlights its row, column, and section", async ({ page }) => {
+    await open(page, EMPTY);
+    await click(page, 40);
+    expect(await backgrounds(page, [36, 4, 30, 0, 80])).toEqual({
+      36: COLORS.peer,
+      4: COLORS.peer,
+      30: COLORS.peer,
+      0: COLORS.white,
+      80: COLORS.white,
+    });
+  });
+
+  test('cells in one row across sections highlight only that row', async ({ page }) => {
+    await open(page, EMPTY);
+    await drag(page, [36, 37, 38, 39, 40, 41, 42]);
+    expect(await backgrounds(page, [44, 27, 0, 4])).toEqual({
+      44: COLORS.peer,
+      27: COLORS.white,
+      0: COLORS.white,
+      4: COLORS.white,
+    });
+  });
+});
+
+test.describe('value highlighting', () => {
+  // 40 and 0 hold 7; 80 (unrelated) and 36 (peer of 40) have mark 7
+  const options = { values: { 40: 7, 0: 7 }, marks: { 80: [7], 36: [7], 72: [1] } };
+
+  test('cells with the same value use the selected style', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await click(page, 40);
+    expect(await cellBackground(page, 0)).toBe(COLORS.selected);
+  });
+
+  test('non-peer cells with the matching mark use the related style', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await click(page, 40);
+    expect(await backgrounds(page, [80, 36, 72])).toEqual({
+      80: COLORS.related,
+      36: COLORS.peer,
+      72: COLORS.white,
+    });
+  });
+
+  test('clue values highlight too', async ({ page }) => {
+    const puzzle = `7${EMPTY.slice(1, 40)}7${EMPTY.slice(41)}`;
+    await open(page, puzzle);
+    await click(page, 40);
+    expect(await cellBackground(page, 0)).toBe(COLORS.selected);
+  });
+
+  test('an empty selected cell highlights no values or marks', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await click(page, 20);
+    expect(await backgrounds(page, [0, 40, 80])).toEqual({
+      0: COLORS.peer,
+      40: COLORS.white,
+      80: COLORS.white,
+    });
+  });
+});
+
+test('errors take precedence over selection', async ({ page }) => {
+  await open(page, EMPTY, { values: { 0: 3, 8: 3 } });
+  await click(page, 0);
+  expect(await backgrounds(page, [0, 8])).toEqual({ 0: COLORS.error, 8: COLORS.error });
+});

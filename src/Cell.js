@@ -39,6 +39,7 @@ const cellType = (cell) => {
 
 const Cell = ({
   className,
+  'data-cell': dataCell,
   cell,
   highlight,
   error,
@@ -52,6 +53,7 @@ const Cell = ({
 }) => (
   <Container
     className={className}
+    data-cell={dataCell}
     highlight={highlight}
     error={error}
     onMouseDown={onMouseDown}

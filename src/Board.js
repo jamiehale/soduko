@@ -47,6 +47,7 @@ const Board = ({
   const cells = game.map((cell, i) => (
     <Cell
       key={cellKey(rowFromCount(i), columnFromCount(i))}
+      data-cell={i}
       cell={cell}
       highlight={highlightLevel(rowFromCount(i), columnFromCount(i), sectionFromCount(i), cell, R.includes(i, selectedCells), highlight)}
       error={R.includes(i, errorCells)}
@@ -58,7 +59,7 @@ const Board = ({
   ));
 
   return (
-    <Container>
+    <Container data-testid="board">
       {cells}
     </Container>
   );

@@ -15,13 +15,13 @@
 
 ## 3. Playwright behavior tests
 
-- [ ] 3.1 Add `@playwright/test` as a dev dependency, `playwright.config.js` (Chromium only, fixed viewport, `webServer` running `npm start` with `BROWSER=none` on port 3000, `reuseExistingServer`), and a `test:e2e` script. Install Chromium with `npx playwright install chromium`. Verify that `npm run test:e2e` runs an empty suite cleanly.
-- [ ] 3.2 Add `data-testid="board"` to the board container and `data-cell="<index>"` to each cell container. Verify in the browser DOM that 81 `[data-cell]` elements exist, and that `CI=true npm test` passes.
-- [ ] 3.3 Add `e2e/helpers.js`: build a stored state from puzzle strings, seed it via `addInitScript`, locate cells by `[data-cell]`, read a cell's value/marks/background color, and drag across a list of cells by moving to each cell's center. Verify it through the first spec file in 3.4.
-- [ ] 3.4 Add `e2e/board-editing.spec.js` covering every scenario in `specs/board-editing/spec.md` (value entry/replace/toggle-off, clue immutability, related-mark clearing, multi-cell and hold-to-mark toggles, mark ordering, undo/redo/redo-cleared, reset confirm/cancel). Verify that `npm run test:e2e` passes.
-- [ ] 3.5 Add `e2e/cell-selection.spec.js` covering every scenario in `specs/cell-selection/spec.md`, asserting highlight state through computed background colors. Verify that `npm run test:e2e` passes.
-- [ ] 3.6 Add `e2e/game-status.spec.js` covering every scenario in `specs/game-status/spec.md`, using a seeded near-solved board for the solved scenarios. Verify that `npm run test:e2e` passes.
-- [ ] 3.7 Add `e2e/puzzle-loading.spec.js` and `e2e/app-help.spec.js` covering every scenario in those specs, driving the real New Game and Help dialogs. Verify that `npm run test:e2e` passes.
+- [x] 3.1 Add `@playwright/test` as a dev dependency, `playwright.config.js` (Chromium only, fixed viewport, `webServer` running `npm start` with `BROWSER=none` on port 3000, `reuseExistingServer`), and a `test:e2e` script. Install Chromium with `npx playwright install chromium`. Verify that `npm run test:e2e` runs an empty suite cleanly.
+- [x] 3.2 Add `data-testid="board"` to the board container and `data-cell="<index>"` to each cell container. Verify in the browser DOM that 81 `[data-cell]` elements exist, and that `CI=true npm test` passes.
+- [x] 3.3 Add `e2e/helpers.js`: build a stored state from puzzle strings, seed it via `addInitScript`, locate cells by `[data-cell]`, read a cell's value/marks/background color, and drag across a list of cells by moving to each cell's center. Verify it through the first spec file in 3.4.
+- [x] 3.4 Add `e2e/board-editing.spec.js` covering every scenario in `specs/board-editing/spec.md` (value entry/replace/toggle-off, clue immutability, related-mark clearing, multi-cell and hold-to-mark toggles, mark ordering, undo/redo/redo-cleared, reset confirm/cancel). Verify that `npm run test:e2e` passes.
+- [x] 3.5 Add `e2e/cell-selection.spec.js` covering every scenario in `specs/cell-selection/spec.md`, asserting highlight state through computed background colors. Verify that `npm run test:e2e` passes.
+- [x] 3.6 Add `e2e/game-status.spec.js` covering every scenario in `specs/game-status/spec.md`, using a seeded near-solved board for the solved scenarios. Verify that `npm run test:e2e` passes.
+- [x] 3.7 Add `e2e/puzzle-loading.spec.js` and `e2e/app-help.spec.js` covering every scenario in those specs, driving the real New Game and Help dialogs. Verify that `npm run test:e2e` passes.
 
 ## 4. Persistence and saved-game compatibility
 

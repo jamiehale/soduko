@@ -117,9 +117,9 @@ const App = () => {
                   )}
               </Grid>
               <Grid item xs={4}>
-                <IconButton onClick={R.thunkify(setShowHelp)(true)}><HelpIcon /></IconButton>
-                <IconButton onClick={handleUndo} disabled={!canUndo}><UndoIcon /></IconButton>
-                <IconButton onClick={handleRedo} disabled={!canRedo}><RedoIcon /></IconButton>
+                <IconButton data-testid="help" onClick={R.thunkify(setShowHelp)(true)}><HelpIcon /></IconButton>
+                <IconButton data-testid="undo" onClick={handleUndo} disabled={!canUndo}><UndoIcon /></IconButton>
+                <IconButton data-testid="redo" onClick={handleRedo} disabled={!canRedo}><RedoIcon /></IconButton>
               </Grid>
             </Grid>
           </Grid>
