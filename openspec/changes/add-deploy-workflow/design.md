@@ -121,4 +121,4 @@ When true, every `mirror` gets `--dry-run`, which connects, logs in, verifies TL
 ## Open Questions
 
 - The FTP host, port, and remote web-root path. The user is looking these up; they are environment values and don't affect the design.
-- Whether the host's FTPS certificate matches the hostname the user connects with. The rehearsal answers this; Decision 4 covers both outcomes. The user expects verification will have to be turned off for this host. The rehearsal will confirm it before anything changes.
+- Whether the host's FTPS certificate matches the hostname the user connects with. The rehearsal answers this; Decision 4 covers both outcomes. Resolved: `ftp.halesofmarkham.ca` presents a Let's Encrypt certificate for `macdonald.mysecureservers.com`, the same IP. With `FTP_HOST` set to that name, the certificate verifies, so verification stays on.
