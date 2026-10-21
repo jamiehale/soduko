@@ -23,7 +23,7 @@
 
 ## 5. Integration check
 
-- [ ] 5.1 Run `npm run build`, then point Playwright's `webServer` at `npm run preview -- --port 3000` for one run of `npm run test:e2e`, and restore the config afterwards. Verify that the production build passes all behavior and visual tests with zero snapshot updates.
+- [x] 5.1 Run `npm run build`, then point Playwright's `webServer` at `npm run preview -- --port 3000` for one run of `npm run test:e2e`, and restore the config afterwards. Verify that the production build passes all behavior and visual tests with zero snapshot updates.
 - [ ] 5.2 From a clean checkout under Node 24, run `npm ci`, `npx vitest run`, `npm run lint`, `npm run build`, and `npm run test:e2e`. Verify that all pass.
 
 ## Workflow follow-up
