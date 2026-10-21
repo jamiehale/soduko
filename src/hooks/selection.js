@@ -1,7 +1,7 @@
 import { useReducer } from 'react';
 import * as R from 'ramda';
 
-const selectionReducer = (state, action) => {
+export const selectionReducer = (state, action) => {
   switch (action.type) {
     case 'mouseDown': {
       const { cell } = action.payload;
@@ -50,12 +50,16 @@ const selectionReducer = (state, action) => {
   }
 };
 
+export const initialSelectionState = { selectedCells: [], draggedCells: [] };
+
+export const selectedCellsOf = (state) => (R.isEmpty(state.selectedCells) ? state.draggedCells : state.selectedCells);
+
 const useSelection = () => {
-  const [state, dispatch] = useReducer(selectionReducer, { selectedCells: [], draggedCells: [] });
+  const [state, dispatch] = useReducer(selectionReducer, initialSelectionState);
 
   return {
     dispatch,
-    selectedCells: R.isEmpty(state.selectedCells) ? state.draggedCells : state.selectedCells,
+    selectedCells: selectedCellsOf(state),
     isMouseDown: state.isMouseDown,
   };
 };

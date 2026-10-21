@@ -8,10 +8,10 @@
 
 ## 2. Reducer and derived-state unit tests
 
-- [ ] 2.1 Export `boardReducer` from `src/hooks/board.js` and `selectionReducer` from `src/hooks/selection.js` as named exports, leaving the default exports unchanged. Verify that `CI=true npm test` still passes all 85 existing tests.
-- [ ] 2.2 Add `src/hooks/__tests__/board.test.js` covering `newGame`, `reset`, `toggleMark`, `set`, clue-cell no-op with no history entry, and `undo`/`redo`, including that a new change clears `future` and that undo/redo on an empty stack is a no-op. Use only `describe`/`it`/`expect`. Verify with `CI=true npm test`.
-- [ ] 2.3 Add `src/hooks/__tests__/selection.test.js` covering click-select, click-again-to-deselect, drag selection, mouseOver without a drag, and `clearSelection`. Also cover that the hook reports dragged cells as selected mid-drag (through the exported reducer's state plus the same derivation). Verify with `CI=true npm test`.
-- [ ] 2.4 Add `src/hooks/__tests__/game.test.js` (conflicts by row, column, and section; clue vs entered; marks ignored; solved vs one-blank vs one-wrong) and `src/hooks/__tests__/highlight.test.js` (single cell, multi-cell in one row/column/section, value highlight only for a single cell with a value). Call `useGame`/`useHighlight` directly. Verify with `CI=true npm test`.
+- [x] 2.1 Export `boardReducer` from `src/hooks/board.js` and `selectionReducer` from `src/hooks/selection.js` as named exports, leaving the default exports unchanged. Verify that `CI=true npm test` still passes all 85 existing tests.
+- [x] 2.2 Add `src/hooks/__tests__/board.test.js` covering `newGame`, `reset`, `toggleMark`, `set`, clue-cell no-op with no history entry, and `undo`/`redo`, including that a new change clears `future` and that undo/redo on an empty stack is a no-op. Use only `describe`/`it`/`expect`. Verify with `CI=true npm test`.
+- [x] 2.3 Add `src/hooks/__tests__/selection.test.js` covering click-select, click-again-to-deselect, drag selection, mouseOver without a drag, and `clearSelection`. Also cover that the hook reports dragged cells as selected mid-drag (through the exported reducer's state plus the same derivation). Verify with `CI=true npm test`.
+- [x] 2.4 Add `src/hooks/__tests__/game.test.js` (conflicts by row, column, and section; clue vs entered; marks ignored; solved vs one-blank vs one-wrong) and `src/hooks/__tests__/highlight.test.js` (single cell, multi-cell in one row/column/section, value highlight only for a single cell with a value). Call `useGame`/`useHighlight` directly. Verify with `CI=true npm test`.
 
 ## 3. Playwright behavior tests
 

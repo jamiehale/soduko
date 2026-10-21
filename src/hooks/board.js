@@ -9,7 +9,7 @@ import {
   boardWithSetValue,
 } from '../util/board';
 
-const reducer = (state, action) => {
+export const boardReducer = (state, action) => {
   switch (action.type) {
     case 'newGame': {
       const { board } = action.payload;
@@ -87,7 +87,7 @@ const useBoard = () => {
   const [storedState, setStoredState] = useLocalStorage('soduko', null);
 
   const [state, dispatch] = useReducer(
-    reducer,
+    boardReducer,
     storedState || {
       board: makeBoard(R.repeat('.', 81)),
       history: [],
