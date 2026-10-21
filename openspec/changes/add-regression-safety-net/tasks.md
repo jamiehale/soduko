@@ -36,7 +36,7 @@
 ## 6. Documentation and integration check
 
 - [x] 6.1 Update `CLAUDE.md`: unit-test vs e2e commands (`npm run test:e2e`, a single spec, `--update-snapshots` and when to use it), where the tests live, the `data-cell` hooks, the local-storage seeding helper, and the temporary OpenSSL flag. Verify each documented command runs as written.
-- [ ] 6.2 From a clean checkout, run `npm ci`, `CI=true npm test`, `npm run test:e2e`, and `npm run build`. Verify that all pass with no snapshot updates.
+- [x] 6.2 From a clean checkout, run `npm ci`, `CI=true npm test`, `npm run test:e2e`, and `npm run build`. Verify that all pass with no snapshot updates.
 
 ## Workflow follow-up
 
