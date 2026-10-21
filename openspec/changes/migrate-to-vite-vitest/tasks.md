@@ -2,11 +2,11 @@
 
 ## 1. Vite build and dev server
 
-- [ ] 1.1 Add `vite` and `@vitejs/plugin-react` as dev dependencies, and add `vite.config.js` with the React plugin and `server: { port: 3000, strictPort: true }`. Verify with `npm ls vite @vitejs/plugin-react`.
-- [ ] 1.2 `git mv` the 11 JSX-containing files in `src/` from `.js` to `.jsx`, and fix any import that names an extension. Verify that `git status` shows renames, not delete/add pairs.
-- [ ] 1.3 Create root `index.html` from `public/index.html` (`%PUBLIC_URL%/` → `/`, CRA comments dropped, module script `/src/index.jsx`), then delete `public/index.html`. Verify the favicon and manifest load with no 404s in the dev server's network log.
-- [ ] 1.4 Change the scripts to `start: vite`, `build: vite build`, `preview: vite preview`, and remove the `NODE_OPTIONS=--openssl-legacy-provider` prefix. Verify that `npm start` serves on port 3000, the Help dialog shows the package version (JSON import works), and `npm run build` writes `build/` (via `build.outDir`) with no flags on Node 24.
-- [ ] 1.5 Run `npm run test:e2e` against the dev server. Verify that all behavior and visual tests pass with zero snapshot updates.
+- [x] 1.1 Add `vite` and `@vitejs/plugin-react` as dev dependencies, and add `vite.config.js` with the React plugin and `server: { port: 3000, strictPort: true }`. Verify with `npm ls vite @vitejs/plugin-react`.
+- [x] 1.2 `git mv` the 11 JSX-containing files in `src/` from `.js` to `.jsx`, and fix any import that names an extension. Verify that `git status` shows renames, not delete/add pairs.
+- [x] 1.3 Create root `index.html` from `public/index.html` (`%PUBLIC_URL%/` → `/`, CRA comments dropped, module script `/src/index.jsx`), then delete `public/index.html`. Verify the favicon and manifest load with no 404s in the dev server's network log.
+- [x] 1.4 Change the scripts to `start: vite`, `build: vite build`, `preview: vite preview`, and remove the `NODE_OPTIONS=--openssl-legacy-provider` prefix. Verify that `npm start` serves on port 3000, the Help dialog shows the package version (JSON import works), and `npm run build` writes `build/` (via `build.outDir`) with no flags on Node 24.
+- [x] 1.5 Run `npm run test:e2e` against the dev server. Verify that all behavior and visual tests pass with zero snapshot updates.
 
 ## 2. Vitest
 

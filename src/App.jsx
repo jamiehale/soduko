@@ -73,7 +73,7 @@ const App = () => {
     }
   }, [isMouseDown, selectedCells, boardDispatch, selectionDispatch]);
 
-  useEventListener('keydown', handleKeyDown);
+  useEventListener('keydown', handleKeyDown, window);
 
   const handleUndo = useCallback(() => {
     undo(boardDispatch);

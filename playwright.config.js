@@ -19,8 +19,7 @@ module.exports = defineConfig({
     { name: 'chromium' },
   ],
   webServer: {
-    // CI=true stops CRA 3's dev server from exiting when stdin closes
-    command: 'CI=true BROWSER=none npm start',
+    command: 'npm start',
     url: 'http://localhost:3000',
     reuseExistingServer: true,
     timeout: 120 * 1000,
