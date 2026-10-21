@@ -18,8 +18,8 @@
 
 ## 4. Cleanup and documentation
 
-- [ ] 4.1 Uninstall `react-scripts`. Remove the `eslintConfig` and `browserslist` fields. Verify that `npm ls react-scripts` is empty and `grep -rn react-scripts --exclude-dir=node_modules --exclude-dir=.git --exclude=package-lock.json .` finds nothing outside `openspec/`.
-- [ ] 4.2 Update `CLAUDE.md` (stack line, commands: `npm start`, `npm run build`, `npm run preview`, `npx vitest run`, a single test file, `-t` filter, `npm run lint`; remove the OpenSSL-flag note) and the README Development section. Note in `CLAUDE.md` that output stays in `build/` for the manual deploy. Verify each documented command runs as written.
+- [x] 4.1 Uninstall `react-scripts`. Remove the `eslintConfig` and `browserslist` fields. Verify that `npm ls react-scripts` is empty and `grep -rn react-scripts --exclude-dir=node_modules --exclude-dir=.git --exclude=package-lock.json .` finds nothing outside `openspec/`.
+- [x] 4.2 Update `CLAUDE.md` (stack line, commands: `npm start`, `npm run build`, `npm run preview`, `npx vitest run`, a single test file, `-t` filter, `npm run lint`; remove the OpenSSL-flag note) and the README Development section. Note in `CLAUDE.md` that output stays in `build/` for the manual deploy. Verify each documented command runs as written.
 
 ## 5. Integration check
 

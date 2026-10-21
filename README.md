@@ -43,13 +43,19 @@ represents the following puzzle:
 
 ## Development
 
-soduko was built with React (via create-react-app), Material-UI, and Styled Components.
+soduko is built with React, Material-UI, and Styled Components, using Vite.
 
 Launch a development server at [http://localhost:3000](http://localhost:3000) using the following commands:
 
     $> npm install
     $> npm start
 
-Build a production package using the following commands:
+Build a production package into `build/` using the following command:
 
     $> npm run build
+
+Run the unit tests, lint, and the end-to-end/visual tests:
+
+    $> npm test
+    $> npm run lint
+    $> npm run test:e2e
