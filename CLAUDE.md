@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Sudoku *helper* (not a solver or generator), deployed to Netlify at soduko.me. Create React App (react-scripts 3) with React 16, Material-UI v4, styled-components, and Ramda. Plain JavaScript, no TypeScript.
+Sudoku *helper* (not a solver or generator), served at soduko.me (deployed manually). Create React App (react-scripts 3) with React 16, Material-UI v4, styled-components, and Ramda. Plain JavaScript, no TypeScript.
 
 ## Commands
 
-The README documents yarn, but the working tree has moved to npm (`package-lock.json`; `yarn.lock` deleted). Either runs the same CRA scripts.
+Use npm (`package-lock.json`); Node version is pinned in `.nvmrc`.
 
 - `npm start` — dev server on http://localhost:3000
 - `npm run build` — production build

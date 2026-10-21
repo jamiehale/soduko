@@ -1,7 +1,5 @@
 # soduko
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/fd540547-809c-43ab-b0a5-2260f08203af/deploy-status)](https://app.netlify.com/sites/soduko/deploys)
-
 This is a tool to help solve Sudoku puzzles. It does not solve them for you, nor does it generate puzzles. It includes a collection of pre-built puzzles and allows you to enter custom puzzles.
 
 The included functionality is relatively simple:
@@ -49,9 +47,9 @@ soduko was built with React (via create-react-app), Material-UI, and Styled Comp
 
 Launch a development server at [http://localhost:3000](http://localhost:3000) using the following commands:
 
-    $> yarn
-    $> yarn start
+    $> npm install
+    $> npm start
 
 Build a production package using the following commands:
 
-    $> yarn build
+    $> npm run build

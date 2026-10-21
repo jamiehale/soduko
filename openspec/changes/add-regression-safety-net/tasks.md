@@ -2,9 +2,9 @@
 
 ## 1. Baseline and cleanup
 
-- [ ] 1.1 Commit the in-progress yarn → npm switch (`package.json`, `package-lock.json`, `yarn.lock` removal). Verify with `npm ci`, which succeeds from a clean `node_modules`.
-- [ ] 1.2 Add `.nvmrc` pinning Node 24. Prefix the `start` and `build` scripts with `NODE_OPTIONS=--openssl-legacy-provider`. Verify that `npm run build` succeeds and `npm start` serves the app on http://localhost:3000 under the local Node.
-- [ ] 1.3 Remove the Netlify badge from `README.md` (keep the `https://soduko.me` "Try it out" link) and the Netlify mention from `CLAUDE.md`, and replace the README's yarn commands with npm. Verify that `grep -ri netlify --exclude-dir=node_modules --exclude-dir=.git --exclude=package-lock.json .` finds nothing outside `openspec/`.
+- [x] 1.1 Commit the in-progress yarn → npm switch (`package.json`, `package-lock.json`, `yarn.lock` removal). Verify with `npm ci`, which succeeds from a clean `node_modules`.
+- [x] 1.2 Add `.nvmrc` pinning Node 24. Prefix the `start` and `build` scripts with `NODE_OPTIONS=--openssl-legacy-provider`. Verify that `npm run build` succeeds and `npm start` serves the app on http://localhost:3000 under the local Node.
+- [x] 1.3 Remove the Netlify badge from `README.md` (keep the `https://soduko.me` "Try it out" link) and the Netlify mention from `CLAUDE.md`, and replace the README's yarn commands with npm. Verify that `grep -ri netlify --exclude-dir=node_modules --exclude-dir=.git --exclude=package-lock.json .` finds nothing outside `openspec/`.
 
 ## 2. Reducer and derived-state unit tests
 
