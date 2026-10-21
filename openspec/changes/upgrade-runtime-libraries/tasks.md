@@ -8,7 +8,7 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 ## 2. React 17
 
-- [ ] 2.1 Upgrade `react` and `react-dom` to 17. Verify that `npm ls react` shows no peer conflicts and the change passes the gate.
+- [x] 2.1 Upgrade `react` and `react-dom` to 17. Verify that `npm ls react` shows no peer conflicts and the change passes the gate.
 
 ## 3. MUI v5
 
