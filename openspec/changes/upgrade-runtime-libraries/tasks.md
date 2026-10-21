@@ -4,7 +4,7 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 ## 1. Ramda
 
-- [ ] 1.1 Upgrade `ramda` to the latest 0.x. Flip the `R.propEq` arguments in `src/util/board.js` and `src/util/cell.js`, and rewrite `cellValueEquals` as `R.curry((value, cell) => R.propEq(value, 'value', cell))`. Check the changelogs from 0.28 up to the target for other breaking APIs used in `src/`. Verify that the unit tests pass and the change passes the gate.
+- [x] 1.1 Upgrade `ramda` to the latest 0.x. Flip the `R.propEq` arguments in `src/util/board.js` and `src/util/cell.js`, and rewrite `cellValueEquals` as `R.curry((value, cell) => R.propEq(value, 'value', cell))`. Check the changelogs from 0.28 up to the target for other breaking APIs used in `src/`. Verify that the unit tests pass and the change passes the gate.
 
 ## 2. React 17
 

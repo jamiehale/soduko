@@ -2,7 +2,7 @@ import * as R from 'ramda';
 
 export const makeCell = R.curry((type, value) => ({ type, value }));
 
-export const isPuzzleCell = R.propEq('type', 'puzzle');
+export const isPuzzleCell = R.propEq('puzzle', 'type');
 
 export const isUserCell = R.complement(isPuzzleCell);
 
@@ -18,7 +18,7 @@ export const getCellMarksOr = R.curry((defaultValue, cell) => isCellWithValue(ce
 
 export const getCellMarks = getCellMarksOr(undefined);
 
-export const cellValueEquals = R.propEq('value');
+export const cellValueEquals = R.curry((value, cell) => R.propEq(value, 'value', cell));
 
 export const cellHasMark = R.curry((mark, cell) => R.includes(mark, getCellMarksOr([], cell)));
 

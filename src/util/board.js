@@ -25,7 +25,7 @@ const sameSection = (i, j) => R.eqBy(sectionFromCount, i, j);
 
 export const makeBoard = R.map(R.ifElse(R.equals('.'), R.always(makeCell('user', [])), makeCell('puzzle')));
 
-export const resetBoard = R.map(R.when(R.propEq('type', 'user'), R.always(makeCell('user', []))));
+export const resetBoard = R.map(R.when(R.propEq('user', 'type'), R.always(makeCell('user', []))));
 
 export const allCellsHaveMark = R.curry((mark, cells) => R.all(cellHasMark(mark), cells));
 
