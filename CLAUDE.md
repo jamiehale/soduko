@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Sudoku *helper* (not a solver or generator), served at soduko.me (deployed manually). Vite with React 16, Material-UI v4, styled-components, and Ramda. Plain JavaScript, no TypeScript.
+Sudoku *helper* (not a solver or generator), served at soduko.me (deployed manually). Vite with React 19, MUI 9 (`@mui/material`, Emotion engine), styled-components 6, and Ramda 0.32. Plain JavaScript, no TypeScript.
 
 ## Commands
 
@@ -17,7 +17,7 @@ Use npm (`package-lock.json`); Node version is pinned in `.nvmrc`.
 - `npx vitest run` — unit tests once
 - `npx vitest run src/hooks/__tests__/board.test.js` — single unit test file
 - `npx vitest run -t "name of test"` — unit tests matching a name
-- `npm run lint` — ESLint 9 flat config (`eslint.config.js`), tuned to match the old CRA `react-app` rules
+- `npm run lint` — ESLint 9 flat config (`eslint.config.js`), tuned to match the old CRA `react-app` rules. Stays on ESLint 9 until `eslint-plugin-react` supports ESLint 10
 - `npm run test:e2e` — Playwright behavior + visual suite (Chromium); starts the dev server itself or reuses one already on :3000
 - `npx playwright test e2e/board-editing.spec.js` — single e2e spec; add `-g "test name"` to filter
 - `npx playwright test --update-snapshots` — regenerate visual baselines. Only for an intended visual change or a confirmed environment-only diff (font/OS update); review the new PNGs and say why in the commit.
@@ -48,11 +48,18 @@ Source files containing JSX use `.jsx`; plain JS stays `.js`. `vite.config.mjs` 
 - `game.js` — derives `isSolved` and `errorCells` (conflicts) from the board each render.
 - `highlight.js` — derives which row/column/section/value to highlight from the selection.
 - `confirmation.js` — generic confirm-before-action dialog state.
+- `window-event.js` — `useWindowEvent(type, handler)`: one `window` listener per event type, latest handler read from a ref. Drives the keyboard input.
 - `logging-reducer.js` — debug wrapper for reducers (not used by default).
 
-**Input semantics** (in `App.jsx` keydown handler): a digit with one selected cell sets its value; with multiple cells selected (or while still dragging) it toggles that pencil mark across them. Escape clears the selection.
+**Input semantics** (in `App.jsx`'s `keydown` handler, via `useWindowEvent`): a digit with one selected cell sets its value; with multiple cells selected (or while still dragging) it toggles that pencil mark across them. Escape clears the selection.
 
-**Rendering:** `Board` → `Cell`, which delegates to `MarkedCell` for pencil marks; `hooks/border.js` computes the thicker section borders. `MiniBoard` is the read-only puzzle preview in `NewGameDialog`. Colors and styling tokens come from `src/theme.js` via styled-components' `ThemeProvider`; layout and dialogs use Material-UI.
+**Rendering:** `Board` → `Cell`, which delegates to `MarkedCell` for pencil marks; `hooks/border.js` computes the thicker section borders. `MiniBoard` is the read-only puzzle preview in `NewGameDialog`. Board colors and styling tokens come from `src/theme.js` via styled-components' `ThemeProvider`; layout and dialogs use MUI.
+
+**Styling layers.** Two engines coexist: MUI renders with Emotion, and the app's own styles (including overrides of MUI `Typography` in `Header`, `Cell`, `MarkedCell`) use styled-components. `src/index.jsx` wraps the app in `StyledEngineProvider injectFirst`, which injects Emotion's styles first so styled-components rules win; removing it breaks the board's fonts and colors. Pass custom props to styled DOM elements only through the existing prop-stripping wrappers (or `$`-prefixed transient props) — styled-components 6 forwards unknown props to the DOM.
+
+**MUI theme (`src/mui-theme.js`).** The app was designed on Material-UI v4, and the visual baselines lock that look in. The theme restores v4 defaults that later MUI versions changed: indigo/pink palette, `inherit`-colored buttons, `standard` text fields, pink tab indicator with inherited tab text, `hover`-only link underline, v4 tab sizing (160px min width from `sm` up — it sets the New Game dialog's width), and v4 dialog spacing (`DialogContent` padding, 12px below each `DialogContentText`). Don't remove an override without checking the visual suite.
+
+**Layout.** `App.jsx` centers a `Stack` whose children stretch to the board's width (so the subtitle right-aligns to the board); `Header` is a fragment, so it's wrapped in a `div` to stay one Stack item. The control row is a `Grid` with three `size={4}` columns.
 
 ## Conventions
 

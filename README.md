@@ -43,7 +43,7 @@ represents the following puzzle:
 
 ## Development
 
-soduko is built with React, Material-UI, and Styled Components, using Vite.
+soduko is built with React, MUI, and styled-components, using Vite.
 
 Launch a development server at [http://localhost:3000](http://localhost:3000) using the following commands:
 
