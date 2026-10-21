@@ -28,7 +28,7 @@ const TabPanel = ({
     {...props}
   >
     {value === index && (
-      <Box p={3}>
+      <Box sx={{ p: 3 }}>
         {children}
       </Box>
     )}
@@ -71,7 +71,7 @@ const NewGameDialog = ({
         key={i + 1}
         value={stockPuzzle}
       >
-        <Grid container justifyContent="space-between" alignItems="center">
+        <Grid container sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
           <Grid item>
             {i + 1}:
           </Grid>

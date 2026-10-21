@@ -90,7 +90,7 @@ const App = () => {
           href="https://github.com/jamiehale/soduko"
           target="_new"
         />
-        <Grid container direction="column" alignContent="center" spacing={1}>
+        <Grid container direction="column" spacing={1} sx={{ alignContent: 'center' }}>
           <Grid item xs={12}>
             <Header />
           </Grid>
@@ -106,7 +106,7 @@ const App = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Grid container justifyContent="space-between" alignItems="center">
+            <Grid container sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <Grid item xs={4}>
                 <Button onClick={confirmNewGame}>New</Button>
                 <Button onClick={confirmReset}>Reset</Button>
