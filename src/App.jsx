@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import * as R from 'ramda';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import UndoIcon from '@material-ui/icons/Undo';
-import RedoIcon from '@material-ui/icons/Redo';
-import HelpIcon from '@material-ui/icons/Help';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import UndoIcon from '@mui/icons-material/Undo';
+import RedoIcon from '@mui/icons-material/Redo';
+import HelpIcon from '@mui/icons-material/Help';
 import useEventListener from '@use-it/event-listener';
 import { decode } from './util/decoder';
 import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection } from './hooks/selection';
@@ -106,7 +106,7 @@ const App = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Grid container justify="space-between" alignItems="center">
+            <Grid container justifyContent="space-between" alignItems="center">
               <Grid item xs={4}>
                 <Button onClick={confirmNewGame}>New</Button>
                 <Button onClick={confirmReset}>Reset</Button>

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import * as R from 'ramda';
-import UnstyledTypography from '@material-ui/core/Typography';
+import UnstyledTypography from '@mui/material/Typography';
 
 const Typography = styled(UnstyledTypography)``;
 

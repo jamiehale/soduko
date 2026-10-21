@@ -12,9 +12,9 @@ Every task ends with the gate: `npx vitest run`, `npm run lint`, `npm run build`
 
 ## 3. MUI v5
 
-- [ ] 3.1 Install `@mui/material@5`, `@mui/icons-material@5`, `@emotion/react`, and `@emotion/styled`. Run `npx @mui/codemod v5.0.0/preset-safe src`, then uninstall `@material-ui/core` and `@material-ui/icons`. Verify that `grep -rn @material-ui src` finds nothing and `npm run build` succeeds.
-- [ ] 3.2 In `src/index.jsx`, wrap the app in `StyledEngineProvider injectFirst` and a MUI `ThemeProvider` whose `createTheme` sets the v4 palette and the `MuiButton`, `MuiTextField`, and `MuiTabs` default props from design Decision 3. Verify that the change passes the gate. Resolve each remaining screenshot diff with a targeted theme override, not a baseline update.
-- [ ] 3.3 Run the visual suite once against `npm run preview -- --port 3000`. Verify zero snapshot diffs in the production build.
+- [x] 3.1 Install `@mui/material@5`, `@mui/icons-material@5`, `@emotion/react`, and `@emotion/styled`. Run `npx @mui/codemod v5.0.0/preset-safe src`, then uninstall `@material-ui/core` and `@material-ui/icons`. Verify that `grep -rn @material-ui src` finds nothing and `npm run build` succeeds.
+- [x] 3.2 In `src/index.jsx`, wrap the app in `StyledEngineProvider injectFirst` and a MUI `ThemeProvider` whose `createTheme` sets the v4 palette and the `MuiButton`, `MuiTextField`, and `MuiTabs` default props from design Decision 3. Verify that the change passes the gate. Resolve each remaining screenshot diff with a targeted theme override, not a baseline update.
+- [x] 3.3 Run the visual suite once against `npm run preview -- --port 3000`. Verify zero snapshot diffs in the production build.
 
 ## 4. React 18
 
