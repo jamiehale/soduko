@@ -30,8 +30,8 @@
 
 ## 5. Visual baselines
 
-- [ ] 5.1 Add `e2e/visual.spec.js` with `toHaveScreenshot()` for each state listed in `specs/board-appearance/spec.md` (empty board, single selection with peer/value/related highlighting, multi-cell selection, marks, conflict, solved, New Game Stock and Custom tabs, Reset confirmation, Help with the version masked). Also add explicit computed-color assertions for each row of the cell-state color table. Use `animations: 'disabled'` and `maxDiffPixelRatio: 0.01`.
-- [ ] 5.2 Generate the baselines with `npx playwright test e2e/visual.spec.js --update-snapshots`, review each image by eye against the running app, and commit them. Verify that a second `npm run test:e2e` run passes with no snapshot changes.
+- [x] 5.1 Add `e2e/visual.spec.js` with `toHaveScreenshot()` for each state listed in `specs/board-appearance/spec.md` (empty board, single selection with peer/value/related highlighting, multi-cell selection, marks, conflict, solved, New Game Stock and Custom tabs, Reset confirmation, Help with the version masked). Also add explicit computed-color assertions for each row of the cell-state color table. Use `animations: 'disabled'` and `maxDiffPixelRatio: 0.01`.
+- [x] 5.2 Generate the baselines with `npx playwright test e2e/visual.spec.js --update-snapshots`, review each image by eye against the running app, and commit them. Verify that a second `npm run test:e2e` run passes with no snapshot changes.
 
 ## 6. Documentation and integration check
 
