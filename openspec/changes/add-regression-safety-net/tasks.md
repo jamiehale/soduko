@@ -25,7 +25,7 @@
 
 ## 4. Persistence and saved-game compatibility
 
-- [ ] 4.1 Write `e2e/capture-fixture.js`, a standalone script that is not matched by the test runner. Run it against the current app to produce `e2e/fixtures/saved-game-v0.2.2.json`, a stock puzzle with entered values, marks, and at least one undo and one redo step available. Verify the JSON contains `board`, `history`, and `future`, and commit it.
+- [x] 4.1 Write `e2e/capture-fixture.js`, a standalone script that is not matched by the test runner. Run it against the current app to produce `e2e/fixtures/saved-game-v0.2.2.json`, a stock puzzle with entered values, marks, and at least one undo and one redo step available. Verify the JSON contains `board`, `history`, and `future`, and commit it.
 - [ ] 4.2 Add `e2e/game-persistence.spec.js` covering reload mid-game, history surviving reload, first visit with empty storage, corrupt JSON, and loading the v0.2.2 fixture (board matches, undo restores the earlier state). Verify that `npm run test:e2e` passes.
 
 ## 5. Visual baselines

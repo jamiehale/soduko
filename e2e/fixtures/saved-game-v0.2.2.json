@@ -1,0 +1,1652 @@
+{
+  "board": [
+    {
+      "type": "puzzle",
+      "value": 4
+    },
+    {
+      "type": "user",
+      "value": 2
+    },
+    {
+      "type": "user",
+      "value": [
+        1,
+        7
+      ]
+    },
+    {
+      "type": "user",
+      "value": [
+        1,
+        7
+      ]
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 8
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 5
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 3
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 7
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 2
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 6
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 8
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 4
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 1
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 6
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 3
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 7
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 5
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 2
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 1
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "puzzle",
+      "value": 4
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    },
+    {
+      "type": "user",
+      "value": []
+    }
+  ],
+  "history": [
+    [
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": 2
+      },
+      {
+        "type": "user",
+        "value": [
+          1
+        ]
+      },
+      {
+        "type": "user",
+        "value": [
+          1
+        ]
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 8
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 5
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 3
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 7
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 2
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 6
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 8
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 1
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 6
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 3
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 7
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 5
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 2
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 1
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      }
+    ],
+    [
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": 2
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 8
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 5
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 3
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 7
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 2
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 6
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 8
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 1
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 6
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 3
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 7
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 5
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 2
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 1
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      }
+    ],
+    [
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 8
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 5
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 3
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 7
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 2
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 6
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 8
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 1
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 6
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 3
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 7
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 5
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 2
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 1
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      }
+    ]
+  ],
+  "future": [
+    [
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": 2
+      },
+      {
+        "type": "user",
+        "value": [
+          1,
+          7
+        ]
+      },
+      {
+        "type": "user",
+        "value": [
+          1,
+          7
+        ]
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 8
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 5
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 3
+      },
+      {
+        "type": "user",
+        "value": 6
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 7
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 2
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 6
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 8
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 1
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 6
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 3
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 7
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 5
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 2
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 1
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "puzzle",
+        "value": 4
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      },
+      {
+        "type": "user",
+        "value": []
+      }
+    ]
+  ]
+}

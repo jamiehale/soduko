@@ -21,26 +21,29 @@ The board SHALL be a 9×9 grid of 50px square cells. Lines between cells SHALL b
 - **THEN** thick borders separate the nine 3×3 sections and surround the board
 
 ### Requirement: Cell state colors
-Cells SHALL use these text and background colors:
+A cell's text color SHALL depend only on its content: clues black, entered values and pencil marks #3f51b5. Its background SHALL depend only on its state, in this order of precedence:
 
-| State | Text | Background |
-|---|---|---|
-| Clue | black | white |
-| Entered value / marks | #3f51b5 | white |
-| Selected (or same value) | white | #aaf |
-| Peer | #3f51b5 | #ddf |
-| Related mark | #3f51b5 | #ffff44 |
-| Error | white | #ff5252 |
+| State | Background |
+|---|---|
+| Error | #ff5252 |
+| Selected (or same value as the single selection) | #aaf |
+| Peer | #ddf |
+| Related mark | #ffff44 |
+| None | white |
 
-Interactive controls SHALL keep their existing colors (indigo #3f51b5 primary, matching the board text).
+Highlighting and errors SHALL NOT change text color. Interactive controls SHALL keep their existing colors.
 
 #### Scenario: Error color
-- **WHEN** a cell is in conflict
-- **THEN** its background is #ff5252
+- **WHEN** a clue cell is in conflict
+- **THEN** its background is #ff5252 and its text stays black
 
 #### Scenario: Peer color
 - **WHEN** a single cell is selected
 - **THEN** its non-selected peers have background #ddf
+
+#### Scenario: Entered value text
+- **WHEN** a cell holding an entered value is selected
+- **THEN** its text stays #3f51b5 on the #aaf background
 
 ### Requirement: Visual baselines are preserved
 The rendered app SHALL match the v0.2.2 baseline screenshots, within the comparison tolerance, for: the empty board; a puzzle with a single selection showing peer, value, and related highlighting; a multi-cell selection; marks; a conflict; the solved state; and each dialog (New Game Stock and Custom tabs, Reset confirmation, Help). Any intended visual change SHALL update the baselines explicitly.
