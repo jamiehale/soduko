@@ -10,7 +10,7 @@
 
 ## 3. Visual baseline
 
-- [ ] 3.1 Run the visual suite and confirm that only `single-selection.png` differs. Regenerate it with `npx playwright test e2e/visual.spec.js -g "single selection" --update-snapshots`. Review it: every clue and entered value outside the 8s' areas is peer, the 8s are selected, and the yellow mark at row 7, column 7 is unchanged. Verify that the full `npm run test:e2e` passes, then commit with a message saying why the baseline changed.
+- [x] 3.1 Run the visual suite and confirm that only `single-selection.png` differs. Regenerate it with `npx playwright test e2e/visual.spec.js -g "single selection" --update-snapshots`. Review it: every clue and entered value outside the 8s' areas is peer, the 8s are selected, and the yellow mark at row 7, column 7 is unchanged. Verify that the full `npm run test:e2e` passes, then commit with a message saying why the baseline changed.
 
 ## 4. Integration check
 
