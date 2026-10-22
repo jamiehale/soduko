@@ -8,6 +8,7 @@ import {
   resetBoard,
   boardWithToggledMark,
   boardWithSetValue,
+  boardWithSetValues,
 } from '../util/board';
 
 export const boardReducer = (state, action) => {
@@ -45,6 +46,20 @@ export const boardReducer = (state, action) => {
       }
       return {
         board: boardWithSetValue(value, cellIndex, state.board),
+        history: R.prepend(
+          state.board,
+          state.history,
+        ),
+        future: [],
+      };
+    }
+    case 'setMany': {
+      const { placements } = action.payload;
+      if (R.isEmpty(placements)) {
+        return state;
+      }
+      return {
+        board: boardWithSetValues(placements, state.board),
         history: R.prepend(
           state.board,
           state.history,
@@ -126,6 +141,10 @@ export const toggleCellMark = (dispatch, cells, mark) => {
 
 export const setCellValue = (dispatch, cellIndex, value) => {
   dispatch({ type: 'set', payload: { cellIndex, value } });
+};
+
+export const setCellValues = (dispatch, placements) => {
+  dispatch({ type: 'setMany', payload: { placements } });
 };
 
 export const undo = (dispatch) => {

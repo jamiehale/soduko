@@ -6,6 +6,7 @@ import {
   setMark,
   clearMark,
   isGivenCell,
+  isCellWithValue,
   getCellValue,
   clearPlayerValue,
   setPlayerValue,
@@ -82,3 +83,40 @@ export const boardWithSetValue = (value, cellIndex, board) => R.compose(
   boardWithRelatedMarksCleared(value, cellIndex),
   boardWithToggledValue(value, cellIndex),
 )(board);
+
+export const boardWithSetValues = R.curry((placements, board) => R.reduce(
+  (acc, { cellIndex, value }) => boardWithSetValue(value, cellIndex, acc),
+  board,
+  placements,
+));
+
+const boxIndices = box => R.filter(i => boxFromCount(i) === box, R.range(0, 81));
+
+const anyCellHasValue = (value, indices, board) => R.any(
+  i => isCellWithValue(board[i]) && getCellValue(board[i]) === value,
+  indices,
+);
+
+const boxSingles = R.curry((board, box) => {
+  const indices = boxIndices(box);
+  return R.chain(
+    (value) => {
+      if (anyCellHasValue(value, indices, board)) {
+        return [];
+      }
+      const marked = R.filter(i => cellHasMark(value, board[i]), indices);
+      return R.length(marked) === 1 ? [{ cellIndex: R.head(marked), value }] : [];
+    },
+    R.range(1, 10),
+  );
+});
+
+// Digits are visited in ascending order, so a cell that is single for two
+// digits keeps the lower one.
+export const findBoxSingles = board => R.compose(
+  R.sortBy(R.prop('cellIndex')),
+  R.uniqBy(R.prop('cellIndex')),
+  R.chain(boxSingles(board)),
+)(R.range(0, 9));
+
+export const nextBulkSet = R.curry((board, errorCells) => (R.isEmpty(errorCells) ? findBoxSingles(board) : []));
