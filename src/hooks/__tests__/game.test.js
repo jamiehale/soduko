@@ -11,9 +11,9 @@ const solution = R.map(
 
 const emptyBoard = makeBoard(R.repeat('.', 81));
 
-const withClue = (index, value) => R.update(index, makeCell('puzzle', value));
-const withValue = (index, value) => R.update(index, makeCell('user', value));
-const withMarks = (index, marks) => R.update(index, makeCell('user', marks));
+const withGiven = (index, value) => R.update(index, makeCell('given', value));
+const withValue = (index, value) => R.update(index, makeCell('player', value));
+const withMarks = (index, marks) => R.update(index, makeCell('player', marks));
 
 const sorted = R.sort(R.comparator(R.lt));
 
@@ -23,7 +23,7 @@ describe('errorCells', () => {
   });
 
   it('flags duplicates in a row', () => {
-    const board = R.compose(withClue(0, 3), withValue(8, 3))(emptyBoard);
+    const board = R.compose(withGiven(0, 3), withValue(8, 3))(emptyBoard);
     expect(sorted(useGame(board).errorCells)).toStrictEqual([0, 8]);
   });
 
@@ -32,12 +32,12 @@ describe('errorCells', () => {
     expect(sorted(useGame(board).errorCells)).toStrictEqual([4, 76]);
   });
 
-  it('flags duplicates in a section on different rows and columns', () => {
-    const board = R.compose(withClue(0, 9), withValue(20, 9))(emptyBoard);
+  it('flags duplicates in a box on different rows and columns', () => {
+    const board = R.compose(withGiven(0, 9), withValue(20, 9))(emptyBoard);
     expect(sorted(useGame(board).errorCells)).toStrictEqual([0, 20]);
   });
 
-  it('ignores equal values with no shared row, column, or section', () => {
+  it('ignores equal values with no shared row, column, or box', () => {
     const board = R.compose(withValue(0, 5), withValue(40, 5))(emptyBoard);
     expect(useGame(board).errorCells).toStrictEqual([]);
   });
@@ -55,7 +55,7 @@ describe('isSolved', () => {
     expect(useGame(solvedBoard).isSolved).toBe(true);
   });
 
-  it('is true when the final values were entered by the player', () => {
+  it('is true when the final values were set by the player', () => {
     const board = withValue(40, solution[40])(solvedBoard);
     expect(useGame(board).isSolved).toBe(true);
   });

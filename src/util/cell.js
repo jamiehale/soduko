@@ -2,15 +2,15 @@ import * as R from 'ramda';
 
 export const makeCell = R.curry((type, value) => ({ type, value }));
 
-export const isPuzzleCell = R.propEq('puzzle', 'type');
+export const isGivenCell = R.propEq('given', 'type');
 
-export const isUserCell = R.complement(isPuzzleCell);
+export const isPlayerCell = R.complement(isGivenCell);
 
-export const isUserCellWithValue = R.both(isUserCell, R.propIs(Number, 'value'));
+export const isPlayerCellWithValue = R.both(isPlayerCell, R.propIs(Number, 'value'));
 
-export const isUserCellWithMarks = cell => (isUserCell(cell) && !isUserCellWithValue(cell));
+export const isPlayerCellWithMarks = cell => (isPlayerCell(cell) && !isPlayerCellWithValue(cell));
 
-export const isCellWithValue = R.either(isPuzzleCell, isUserCellWithValue);
+export const isCellWithValue = R.either(isGivenCell, isPlayerCellWithValue);
 
 export const getCellValue = R.prop('value');
 
@@ -22,9 +22,9 @@ export const cellValueEquals = R.curry((value, cell) => R.propEq(value, 'value',
 
 export const cellHasMark = R.curry((mark, cell) => R.includes(mark, getCellMarksOr([], cell)));
 
-export const setUserValue = R.assoc('value');
+export const setPlayerValue = R.assoc('value');
 
-export const clearUserValue = R.assoc('value', []);
+export const clearPlayerValue = R.assoc('value', []);
 
 export const setMark = R.curry((mark, cell) => R.assoc('value', R.sort(R.comparator(R.lt), R.uniq(R.append(mark, getCellMarks(cell)))), cell));
 

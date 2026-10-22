@@ -12,11 +12,11 @@ const theme = {
       text: '#3f51b5',
       cell: '#ffff44',
     },
-    puzzle: {
+    given: {
       text: 'black',
       cell: 'white',
     },
-    user: {
+    player: {
       text: '#3f51b5',
       cell: 'white',
     },

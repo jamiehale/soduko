@@ -6,11 +6,11 @@
 
 ## 2. Saved-game migration
 
-- [ ] 2.1 Add `src/util/saved-game.js` with `migrateSavedGame` (Decision 1, Ramda style) and `src/util/__tests__/saved-game.test.js`, covering old to new, idempotence, mixed saves, history and future, and kept fields. Apply it in `useBoard` to the stored state. Verify that `npx vitest run` passes.
+- [x] 2.1 Add `src/util/saved-game.js` with `migrateSavedGame` (Decision 1, Ramda style) and `src/util/__tests__/saved-game.test.js`, covering old to new, idempotence, mixed saves, history and future, and kept fields. Apply it in `useBoard` to the stored state. Verify that `npx vitest run` passes.
 
 ## 3. Code renames
 
-- [ ] 3.1 Switch the stored types to `'given'`/`'player'` and apply every rename in design Decision 2: `src/util`, `src/hooks`, `Cell.jsx`, `Board.jsx`, `theme.js`, `App.jsx`, `NewGameDialog.jsx`, and `git mv src/MiniBoard.jsx src/MiniPuzzle.jsx`. Update the unit tests' identifiers, fixtures, and wording to match. Verify that `npx vitest run` passes, `npm run lint` is clean, `npm run build` succeeds, and grepping `src` finds no `'puzzle'`/`'user'` type strings, `section`, `clue`, or `entered` outside the migration and its tests.
+- [x] 3.1 Switch the stored types to `'given'`/`'player'` and apply every rename in design Decision 2: `src/util`, `src/hooks`, `Cell.jsx`, `Board.jsx`, `theme.js`, `App.jsx`, `NewGameDialog.jsx`, and `git mv src/MiniBoard.jsx src/MiniPuzzle.jsx`. Update the unit tests' identifiers, fixtures, and wording to match. Verify that `npx vitest run` passes, `npm run lint` is clean, `npm run build` succeeds, and grepping `src` finds no `'puzzle'`/`'user'` type strings, `section`, `clue`, or `entered` outside the migration and its tests.
 
 ## 4. Tests and Help text
 
