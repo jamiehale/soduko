@@ -14,7 +14,7 @@
 
 ## 4. Tests and Help text
 
-- [ ] 4.1 Update `e2e/helpers.js` to write the new format, rename `puzzleValues` to `givenValues`, and bring e2e test titles and comments in line with the glossary. Add the persistence test that old-format saves are rewritten in the new format and reload intact. Verify that `npm run test:e2e` passes, including the v0.2.2 fixture test.
+- [x] 4.1 Update `e2e/helpers.js` to write the new format, rename `puzzleValues` to `givenValues`, and bring e2e test titles and comments in line with the glossary. Add the persistence test that old-format saves are rewritten in the new format and reload intact. Verify that `npm run test:e2e` passes, including the v0.2.2 fixture test.
 - [ ] 4.2 Change the Help text to "puzzle" wording (Decision 3) and add the `app-help` "Puzzle wording" e2e test. Run the visual suite and confirm that only `help.png` differs. Regenerate it, review it, and commit with the reason. Verify that the full `npm run test:e2e` passes.
 - [ ] 4.3 Bump `package.json` (and `package-lock.json`) to 0.4.0 with `npm version 0.4.0 --no-git-tag-version`. Verify that the Help dialog title reads "soduko v0.4.0" and the `app-help` and visual suites pass.
 

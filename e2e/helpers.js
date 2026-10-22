@@ -28,15 +28,15 @@ const EMPTY = '.'.repeat(81);
 const index = (row, column) => row * 9 + column;
 
 // Builds a board in the saved-game format from an 81-character puzzle string
-// ('.' or '0' blank), plus optional entered values and marks keyed by cell index.
+// ('.' or '0' blank), plus optional player values and marks keyed by cell index.
 const buildBoard = (puzzle, { values = {}, marks = {} } = {}) => puzzle.split('').map((ch, i) => {
   if (ch !== '.' && ch !== '0') {
-    return { type: 'puzzle', value: Number(ch) };
+    return { type: 'given', value: Number(ch) };
   }
   if (values[i] !== undefined) {
-    return { type: 'user', value: values[i] };
+    return { type: 'player', value: values[i] };
   }
-  return { type: 'user', value: marks[i] || [] };
+  return { type: 'player', value: marks[i] || [] };
 });
 
 const buildState = (puzzle, options = {}) => ({
@@ -155,8 +155,8 @@ const boardValues = (page) => page.locator('[data-cell]').evaluateAll((els) => e
   return Number(content.textContent.trim());
 }));
 
-// The values a puzzle string should show, in the same shape as boardValues
-const puzzleValues = (puzzle) => puzzle.split('').map((ch) => (ch === '.' || ch === '0' ? null : Number(ch)));
+// The given values a puzzle string puts on the board, in the same shape as boardValues
+const givenValues = (puzzle) => puzzle.split('').map((ch) => (ch === '.' || ch === '0' ? null : Number(ch)));
 
 module.exports.boardValues = boardValues;
-module.exports.puzzleValues = puzzleValues;
+module.exports.givenValues = givenValues;

@@ -11,8 +11,8 @@ const {
   settle,
 } = require('./helpers');
 
-// Cell 40 is row 4, column 4, section 4. Its peers include 36 (row), 4 (column),
-// and 30 (section). Cell 0 shares nothing with it.
+// Cell 40 is row 4, column 4, box 4. Its peers include 36 (row), 4 (column),
+// and 30 (box). Cell 0 shares nothing with it.
 
 const backgrounds = async (page, cells) => {
   const result = {};
@@ -103,7 +103,7 @@ test('escape clears the selection without changing the board', async ({ page }) 
 });
 
 test.describe('peer highlighting', () => {
-  test("a single cell highlights its row, column, and section", async ({ page }) => {
+  test("a single cell highlights its row, column, and box", async ({ page }) => {
     await open(page, EMPTY);
     await click(page, 40);
     expect(await backgrounds(page, [36, 4, 30, 0, 80])).toEqual({
@@ -115,7 +115,7 @@ test.describe('peer highlighting', () => {
     });
   });
 
-  test('cells in one row across sections highlight only that row', async ({ page }) => {
+  test('cells in one row across boxes highlight only that row', async ({ page }) => {
     await open(page, EMPTY);
     await drag(page, [36, 37, 38, 39, 40, 41, 42]);
     expect(await backgrounds(page, [44, 27, 0, 4])).toEqual({
@@ -128,7 +128,7 @@ test.describe('peer highlighting', () => {
 });
 
 test.describe('value highlighting', () => {
-  // 40 and 0 hold 7; 80 (outside every 7's row, column, and section), 36 (peer of 40),
+  // 40 and 0 hold 7; 80 (outside every 7's row, column, and box), 36 (peer of 40),
   // and 63 (column 0, projected from the 7 at 0) have mark 7
   const options = { values: { 40: 7, 0: 7 }, marks: { 80: [7], 36: [7], 63: [7], 72: [1] } };
 
@@ -147,10 +147,10 @@ test.describe('value highlighting', () => {
     });
   });
 
-  test('every matching value projects its row, column, and section', async ({ page }) => {
+  test('every matching value projects its row, column, and box', async ({ page }) => {
     await open(page, EMPTY, options);
     await click(page, 40);
-    // 8 (row 0), 72 (column 0), and 20 (section 0) are peers only of the 7 at 0
+    // 8 (row 0), 72 (column 0), and 20 (box 0) are peers only of the 7 at 0
     expect(await backgrounds(page, [8, 72, 20])).toEqual({
       8: COLORS.peer,
       72: COLORS.peer,
@@ -161,12 +161,12 @@ test.describe('value highlighting', () => {
   test("cells outside every matching value's areas stay unhighlighted", async ({ page }) => {
     await open(page, EMPTY, options);
     await click(page, 40);
-    // 70 is row 7, column 7, section 8, with no mark 7
+    // 70 is row 7, column 7, box 8, with no mark 7
     expect(await cellBackground(page, 70)).toBe(COLORS.white);
   });
 
   test('filled cells outside the projected areas use the peer style', async ({ page }) => {
-    // 61 (row 6, column 7, section 8) holds an entered 3; 79 (row 8, column 7) is a clue 5
+    // 61 (row 6, column 7, box 8) holds a player 3; 79 (row 8, column 7) is a given 5
     const puzzle = `${EMPTY.slice(0, 79)}5${EMPTY.slice(80)}`;
     await open(page, puzzle, { ...options, values: { ...options.values, 61: 3 } });
     await click(page, 40);
@@ -189,7 +189,7 @@ test.describe('value highlighting', () => {
     expect(await cellBackground(page, 63)).toBe(COLORS.peer);
   });
 
-  test('clue values highlight too', async ({ page }) => {
+  test('given values highlight too', async ({ page }) => {
     const puzzle = `7${EMPTY.slice(1, 40)}7${EMPTY.slice(41)}`;
     await open(page, puzzle);
     await click(page, 40);

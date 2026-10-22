@@ -10,7 +10,7 @@ const {
   click,
 } = require('./helpers');
 
-// In PUZZLE, clue 8 sits at cells 1 and 42; cell 9 is a clue 3 in row 1.
+// In PUZZLE, given 8 sits at cells 1 and 42; cell 9 is a given 3 in row 1.
 // Cell 2 is a peer of cell 1, and cell 70 is not.
 
 const highlightOptions = {
@@ -123,7 +123,7 @@ test.describe('cell state colors', () => {
     for (const i of [1, 42, 50, 2, 70, 13, 80, 16, 17]) {
       states[i] = await cellState(page, i);
     }
-    // Selected clue, same-value clue, same-value entered value
+    // Selected given value, same-value given value, same-value player value
     expect(states[1]).toMatchObject({ background: COLORS.selected, color: COLORS.black });
     expect(states[42]).toMatchObject({ background: COLORS.selected, color: COLORS.black });
     expect(states[50]).toMatchObject({ background: COLORS.selected, color: COLORS.indigo });
@@ -135,12 +135,12 @@ test.describe('cell state colors', () => {
     expect(states[13]).toMatchObject({ background: COLORS.peer, color: COLORS.indigo });
     // Unhighlighted empty cell
     expect(states[80]).toMatchObject({ background: COLORS.white });
-    // Conflicting clue and entered value (both 1 in row 1) keep their text colors
+    // Conflicting given and player values (both 1 in row 1) keep their text colors
     expect(states[16]).toMatchObject({ background: COLORS.error, color: COLORS.black });
     expect(states[17]).toMatchObject({ background: COLORS.error, color: COLORS.indigo });
   });
 
-  test('pencil marks use the entered-value color', async ({ page }) => {
+  test('pencil marks use the player-value color', async ({ page }) => {
     await open(page, EMPTY, { marks: { 0: [5] } });
     const color = await page.locator('[data-cell="0"] p').first().evaluate((el) => getComputedStyle(el).color);
     expect(color).toBe(COLORS.indigo);

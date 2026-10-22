@@ -7,6 +7,8 @@ const {
   PUZZLE,
   open,
   seedRaw,
+  buildState,
+  savedState,
   cellState,
   cellValue,
   cellMarks,
@@ -14,7 +16,7 @@ const {
   drag,
   click,
   boardValues,
-  puzzleValues,
+  givenValues,
 } = require('./helpers');
 
 const STOCK_PUZZLE_1 = '4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......';
@@ -31,7 +33,7 @@ const openRaw = async (page, raw) => {
 };
 
 const expectEmptyDefaultBoard = async (page) => {
-  expect(await boardValues(page)).toEqual(puzzleValues(EMPTY));
+  expect(await boardValues(page)).toEqual(givenValues(EMPTY));
   await expect(page.getByTestId('undo')).toBeDisabled();
   await expect(page.getByTestId('redo')).toBeDisabled();
   await click(page, 0);
@@ -85,7 +87,7 @@ test('loads a game saved by v0.2.2', async ({ page }) => {
   const fixture = fs.readFileSync(path.join(__dirname, 'fixtures', 'saved-game-v0.2.2.json'), 'utf8');
   await openRaw(page, fixture);
 
-  const expected = puzzleValues(STOCK_PUZZLE_1);
+  const expected = givenValues(STOCK_PUZZLE_1);
   expected[1] = 2;
   expect(await boardValues(page)).toEqual(expected);
   expect(await cellMarks(page, 2)).toEqual([1, 7]);
@@ -102,4 +104,34 @@ test('loads a game saved by v0.2.2', async ({ page }) => {
   await page.getByTestId('redo').click();
   await page.getByTestId('redo').click();
   expect(await cellValue(page, 11)).toBe(6);
+});
+
+test('given cells from a v0.2.2 save stay unchangeable', async ({ page }) => {
+  const fixture = fs.readFileSync(path.join(__dirname, 'fixtures', 'saved-game-v0.2.2.json'), 'utf8');
+  await openRaw(page, fixture);
+  await click(page, 0);
+  await page.keyboard.press('9');
+  expect(await cellValue(page, 0)).toBe(4);
+});
+
+// Saves from before v0.4.0 named the cell types 'puzzle' and 'user'
+const toOldFormat = (state) => JSON.stringify(state)
+  .replaceAll('"type":"given"', '"type":"puzzle"')
+  .replaceAll('"type":"player"', '"type":"user"');
+
+const cellTypes = (state) => new Set([state.board, ...state.history, ...state.future].flat().map((c) => c.type));
+
+test('an old-format save is rewritten in the current format on the next change', async ({ page }) => {
+  const state = buildState(PUZZLE, { values: { 2: 7 }, marks: { 3: [1, 2] }, history: [{ values: {} }] });
+  await openRaw(page, toOldFormat(state));
+  await click(page, 5);
+  await page.keyboard.press('6');
+  expect(cellTypes(await savedState(page))).toEqual(new Set(['given', 'player']));
+
+  await reload(page);
+  expect(await cellValue(page, 2)).toBe(7);
+  expect(await cellValue(page, 5)).toBe(6);
+  expect(await cellMarks(page, 3)).toEqual([1, 2]);
+  await page.getByTestId('undo').click();
+  expect(await cellValue(page, 5)).toBeNull();
 });

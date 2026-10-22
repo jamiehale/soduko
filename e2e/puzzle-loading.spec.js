@@ -6,7 +6,7 @@ const {
   cellValue,
   click,
   boardValues,
-  puzzleValues,
+  givenValues,
 } = require('./helpers');
 
 const STOCK_PUZZLE_1 = '4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......';
@@ -38,7 +38,7 @@ test.describe('new game dialog', () => {
     const dialog = await openNewGame(page);
     await dialog.getByRole('button', { name: 'Cancel' }).click();
     await expect(dialog).toBeHidden();
-    const expected = puzzleValues(PUZZLE);
+    const expected = givenValues(PUZZLE);
     expected[0] = 5;
     expect(await boardValues(page)).toEqual(expected);
     await expect(page.getByTestId('undo')).toBeEnabled();
@@ -71,7 +71,7 @@ test.describe('stock puzzles', () => {
     await expect(startButton(dialog)).toBeEnabled();
     await startButton(dialog).click();
     await expect(dialog).toBeHidden();
-    expect(await boardValues(page)).toEqual(puzzleValues(STOCK_PUZZLE_1));
+    expect(await boardValues(page)).toEqual(givenValues(STOCK_PUZZLE_1));
   });
 });
 
@@ -82,7 +82,7 @@ test.describe('custom puzzles', () => {
     await chooseCustom(dialog, PUZZLE);
     await startButton(dialog).click();
     await expect(dialog).toBeHidden();
-    expect(await boardValues(page)).toEqual(puzzleValues(PUZZLE));
+    expect(await boardValues(page)).toEqual(givenValues(PUZZLE));
   });
 
   test('treats zeros as editable blanks', async ({ page }) => {
@@ -90,7 +90,7 @@ test.describe('custom puzzles', () => {
     const dialog = await openNewGame(page);
     await chooseCustom(dialog, PUZZLE.replace(/\./g, '0'));
     await startButton(dialog).click();
-    expect(await boardValues(page)).toEqual(puzzleValues(PUZZLE));
+    expect(await boardValues(page)).toEqual(givenValues(PUZZLE));
     await click(page, 0);
     await page.keyboard.press('5');
     expect(await cellValue(page, 0)).toBe(5);
