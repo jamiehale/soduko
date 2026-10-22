@@ -59,7 +59,7 @@
 
 ## 5. Integration check
 
-- [ ] 5.1 Run the full gate: `npx vitest run`, `npm run lint`, `npm run build`, and `npm run test:e2e`. In `npm start`, on a stock puzzle, pencil-mark a box so that setting a value leaves a box single. Verify that it fills after about half a second, that a following round fills half a second later, and that undo steps back one round at a time.
+- [x] 5.1 Run the full gate: `npx vitest run`, `npm run lint`, `npm run build`, and `npm run test:e2e`. In `npm start`, on a stock puzzle, pencil-mark a box so that setting a value leaves a box single. Verify that it fills after about half a second, that a following round fills half a second later, and that undo steps back one round at a time.
 
 ## Workflow follow-up
 
