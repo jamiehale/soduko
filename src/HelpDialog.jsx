@@ -17,7 +17,7 @@ const HelpDialog = ({
     <DialogTitle>soduko v{version}</DialogTitle>
     <DialogContent>
       <DialogContentText>
-        This is a tool to help solve Sudoku puzzles. Start a new game with a stock board, or enter a custom board.
+        This is a tool to help solve Sudoku puzzles. Start a new game with a stock puzzle, or enter a custom puzzle.
       </DialogContentText>
       <DialogContentText>
         Click to select a single cell. Click and drag to select multiple cells.
@@ -26,10 +26,10 @@ const HelpDialog = ({
         With a single cell selected, type 1-9 to set the cell value. With multiple cells selected, type 1-9 to toggle pencil marks. To toggle pencil marks on a single cell, click and hold on the cell, then type 1-9.
       </DialogContentText>
       <DialogContentText>
-        Custom boards should be 81 characters long, using 1-9 and either &quot;.&quot; or &quot;0&quot; for blanks.
+        Custom puzzles should be 81 characters long, using 1-9 and either &quot;.&quot; or &quot;0&quot; for blanks.
       </DialogContentText>
       <DialogContentText>
-        Stock boards were shamelessly stolen from <Link href="http://norvig.com/top95.txt" target="_new">http://norvig.com/top95.txt</Link>.
+        Stock puzzles were shamelessly stolen from <Link href="http://norvig.com/top95.txt" target="_new">http://norvig.com/top95.txt</Link>.
       </DialogContentText>
     </DialogContent>
     <DialogActions>
