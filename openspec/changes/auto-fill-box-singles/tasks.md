@@ -52,11 +52,10 @@
   Verify with `npx playwright test e2e/board-editing.spec.js`.
 - [x] 3.5 Run the rest of the e2e suite (`npm run test:e2e`) and confirm that no existing test changes because of auto-fill (design Risks). If one does, adjust its seed so that it no longer leaves a box single, and note why in the commit.
 
-## 4. Help and version
+## 4. Version
 
-- [x] 4.1 In `src/HelpDialog.jsx`, after the paragraph on entering values, add a paragraph such as: "After you set a value, any digit left as a pencil mark in only one cell of a box is filled in automatically, half a second apart. Undo reverses each automatic fill." It must not use the word "board". Add the "Auto-fill explained" check to `e2e/app-help.spec.js`. Verify with `npx playwright test e2e/app-help.spec.js`.
-- [x] 4.2 Bump `package.json` (and `package-lock.json`) to 0.5.0 with `npm version 0.5.0 --no-git-tag-version`. Verify that the help dialog title reads `soduko v0.5.0`.
-- [x] 4.3 Run the visual suite and confirm that only `help.png` differs. Regenerate it with `npx playwright test e2e/visual.spec.js -g "help" --update-snapshots`. Review it: the new paragraph is present, the version is masked, and the layout is otherwise unchanged. Commit with a message saying the baseline changed for the new help text.
+- [x] 4.1 Bump `package.json` (and `package-lock.json`) to 0.5.0 with `npm version 0.5.0 --no-git-tag-version`. Verify that the help dialog title reads `soduko v0.5.0`.
+- [x] 4.2 Run the visual suite and confirm that no baseline changes. Verify with `npx playwright test e2e/visual.spec.js`.
 
 ## 5. Integration check
 
@@ -64,5 +63,5 @@
 
 ## Workflow follow-up
 
-- Open a PR. Run the `pr-screenshots` skill for the help dialog change, then merge to `main`, which deploys.
-- Archive the change to sync the `board-editing` and `app-help` specs.
+- Open a PR, then merge to `main`, which deploys.
+- Archive the change to sync the `board-editing` spec.

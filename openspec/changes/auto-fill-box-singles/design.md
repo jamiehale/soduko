@@ -64,7 +64,7 @@ The board-editing specs for this capability call `page.clock.install()` before `
 ## Risks / Trade-offs
 
 - [Auto-fill acts on the player's pencil marks, which may be wrong] → It never runs on a board with a conflict. Each bulk set is one undo step, and conflicts it creates are shown at once.
-- [Surprise for players who didn't expect automatic changes] → The Help dialog explains it, the 500ms pause makes each round visible, and undo reverses it. A setting to turn it off is out of scope (see proposal).
+- [Surprise for players who didn't expect automatic changes] → The 500ms pause makes each round visible, and undo reverses it. A setting to turn it off is out of scope (see proposal).
 - [Existing e2e tests that set a value with marks seeded might now trigger auto-fill and change cells they assert on] → They assert immediately after the keypress, before 500ms of real time passes. Run the full suite and adjust seeds if any test that waits (for example, visual tests) picks up a fill.
 - [Clock installation may affect MUI transitions in the same test] → Install the clock only in the auto-fill tests, which open no dialogs.
 - [A save written mid-cascade reloads without the remaining rounds] → Accepted. The spec says a reload doesn't resume, and the next player value set re-scans the whole board.
