@@ -10,11 +10,11 @@
 
 ## 3. Visual baseline
 
-- [ ] 3.1 Run the visual suite and confirm that only `single-selection.png` differs. Regenerate that one baseline with `npx playwright test e2e/visual.spec.js -g "single selection" --update-snapshots`. Review the new PNG: every 8's row, column, and section is peer, the 8s are selected, and marks follow the precedence. Verify that the full `npm run test:e2e` passes, then commit with a message saying why the baseline changed.
+- [x] 3.1 Run the visual suite and confirm that only `single-selection.png` differs. Regenerate that one baseline with `npx playwright test e2e/visual.spec.js -g "single selection" --update-snapshots`. Review the new PNG: every 8's row, column, and section is peer, the 8s are selected, and marks follow the precedence. Verify that the full `npm run test:e2e` passes, then commit with a message saying why the baseline changed.
 
 ## 4. Integration check
 
-- [ ] 4.1 Run the full gate: `npx vitest run`, `npm run lint`, `npm run build`, and `npm run test:e2e`. Also check the behavior by hand in `npm start`, by selecting a placed value on a stock puzzle. Verify that all pass and the highlight matches the spec.
+- [x] 4.1 Run the full gate: `npx vitest run`, `npm run lint`, `npm run build`, and `npm run test:e2e`. Also check the behavior by hand in `npm start`, by selecting a placed value on a stock puzzle. Verify that all pass and the highlight matches the spec.
 
 ## Workflow follow-up
 
