@@ -6,7 +6,7 @@
 
 ## 2. Behavior tests
 
-- [ ] 2.1 In `e2e/cell-selection.spec.js`, add the "Filled cells are blocked" scenario (an entered value and a clue outside every 7's areas are peer) and an "Empty cell selected" check that a far-off filled cell stays white. Confirm that the existing "stays unhighlighted" test targets an empty cell. Verify that `npx playwright test e2e/cell-selection.spec.js` passes and that the new filled-cell test fails without the 1.1 rule.
+- [x] 2.1 In `e2e/cell-selection.spec.js`, add the "Filled cells are blocked" scenario (an entered value and a clue outside every 7's areas are peer) and an "Empty cell selected" check that a far-off filled cell stays white. Confirm that the existing "stays unhighlighted" test targets an empty cell. Verify that `npx playwright test e2e/cell-selection.spec.js` passes and that the new filled-cell test fails without the 1.1 rule.
 
 ## 3. Visual baseline
 
