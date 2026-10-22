@@ -13,7 +13,7 @@ Any two cells with the same value in the same row, column, or 3×3 section SHALL
 - **WHEN** the player enters 3 in a cell whose row already holds a 3
 - **THEN** both cells are shown in the error style
 
-#### Scenario: Section conflict
+#### Scenario: Box conflict
 - **WHEN** two cells in the same section but different rows and columns hold 9
 - **THEN** both cells are shown in the error style
 
