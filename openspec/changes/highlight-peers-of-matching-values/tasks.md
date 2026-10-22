@@ -6,7 +6,7 @@
 
 ## 2. Behavior tests
 
-- [ ] 2.1 In `e2e/cell-selection.spec.js`, add a test for "Peers of every matching value" and "Remaining placements stay unhighlighted". Update the existing related-marks test, where cell 72 now shares column 0 with the 7 at cell 0, and add a "Matching mark inside a projected area" assertion. Verify that `npx playwright test e2e/cell-selection.spec.js` passes.
+- [x] 2.1 In `e2e/cell-selection.spec.js`, add a test for "Peers of every matching value" and "Remaining placements stay unhighlighted". Update the existing related-marks test, where cell 72 now shares column 0 with the 7 at cell 0, and add a "Matching mark inside a projected area" assertion. Verify that `npx playwright test e2e/cell-selection.spec.js` passes.
 
 ## 3. Visual baseline
 
