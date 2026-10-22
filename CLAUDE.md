@@ -27,7 +27,7 @@ Source files containing JSX use `.jsx`; plain JS stays `.js`. `vite.config.mjs` 
 ## Tests
 
 - **Unit** (`src/**/__tests__/`): pure `src/util/` functions, the exported `boardReducer`/`selectionReducer`, and `useGame`/`useHighlight` (plain functions, called directly). They use Vitest globals (`describe`/`it`/`expect`); none need a DOM, so Vitest runs in the `node` environment.
-- **E2E** (`e2e/*.spec.js`): one spec per capability in `openspec/specs/`, plus `visual.spec.js` (screenshots in `e2e/visual.spec.js-snapshots/`, Linux/Chromium-specific). These are the regression gate for dependency upgrades and must not depend on React/MUI internals.
+- **E2E** (`e2e/*.spec.js`): one spec per capability in `openspec/specs/`, plus `visual.spec.js` (screenshots in `e2e/visual.spec.js-snapshots/`, Linux/Chromium-specific). Screenshots compare with a per-pixel `threshold` of 0.05 (`playwright.config.js`); Playwright's default 0.2 can't tell the peer (`#ddf`) and related (`#ffff44`) backgrounds from white. These are the regression gate for dependency upgrades and must not depend on React/MUI internals.
 - DOM hooks for tests: `data-testid="board"`, `data-cell="<index>"` on each cell, and `data-testid` `help`/`undo`/`redo` on the icon buttons. Keep them when refactoring components.
 - `e2e/helpers.js` seeds a game by writing the saved-game format to `localStorage` before load (`open(page, puzzle, { values, marks, history, future })`) and reads cell value/marks/colors from the DOM. Assert highlight state through computed colors.
 - `e2e/fixtures/saved-game-v0.2.2.json` is a real v0.2.2 save; never regenerate it. `e2e/capture-fixture.js` exists only to capture fixtures for future formats.

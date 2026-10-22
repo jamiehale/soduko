@@ -128,8 +128,9 @@ test.describe('peer highlighting', () => {
 });
 
 test.describe('value highlighting', () => {
-  // 40 and 0 hold 7; 80 (unrelated) and 36 (peer of 40) have mark 7
-  const options = { values: { 40: 7, 0: 7 }, marks: { 80: [7], 36: [7], 72: [1] } };
+  // 40 and 0 hold 7; 80 (outside every 7's row, column, and section), 36 (peer of 40),
+  // and 63 (column 0, projected from the 7 at 0) have mark 7
+  const options = { values: { 40: 7, 0: 7 }, marks: { 80: [7], 36: [7], 63: [7], 72: [1] } };
 
   test('cells with the same value use the selected style', async ({ page }) => {
     await open(page, EMPTY, options);
@@ -140,11 +141,34 @@ test.describe('value highlighting', () => {
   test('non-peer cells with the matching mark use the related style', async ({ page }) => {
     await open(page, EMPTY, options);
     await click(page, 40);
-    expect(await backgrounds(page, [80, 36, 72])).toEqual({
+    expect(await backgrounds(page, [80, 36])).toEqual({
       80: COLORS.related,
       36: COLORS.peer,
-      72: COLORS.white,
     });
+  });
+
+  test('every matching value projects its row, column, and section', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await click(page, 40);
+    // 8 (row 0), 72 (column 0), and 20 (section 0) are peers only of the 7 at 0
+    expect(await backgrounds(page, [8, 72, 20])).toEqual({
+      8: COLORS.peer,
+      72: COLORS.peer,
+      20: COLORS.peer,
+    });
+  });
+
+  test("cells outside every matching value's areas stay unhighlighted", async ({ page }) => {
+    await open(page, EMPTY, options);
+    await click(page, 40);
+    // 70 is row 7, column 7, section 8, with no mark 7
+    expect(await cellBackground(page, 70)).toBe(COLORS.white);
+  });
+
+  test('a matching mark inside a projected area uses the peer style', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await click(page, 40);
+    expect(await cellBackground(page, 63)).toBe(COLORS.peer);
   });
 
   test('clue values highlight too', async ({ page }) => {

@@ -19,11 +19,11 @@ const Container = styled.div`
 `;
 
 const highlightLevel = (row, column, section, cell, selected, highlight) => {
-  const { highlightRow, highlightColumn, highlightSection, highlightValue } = highlight;
+  const { highlightRows = [], highlightColumns = [], highlightSections = [], highlightValue } = highlight;
   if ((!R.isNil(highlightValue) && cellValueEquals(highlightValue, cell)) || selected) {
     return 'selected';
   }
-  if (row === highlightRow || column === highlightColumn || section === highlightSection) {
+  if (R.includes(row, highlightRows) || R.includes(column, highlightColumns) || R.includes(section, highlightSections)) {
     return 'peer';
   }
   if (cellHasMark(highlightValue, cell)) {
