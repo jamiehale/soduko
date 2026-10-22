@@ -35,7 +35,7 @@ Source files containing JSX use `.jsx`; plain JS stays `.js`. `vite.config.mjs` 
 ## CI and deployment
 
 - **`.github/workflows/ci.yml`** runs on every pull request and is also called by the deploy workflow. It runs `npm ci`, `npx vitest run`, `npm run lint`, `npm run build`, and `npm run test:e2e`, then uploads `build/` as the `build` artifact (and the Playwright report on failure). Node comes from `.nvmrc`. It is pinned to `runs-on: ubuntu-24.04` because the visual baselines pass there; moving to a newer image is a deliberate change that needs the visual suite checked first.
-- **`.github/workflows/deploy.yml`** runs on push to `main` and by hand (`workflow_dispatch`). Pushes that touch only `openspec/**`, `README.md`, or `CLAUDE.md` don't deploy (`paths-ignore`); a push that also touches anything else does. It runs CI, then deploys that exact `build` artifact without rebuilding. The upload goes to the host over FTPS with `lftp`, against the `production` environment (only `main` may deploy). Deploys queue; they never overlap.
+- **`.github/workflows/deploy.yml`** runs on push to `main` and by hand (`workflow_dispatch`). Pushes that touch only `openspec/**`, `.claude/**`, `README.md`, or `CLAUDE.md` don't deploy (`paths-ignore`); a push that also touches anything else does. It runs CI, then deploys that exact `build` artifact without rebuilding. The upload goes to the host over FTPS with `lftp`, against the `production` environment (only `main` may deploy). Deploys queue; they never overlap.
 - **Environment `production`:**
   - secrets: `FTP_USER`, `FTP_PASSWORD`
   - variables: `FTP_HOST`, `FTP_PORT` (default 21), `FTP_REMOTE_DIR` (the web root as the FTP user sees it, default `/`)
@@ -46,6 +46,7 @@ Source files containing JSX use `.jsx`; plain JS stays `.js`. `vite.config.mjs` 
   3. a `--delete` pass over `assets/` only, which prunes stale bundles
 - **Rehearsal:** run the workflow by hand with `dry_run` checked. It connects, verifies TLS, checks the web root exists, and lists what would change without writing. The script `cd`s into the web root before mirroring because `mirror --dry-run` alone exits 0 on connection and TLS errors.
 - **Rollback:** revert the commit on `main`; the push redeploys the previous build.
+- **PR screenshots:** for UI changes, the `pr-screenshots` skill (`.claude/skills/pr-screenshots/`) posts a before/after table to the PR. Images live on the orphan `pr-screenshots` branch, which nothing deploys or merges.
 
 ## Architecture
 
