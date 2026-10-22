@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Value highlighting
-When exactly one cell is selected and it holds a value N (clue or entered), every other cell holding N SHALL be shown in the "selected" style. The row, column, and 3×3 section of every cell holding N, including the selected cell, SHALL be shown in the "peer" style, except for cells shown in a stronger style. Cells outside all of those rows, columns, and sections that have pencil mark N SHALL be shown in the "related" style. When the single selected cell is empty or holds only pencil marks, no value, mark, or extra peer highlighting SHALL be applied beyond its own row, column, and section.
+When exactly one cell is selected and it holds a value N (clue or entered), every other cell holding N SHALL be shown in the "selected" style, and the row, column, and 3×3 section of every cell holding N SHALL be shown in the "peer" style. Cells outside all of those areas that have pencil mark N SHALL be shown in the "related" style. An empty or pencil-marked selected cell SHALL get no value highlighting.
 
 #### Scenario: Matching values
 - **WHEN** the single selected cell holds 7
