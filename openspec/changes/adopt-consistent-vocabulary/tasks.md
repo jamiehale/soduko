@@ -20,7 +20,7 @@
 
 ## 5. Integration check
 
-- [ ] 5.1 Run the full gate (`npx vitest run`, `npm run lint`, `npm run build`, `npm run test:e2e`). Load a v0.3.0-format save by hand in `npm start` and confirm that it plays and then saves in the new format. Grep `src`, `e2e`, `openspec/specs`, `README.md`, and `CLAUDE.md` for `clue`, `entered value`, `section`, `'puzzle'`, `'user'`, and "stock board"/"custom board", and expect hits only in the glossary's "replaces" notes, the migration, its tests, and the v0.2.2 fixture. Verify that all pass.
+- [x] 5.1 Run the full gate (`npx vitest run`, `npm run lint`, `npm run build`, `npm run test:e2e`). Load a v0.3.0-format save by hand in `npm start` and confirm that it plays and then saves in the new format. Grep `src`, `e2e`, `openspec/specs`, `README.md`, and `CLAUDE.md` for `clue`, `entered value`, `section`, `'puzzle'`, `'user'`, and "stock board"/"custom board", and expect hits only in the glossary's "replaces" notes, the migration, its tests, and the v0.2.2 fixture. Verify that all pass.
 
 ## Workflow follow-up
 
