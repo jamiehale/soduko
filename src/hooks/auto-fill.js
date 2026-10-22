@@ -6,11 +6,6 @@ import { setCellValues } from './board';
 
 const DELAY = 500;
 
-// Fills box singles in timed rounds after a player value set. The board is
-// kept in a ref, so a timer never sees a stale render, and each round writes
-// the board it produced back to the ref, so the next round doesn't depend on
-// React having rendered in between. One timeout slot means start() replaces
-// any cascade in progress.
 const useAutoFill = ({ board, dispatch }) => {
   const boardRef = useRef(board);
   const timeoutRef = useRef(null);
@@ -33,6 +28,7 @@ const useAutoFill = ({ board, dispatch }) => {
         return;
       }
       setCellValues(dispatch, placements);
+      // The next round may fire before React renders this one; without this it would re-apply the same placements.
       boardRef.current = boardWithSetValues(placements, current);
       timeoutRef.current = setTimeout(step, DELAY);
     };
