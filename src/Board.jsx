@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import * as R from 'ramda';
 import UnstyledCell from './Cell';
 import { rowFromCount, columnFromCount, sectionFromCount } from './util/board';
-import { cellValueEquals, cellHasMark } from './util/cell';
+import { cellValueEquals, cellHasMark, isCellWithValue } from './util/cell';
 import useBorder from './hooks/border';
 
 const cellKey = (row, column) => `${row}|${column}`;
@@ -22,6 +22,10 @@ const highlightLevel = (row, column, section, cell, selected, highlight) => {
   const { highlightRows = [], highlightColumns = [], highlightSections = [], highlightValue } = highlight;
   if ((!R.isNil(highlightValue) && cellValueEquals(highlightValue, cell)) || selected) {
     return 'selected';
+  }
+  // A selected value can't go in any filled cell
+  if (!R.isNil(highlightValue) && isCellWithValue(cell)) {
+    return 'peer';
   }
   if (R.includes(row, highlightRows) || R.includes(column, highlightColumns) || R.includes(section, highlightSections)) {
     return 'peer';
