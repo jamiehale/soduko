@@ -12,7 +12,7 @@ const {
   settle,
 } = require('./helpers');
 
-// In the default puzzle, cells 1 (8) and 4 (4) are clues; 0, 2, 3 are empty.
+// In the default puzzle, cells 1 (8) and 4 (4) are given cells; 0, 2, 3 are empty.
 
 const undoButton = (page) => page.getByTestId('undo');
 const redoButton = (page) => page.getByTestId('redo');
@@ -47,8 +47,8 @@ test('typing the same value clears it', async ({ page }) => {
   expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [] });
 });
 
-test.describe('clue cells are immutable', () => {
-  test('typing on a clue changes nothing and adds no undo step', async ({ page }) => {
+test.describe('given cells are immutable', () => {
+  test('typing on a given cell changes nothing and adds no undo step', async ({ page }) => {
     await open(page);
     await click(page, 1);
     await page.keyboard.press('5');
@@ -56,7 +56,7 @@ test.describe('clue cells are immutable', () => {
     await expect(undoButton(page)).toBeDisabled();
   });
 
-  test('marks skip clue cells', async ({ page }) => {
+  test('marks skip given cells', async ({ page }) => {
     await open(page);
     await drag(page, [0, 1, 2]);
     await page.keyboard.press('2');
@@ -67,7 +67,7 @@ test.describe('clue cells are immutable', () => {
 });
 
 test('setting a value clears that mark from related cells only', async ({ page }) => {
-  // 2 shares the row with 0, 10 the section, 27 the column; 80 is unrelated
+  // 2 shares the row with 0, 10 the box, 27 the column; 80 is unrelated
   await open(page, undefined, { marks: { 2: [6], 10: [3, 6], 27: [6], 80: [6] } });
   await click(page, 0);
   await page.keyboard.press('6');

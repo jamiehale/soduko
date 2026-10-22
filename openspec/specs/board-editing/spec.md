@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Defines how a player changes the board: entering cell values, toggling pencil marks, and undoing, redoing, or resetting their work. Clue cells from the puzzle cannot be changed.
+Defines how a player changes the board: entering cell values, toggling pencil marks, and undoing, redoing, or resetting their work. Given cells, populated from the puzzle, cannot be changed.
 
 ## Requirements
 
@@ -31,11 +31,11 @@ Typing the value a non-clue cell already holds SHALL clear the cell, leaving it 
 ### Requirement: Clue cells are immutable
 Cells given by the puzzle SHALL NOT be changed by entering values or toggling marks, and such attempts SHALL NOT create an undo step.
 
-#### Scenario: Type on a clue cell
+#### Scenario: Type on a given cell
 - **WHEN** a single clue cell is selected and the player types a digit
 - **THEN** the clue's value is unchanged and the undo button's enabled state does not change
 
-#### Scenario: Marks skip clue cells
+#### Scenario: Marks skip given cells
 - **WHEN** a selection containing clue cells and empty cells receives a pencil-mark toggle
 - **THEN** only the empty non-clue cells change
 

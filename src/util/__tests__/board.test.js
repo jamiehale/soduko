@@ -2,7 +2,7 @@ import * as R from 'ramda';
 import {
   rowFromCount,
   columnFromCount,
-  sectionFromCount,
+  boxFromCount,
   makeBoard,
   resetBoard,
   allCellsHaveMark,
@@ -44,11 +44,11 @@ describe('columnFromCount', () => {
   });
 });
 
-describe('sectionFromCount', () => {
-  it('maps to sections', () => {
+describe('boxFromCount', () => {
+  it('maps to boxes', () => {
     R.addIndex(R.forEach)(
-      (section, i) => {
-        expect(sectionFromCount(i)).toBe(section);
+      (box, i) => {
+        expect(boxFromCount(i)).toBe(box);
       },
       R.flatten(
         R.map(
@@ -71,76 +71,76 @@ describe('sectionFromCount', () => {
 describe('makeBoard', () => {
   it('creates puzzle cells', () => {
     expect(makeBoard([1, 2, 3])).toStrictEqual([
-      { type: 'puzzle', value: 1 },
-      { type: 'puzzle', value: 2 },
-      { type: 'puzzle', value: 3 },
+      { type: 'given', value: 1 },
+      { type: 'given', value: 2 },
+      { type: 'given', value: 3 },
     ]);
   });
 
-  it('creates user cells', () => {
+  it('creates player cells', () => {
     expect(makeBoard(['.', '.'])).toStrictEqual([
-      { type: 'user', value: [] },
-      { type: 'user', value: [] },
+      { type: 'player', value: [] },
+      { type: 'player', value: [] },
     ]);
   });
 
   it('handles a mix', () => {
     expect(makeBoard([1, 2, '.', 3, '.'])).toStrictEqual([
-      { type: 'puzzle', value: 1 },
-      { type: 'puzzle', value: 2 },
-      { type: 'user', value: [] },
-      { type: 'puzzle', value: 3 },
-      { type: 'user', value: [] },
+      { type: 'given', value: 1 },
+      { type: 'given', value: 2 },
+      { type: 'player', value: [] },
+      { type: 'given', value: 3 },
+      { type: 'player', value: [] },
     ]);
   });
 });
 
 describe('resetBoard', () => {
-  it('resets set user cells', () => {
+  it('resets player cells with values', () => {
     expect(resetBoard([
-      { type: 'user', value: 3 },
-      { type: 'user', value: 5 },
-      { type: 'user', value: 7 },
+      { type: 'player', value: 3 },
+      { type: 'player', value: 5 },
+      { type: 'player', value: 7 },
     ])).toStrictEqual([
-      { type: 'user', value: [] },
-      { type: 'user', value: [] },
-      { type: 'user', value: [] },
+      { type: 'player', value: [] },
+      { type: 'player', value: [] },
+      { type: 'player', value: [] },
     ]);
   });
 
-  it('resets marked user cells', () => {
+  it('resets player cells with marks', () => {
     expect(resetBoard([
-      { type: 'user', value: [1, 2, 3] },
-      { type: 'user', value: [4, 5, 6] },
-      { type: 'user', value: [7, 8, 9] },
+      { type: 'player', value: [1, 2, 3] },
+      { type: 'player', value: [4, 5, 6] },
+      { type: 'player', value: [7, 8, 9] },
     ])).toStrictEqual([
-      { type: 'user', value: [] },
-      { type: 'user', value: [] },
-      { type: 'user', value: [] },
+      { type: 'player', value: [] },
+      { type: 'player', value: [] },
+      { type: 'player', value: [] },
     ]);
   });
 
   it('ignores puzzle cells', () => {
     expect(resetBoard([
-      { type: 'puzzle', value: 3 },
-      { type: 'puzzle', value: 4 },
-      { type: 'puzzle', value: 5 },
+      { type: 'given', value: 3 },
+      { type: 'given', value: 4 },
+      { type: 'given', value: 5 },
     ])).toStrictEqual([
-      { type: 'puzzle', value: 3 },
-      { type: 'puzzle', value: 4 },
-      { type: 'puzzle', value: 5 },
+      { type: 'given', value: 3 },
+      { type: 'given', value: 4 },
+      { type: 'given', value: 5 },
     ]);
   });
 
   it('handles a mix', () => {
     expect(resetBoard([
-      { type: 'user', value: 3 },
-      { type: 'user', value: [1, 2, 3] },
-      { type: 'puzzle', value: 9 },
+      { type: 'player', value: 3 },
+      { type: 'player', value: [1, 2, 3] },
+      { type: 'given', value: 9 },
     ])).toStrictEqual([
-      { type: 'user', value: [] },
-      { type: 'user', value: [] },
-      { type: 'puzzle', value: 9 },
+      { type: 'player', value: [] },
+      { type: 'player', value: [] },
+      { type: 'given', value: 9 },
     ]);
   });
 });
@@ -148,23 +148,23 @@ describe('resetBoard', () => {
 describe('allCellsHaveMark', () => {
   it('handles a single cell', () => {
     expect(allCellsHaveMark(4, [
-      { type: 'user', value: [4] },
+      { type: 'player', value: [4] },
     ])).toBe(true);
   });
 
   it('handles multiple cells', () => {
     expect(allCellsHaveMark(4, [
-      { type: 'user', value: [1, 2, 3, 4] },
-      { type: 'user', value: [3, 4, 5, 6] },
-      { type: 'user', value: [4, 5, 6, 7] },
+      { type: 'player', value: [1, 2, 3, 4] },
+      { type: 'player', value: [3, 4, 5, 6] },
+      { type: 'player', value: [4, 5, 6, 7] },
     ])).toBe(true);
   });
 
   it('is false if a single cell is missing mark', () => {
     expect(allCellsHaveMark(4, [
-      { type: 'user', value: [1, 2, 3, 4] },
-      { type: 'user', value: [3, 5, 6] },
-      { type: 'user', value: [4, 5, 6, 7] },
+      { type: 'player', value: [1, 2, 3, 4] },
+      { type: 'player', value: [3, 5, 6] },
+      { type: 'player', value: [4, 5, 6, 7] },
     ])).toBe(false);
   });
 
@@ -178,15 +178,15 @@ describe('boardWithMarkSet', () => {
   
   beforeEach(() => {
     board = [
-      makeCell('puzzle', 1),
-      makeCell('puzzle', 2),
-      makeCell('puzzle', 3),
-      makeCell('user', [5, 6]),
-      makeCell('user', [2, 3]),
-      makeCell('puzzle', 6),
-      makeCell('puzzle', 7),
-      makeCell('user', [4, 5, 6]),
-      makeCell('puzzle', 9),
+      makeCell('given', 1),
+      makeCell('given', 2),
+      makeCell('given', 3),
+      makeCell('player', [5, 6]),
+      makeCell('player', [2, 3]),
+      makeCell('given', 6),
+      makeCell('given', 7),
+      makeCell('player', [4, 5, 6]),
+      makeCell('given', 9),
     ];
   });
 
@@ -200,15 +200,15 @@ describe('boardWithMarkSet', () => {
 
   it('marks a single cell', () => {
     expect(boardWithMarkSet(4, [3], board)).toStrictEqual([
-      makeCell('puzzle', 1),
-      makeCell('puzzle', 2),
-      makeCell('puzzle', 3),
-      makeCell('user', [4, 5, 6]),
-      makeCell('user', [2, 3]),
-      makeCell('puzzle', 6),
-      makeCell('puzzle', 7),
-      makeCell('user', [4, 5, 6]),
-      makeCell('puzzle', 9),
+      makeCell('given', 1),
+      makeCell('given', 2),
+      makeCell('given', 3),
+      makeCell('player', [4, 5, 6]),
+      makeCell('player', [2, 3]),
+      makeCell('given', 6),
+      makeCell('given', 7),
+      makeCell('player', [4, 5, 6]),
+      makeCell('given', 9),
     ]);
   });
 
@@ -218,29 +218,29 @@ describe('boardWithMarkSet', () => {
 
   it('marks multiple cells', () => {
     expect(boardWithMarkSet(4, [3, 4, 7], board)).toStrictEqual([
-      makeCell('puzzle', 1),
-      makeCell('puzzle', 2),
-      makeCell('puzzle', 3),
-      makeCell('user', [4, 5, 6]),
-      makeCell('user', [2, 3, 4]),
-      makeCell('puzzle', 6),
-      makeCell('puzzle', 7),
-      makeCell('user', [4, 5, 6]),
-      makeCell('puzzle', 9),
+      makeCell('given', 1),
+      makeCell('given', 2),
+      makeCell('given', 3),
+      makeCell('player', [4, 5, 6]),
+      makeCell('player', [2, 3, 4]),
+      makeCell('given', 6),
+      makeCell('given', 7),
+      makeCell('player', [4, 5, 6]),
+      makeCell('given', 9),
     ]);
   });
 
   it('handles an entire board', () => {
     expect(boardWithMarkSet(4, [0, 1, 2, 3, 4, 5, 6, 7, 8], board)).toStrictEqual([
-      makeCell('puzzle', 1),
-      makeCell('puzzle', 2),
-      makeCell('puzzle', 3),
-      makeCell('user', [4, 5, 6]),
-      makeCell('user', [2, 3, 4]),
-      makeCell('puzzle', 6),
-      makeCell('puzzle', 7),
-      makeCell('user', [4, 5, 6]),
-      makeCell('puzzle', 9),
+      makeCell('given', 1),
+      makeCell('given', 2),
+      makeCell('given', 3),
+      makeCell('player', [4, 5, 6]),
+      makeCell('player', [2, 3, 4]),
+      makeCell('given', 6),
+      makeCell('given', 7),
+      makeCell('player', [4, 5, 6]),
+      makeCell('given', 9),
     ]);
   });
 });
@@ -250,15 +250,15 @@ describe('boardWithMarkCleared', () => {
   
   beforeEach(() => {
     board = [
-      makeCell('puzzle', 1),
-      makeCell('puzzle', 2),
-      makeCell('puzzle', 3),
-      makeCell('user', [5, 6]),
-      makeCell('user', [2, 3]),
-      makeCell('puzzle', 6),
-      makeCell('puzzle', 7),
-      makeCell('user', [4, 5, 6]),
-      makeCell('puzzle', 9),
+      makeCell('given', 1),
+      makeCell('given', 2),
+      makeCell('given', 3),
+      makeCell('player', [5, 6]),
+      makeCell('player', [2, 3]),
+      makeCell('given', 6),
+      makeCell('given', 7),
+      makeCell('player', [4, 5, 6]),
+      makeCell('given', 9),
     ];
   });
 
@@ -272,15 +272,15 @@ describe('boardWithMarkCleared', () => {
 
   it('clears a single cell', () => {
     expect(boardWithMarkCleared(5, [3], board)).toStrictEqual([
-      makeCell('puzzle', 1),
-      makeCell('puzzle', 2),
-      makeCell('puzzle', 3),
-      makeCell('user', [6]),
-      makeCell('user', [2, 3]),
-      makeCell('puzzle', 6),
-      makeCell('puzzle', 7),
-      makeCell('user', [4, 5, 6]),
-      makeCell('puzzle', 9),
+      makeCell('given', 1),
+      makeCell('given', 2),
+      makeCell('given', 3),
+      makeCell('player', [6]),
+      makeCell('player', [2, 3]),
+      makeCell('given', 6),
+      makeCell('given', 7),
+      makeCell('player', [4, 5, 6]),
+      makeCell('given', 9),
     ]);
   });
 
@@ -290,29 +290,29 @@ describe('boardWithMarkCleared', () => {
 
   it('clears multiple cells', () => {
     expect(boardWithMarkCleared(5, [3, 4, 7], board)).toStrictEqual([
-      makeCell('puzzle', 1),
-      makeCell('puzzle', 2),
-      makeCell('puzzle', 3),
-      makeCell('user', [6]),
-      makeCell('user', [2, 3]),
-      makeCell('puzzle', 6),
-      makeCell('puzzle', 7),
-      makeCell('user', [4, 6]),
-      makeCell('puzzle', 9),
+      makeCell('given', 1),
+      makeCell('given', 2),
+      makeCell('given', 3),
+      makeCell('player', [6]),
+      makeCell('player', [2, 3]),
+      makeCell('given', 6),
+      makeCell('given', 7),
+      makeCell('player', [4, 6]),
+      makeCell('given', 9),
     ]);
   });
 
   it('handles an entire board', () => {
     expect(boardWithMarkCleared(5, [0, 1, 2, 3, 4, 5, 6, 7, 8], board)).toStrictEqual([
-      makeCell('puzzle', 1),
-      makeCell('puzzle', 2),
-      makeCell('puzzle', 3),
-      makeCell('user', [6]),
-      makeCell('user', [2, 3]),
-      makeCell('puzzle', 6),
-      makeCell('puzzle', 7),
-      makeCell('user', [4, 6]),
-      makeCell('puzzle', 9),
+      makeCell('given', 1),
+      makeCell('given', 2),
+      makeCell('given', 3),
+      makeCell('player', [6]),
+      makeCell('player', [2, 3]),
+      makeCell('given', 6),
+      makeCell('given', 7),
+      makeCell('player', [4, 6]),
+      makeCell('given', 9),
     ]);
   });
 });
@@ -323,45 +323,45 @@ describe('boardWithRelatedMarksCleared', () => {
   
   beforeEach(() => {
     board = [
-      makeCell('user', 1),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', 3),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('puzzle', 5),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('puzzle', 7),
-      makeCell('user', 4),
-      makeCell('user', [2, 3, 4, 5]),
+      makeCell('player', 1),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', 3),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('given', 5),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('given', 7),
+      makeCell('player', 4),
+      makeCell('player', [2, 3, 4, 5]),
 
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
 
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
 
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
-      makeCell('user', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
+      makeCell('player', [2, 3, 4, 5]),
     ];
 
     boardToTest = boardWithRelatedMarksCleared(4, 7, board);
@@ -379,7 +379,7 @@ describe('boardWithRelatedMarksCleared', () => {
     });
   });
 
-  it('clears from section', () => {
+  it('clears from box', () => {
     [8, 15, 16, 17, 24, 25, 26].forEach((i) => {
       expect(boardToTest[i].value).toStrictEqual([2, 3, 5]);
     });
@@ -394,25 +394,25 @@ describe('boardWithRelatedMarksCleared', () => {
     // 5, same row
     6,
     7,
-    // 8, same row, same section
+    // 8, same row, same box
     9,
     10,
     11,
     12,
     13,
     14,
-    // 15, same section
-    // 16, same column, same section
-    // 17, same section
+    // 15, same box
+    // 16, same column, same box
+    // 17, same box
     18,
     19,
     20,
     21,
     22,
     23,
-    // 24, same section
-    // 25, same column, same section
-    // 26, same section
+    // 24, same box
+    // 25, same column, same box
+    // 26, same box
     27,
     28,
     29,

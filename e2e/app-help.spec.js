@@ -9,9 +9,18 @@ test('help shows the version and usage instructions', async ({ page }) => {
   await expect(dialog).toContainText(`soduko v${version}`);
   await expect(dialog).toContainText('Click to select a single cell. Click and drag to select multiple cells.');
   await expect(dialog).toContainText('type 1-9 to toggle pencil marks');
-  await expect(dialog).toContainText('Custom boards should be 81 characters long');
+  await expect(dialog).toContainText('Custom puzzles should be 81 characters long');
   await expect(dialog.getByRole('link', { name: 'http://norvig.com/top95.txt' }))
     .toHaveAttribute('href', 'http://norvig.com/top95.txt');
+});
+
+test('help calls starting patterns puzzles, not boards', async ({ page }) => {
+  await open(page);
+  await page.getByTestId('help').click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toContainText('Start a new game with a stock puzzle, or enter a custom puzzle.');
+  await expect(dialog).toContainText('Stock puzzles were shamelessly stolen');
+  await expect(dialog).not.toContainText(/board/i);
 });
 
 test('okay closes help without changing the game', async ({ page }) => {

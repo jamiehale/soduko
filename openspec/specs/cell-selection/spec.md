@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Defines how a player selects cells with the mouse and keyboard, and how the board highlights the selected cells, their row/column/section peers, and cells related by value.
+Defines how a player selects cells with the mouse and keyboard, and how the board highlights the selected cells, their row/column/box peers, and cells related by value.
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import { isCellWithValue, getCellValue } from '../util/cell';
-import { columnFromCount, rowFromCount, sectionFromCount } from '../util/board';
+import { columnFromCount, rowFromCount, boxFromCount } from '../util/board';
 
 const collect = R.addIndex(R.reduce)(
   (acc, cell, i) => {
@@ -13,7 +13,7 @@ const collect = R.addIndex(R.reduce)(
         {
           row: rowFromCount(i),
           column: columnFromCount(i),
-          section: sectionFromCount(i),
+          box: boxFromCount(i),
         },
         R.propOr([], getCellValue(cell), acc),
       ),
@@ -31,7 +31,7 @@ const collectValues = R.compose(
       {
         byRow: R.groupBy(R.prop('row'), value),
         byColumn: R.groupBy(R.prop('column'), value),
-        bySection: R.groupBy(R.prop('section'), value),
+        byBox: R.groupBy(R.prop('box'), value),
       },
     ]),
   ),
@@ -49,11 +49,11 @@ const collectConflictingCells = R.compose(
 const collectErrorCells = R.compose(
   R.uniq,
   R.reduce(
-    (acc, { byRow, byColumn, bySection }) => ([
+    (acc, { byRow, byColumn, byBox }) => ([
       ...acc,
       ...collectConflictingCells(byRow),
       ...collectConflictingCells(byColumn),
-      ...collectConflictingCells(bySection),
+      ...collectConflictingCells(byBox),
     ]),
     [],
   ),
@@ -65,7 +65,7 @@ const hasAllValues = (byValue) => hasAll(R.range(1, 10), byValue);
 
 const allPartsComplete = R.compose(
   R.reduce(R.and, true),
-  R.map(({ byRow, byColumn, bySection }) => hasAll(R.range(0, 9), byRow) && hasAll(R.range(0, 9), byColumn) && hasAll(R.range(0, 9), bySection)),
+  R.map(({ byRow, byColumn, byBox }) => hasAll(R.range(0, 9), byRow) && hasAll(R.range(0, 9), byColumn) && hasAll(R.range(0, 9), byBox)),
   R.values,
 );
 

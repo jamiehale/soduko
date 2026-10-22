@@ -4,7 +4,7 @@ This is a tool to help solve Sudoku puzzles. It does not solve them for you, nor
 
 The included functionality is relatively simple:
 
-1. Highlights selected row, column, and section.
+1. Highlights selected row, column, and box.
 2. Allows "pencil marks".
 3. Highlights related pencil marks.
 4. Undo and redo.

@@ -1,5 +1,8 @@
 schema: spec-driven
 
+context: |
+  Use the vocabulary in CLAUDE.md's Glossary (puzzle vs board, given and player cells, box, pencil marks).
+
 # Project context (optional)
 # Add only constraints that should guide OpenSpec artifacts and workflows.
 # Include constraints an agent cannot infer by reading the code.

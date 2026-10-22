@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import MarkedCell from './MarkedCell';
-import { isPuzzleCell, isUserCellWithValue, getCellValue, getCellMarks } from './util/cell';
+import { isGivenCell, isPlayerCellWithValue, getCellValue, getCellMarks } from './util/cell';
 
 const Container = styled(({ highlight, error, borderLeft, borderRight, borderTop, borderBottom, ...props }) => <div {...props} />)`
   border-left: ${({ borderLeft }) => (borderLeft ? '3px solid darkgrey' : '1px solid lightgrey')};
@@ -16,22 +16,22 @@ const Container = styled(({ highlight, error, borderLeft, borderRight, borderTop
   user-select: none;
 `;
 
-const PuzzleCell = styled(Typography)`
-  color: ${({ theme }) => theme.colors.puzzle.text};
+const GivenCell = styled(Typography)`
+  color: ${({ theme }) => theme.colors.given.text};
   font-size: 2rem;
 `;
 
-const UserCell = styled(Typography)`
-  color: ${({ theme }) => theme.colors.user.text};
+const PlayerCell = styled(Typography)`
+  color: ${({ theme }) => theme.colors.player.text};
   font-size: 2rem;
 `;
 
 const cellType = (cell) => {
-  if (isPuzzleCell(cell)) {
-    return <PuzzleCell>{getCellValue(cell)}</PuzzleCell>;
+  if (isGivenCell(cell)) {
+    return <GivenCell>{getCellValue(cell)}</GivenCell>;
   }
-  if (isUserCellWithValue(cell)) {
-    return <UserCell>{getCellValue(cell)}</UserCell>;
+  if (isPlayerCellWithValue(cell)) {
+    return <PlayerCell>{getCellValue(cell)}</PlayerCell>;
   }
   return <MarkedCell marks={getCellMarks(cell)} />
 };

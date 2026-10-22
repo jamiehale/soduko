@@ -16,7 +16,7 @@ const nearlySolved = `${SOLUTION.slice(0, 40)}.${SOLUTION.slice(41)}`;
 
 test.describe('conflict highlighting', () => {
   test('a value repeated in a row marks both cells', async ({ page }) => {
-    // Cell 9 is a clue 3 in row 1
+    // Cell 9 is a given 3 in row 1
     await open(page, PUZZLE);
     await click(page, 13);
     await page.keyboard.press('3');
@@ -24,7 +24,7 @@ test.describe('conflict highlighting', () => {
     expect(await cellBackground(page, 13)).toBe(COLORS.error);
   });
 
-  test('a value repeated in a section marks both cells', async ({ page }) => {
+  test('a value repeated in a box marks both cells', async ({ page }) => {
     await open(page, EMPTY, { values: { 0: 9, 20: 9 } });
     expect(await cellBackground(page, 0)).toBe(COLORS.error);
     expect(await cellBackground(page, 20)).toBe(COLORS.error);
@@ -62,7 +62,7 @@ test.describe('conflict highlighting', () => {
 });
 
 test.describe('solved indicator', () => {
-  test('appears when the last correct value is entered', async ({ page }) => {
+  test('appears when the last correct value is set', async ({ page }) => {
     await open(page, nearlySolved);
     await expect(solved(page)).toHaveCount(0);
     await click(page, 40);

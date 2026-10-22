@@ -1,7 +1,8 @@
 import { useEffect, useReducer } from 'react';
 import * as R from 'ramda';
 import useLocalStorage from './local-storage';
-import { isPuzzleCell } from '../util/cell';
+import { migrateSavedGame } from '../util/saved-game';
+import { isGivenCell } from '../util/cell';
 import {
   makeBoard,
   resetBoard,
@@ -12,9 +13,9 @@ import {
 export const boardReducer = (state, action) => {
   switch (action.type) {
     case 'newGame': {
-      const { board } = action.payload;
+      const { puzzle } = action.payload;
       return {
-        board: makeBoard(board),
+        board: makeBoard(puzzle),
         history: [],
         future: [],
       };
@@ -39,7 +40,7 @@ export const boardReducer = (state, action) => {
     }
     case 'set': {
       const { cellIndex, value } = action.payload;
-      if (isPuzzleCell(state.board[cellIndex])) {
+      if (isGivenCell(state.board[cellIndex])) {
         return state;
       }
       return {
@@ -88,7 +89,7 @@ const useBoard = () => {
 
   const [state, dispatch] = useReducer(
     boardReducer,
-    storedState || {
+    (storedState && migrateSavedGame(storedState)) || {
       board: makeBoard(R.repeat('.', 81)),
       history: [],
       future: [],
@@ -111,8 +112,8 @@ const useBoard = () => {
   };
 };
 
-export const newGame = (dispatch, board) => {
-  dispatch({ type: 'newGame', payload: { board } });
+export const newGame = (dispatch, puzzle) => {
+  dispatch({ type: 'newGame', payload: { puzzle } });
 };
 
 export const reset = (dispatch, board) => {

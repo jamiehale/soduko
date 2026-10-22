@@ -1,8 +1,8 @@
 import * as R from 'ramda';
-import { rowFromCount, columnFromCount, sectionFromCount } from '../util/board';
+import { rowFromCount, columnFromCount, boxFromCount } from '../util/board';
 import { getCellValue, isCellWithValue, cellValueEquals } from '../util/cell';
 
-// The row, column, or section every given cell shares, as a zero- or one-element list
+// The row, column, or box all the listed cells share, as a zero- or one-element list
 const sharedBy = fn => R.compose(
   R.ifElse(R.compose(R.equals(1), R.length), R.identity, R.always([])),
   R.uniq,
@@ -32,14 +32,14 @@ const useHighlight = (selectedCells, board) => {
 
   const highlightValue = singleValue(selectedCells, board);
 
-  // A selected value projects the row, column, and section of every cell holding it
+  // A selected value projects the row, column, and box of every cell holding it
   const projected = R.isNil(highlightValue) ? null : cellsHolding(highlightValue, board);
   const areasOf = fn => (projected ? allOf(fn)(projected) : sharedBy(fn)(selectedCells));
 
   return {
     highlightRows: areasOf(rowFromCount),
     highlightColumns: areasOf(columnFromCount),
-    highlightSections: areasOf(sectionFromCount),
+    highlightBoxes: areasOf(boxFromCount),
     highlightValue,
   };
 };

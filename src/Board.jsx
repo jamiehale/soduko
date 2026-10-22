@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import * as R from 'ramda';
 import UnstyledCell from './Cell';
-import { rowFromCount, columnFromCount, sectionFromCount } from './util/board';
+import { rowFromCount, columnFromCount, boxFromCount } from './util/board';
 import { cellValueEquals, cellHasMark, isCellWithValue } from './util/cell';
 import useBorder from './hooks/border';
 
@@ -18,8 +18,8 @@ const Container = styled.div`
   }
 `;
 
-const highlightLevel = (row, column, section, cell, selected, highlight) => {
-  const { highlightRows = [], highlightColumns = [], highlightSections = [], highlightValue } = highlight;
+const highlightLevel = (row, column, box, cell, selected, highlight) => {
+  const { highlightRows = [], highlightColumns = [], highlightBoxes = [], highlightValue } = highlight;
   if ((!R.isNil(highlightValue) && cellValueEquals(highlightValue, cell)) || selected) {
     return 'selected';
   }
@@ -27,7 +27,7 @@ const highlightLevel = (row, column, section, cell, selected, highlight) => {
   if (!R.isNil(highlightValue) && isCellWithValue(cell)) {
     return 'peer';
   }
-  if (R.includes(row, highlightRows) || R.includes(column, highlightColumns) || R.includes(section, highlightSections)) {
+  if (R.includes(row, highlightRows) || R.includes(column, highlightColumns) || R.includes(box, highlightBoxes)) {
     return 'peer';
   }
   if (cellHasMark(highlightValue, cell)) {
@@ -52,7 +52,7 @@ const Board = ({
       key={cellKey(rowFromCount(i), columnFromCount(i))}
       data-cell={i}
       cell={cell}
-      highlight={highlightLevel(rowFromCount(i), columnFromCount(i), sectionFromCount(i), cell, R.includes(i, selectedCells), highlight)}
+      highlight={highlightLevel(rowFromCount(i), columnFromCount(i), boxFromCount(i), cell, R.includes(i, selectedCells), highlight)}
       error={R.includes(i, errorCells)}
       onMouseDown={R.thunkify(onMouseDown)(i)}
       onMouseUp={R.thunkify(onMouseUp)(i)}

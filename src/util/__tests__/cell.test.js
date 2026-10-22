@@ -1,85 +1,85 @@
 import {
-  isPuzzleCell,
-  isUserCell,
+  isGivenCell,
+  isPlayerCell,
   isCellWithValue,
-  isUserCellWithValue,
+  isPlayerCellWithValue,
   cellValueEquals,
   cellHasMark,
   getCellMarksOr,
-  isUserCellWithMarks,
-  setUserValue,
-  clearUserValue,
+  isPlayerCellWithMarks,
+  setPlayerValue,
+  clearPlayerValue,
   setMark,
   clearMark,
 } from '../cell';
 
-describe('setUserValue', () => {
+describe('setPlayerValue', () => {
   it('sets the value', () => {
-    expect(setUserValue(4, { type: 'user', value: 'anything' })).toStrictEqual({ type: 'user', value: 4 });
+    expect(setPlayerValue(4, { type: 'player', value: 'anything' })).toStrictEqual({ type: 'player', value: 4 });
   });
 });
 
-describe('clearUserValue', () => {
-  it('replaces the user value with empty marks', () => {
-    expect(clearUserValue({ type: 'user', value: 'anything' })).toStrictEqual({ type: 'user', value: [] });
+describe('clearPlayerValue', () => {
+  it('replaces the player value with empty marks', () => {
+    expect(clearPlayerValue({ type: 'player', value: 'anything' })).toStrictEqual({ type: 'player', value: [] });
   });
 });
 
-describe('isPuzzleCell', () => {
+describe('isGivenCell', () => {
   it('identifies puzzle cells', () => {
-    expect(isPuzzleCell({ type: 'puzzle' })).toBe(true);
+    expect(isGivenCell({ type: 'given' })).toBe(true);
   });
 
   it('identifies non-puzzle cells', () => {
-    expect(isPuzzleCell({ type: 'anything else' })).toBe(false);
+    expect(isGivenCell({ type: 'anything else' })).toBe(false);
   });
 });
 
-describe('isUserCell', () => {
-  it('identifies user cells', () => {
-    expect(isUserCell({ type: 'anything else' })).toBe(true);
+describe('isPlayerCell', () => {
+  it('identifies player cells', () => {
+    expect(isPlayerCell({ type: 'anything else' })).toBe(true);
   });
 });
 
-describe('isUserCellWithValue', () => {
-  it('is true for user cells with number values', () => {
-    expect(isUserCellWithValue({ type: 'user', value: 3 })).toBe(true);
+describe('isPlayerCellWithValue', () => {
+  it('is true for player cells with number values', () => {
+    expect(isPlayerCellWithValue({ type: 'player', value: 3 })).toBe(true);
   });
 
-  it('is false for user cells with marks', () => {
-    expect(isUserCellWithValue({ type: 'user', value: [] })).toBe(false);
+  it('is false for player cells with marks', () => {
+    expect(isPlayerCellWithValue({ type: 'player', value: [] })).toBe(false);
   });
 
   it('is false for puzzle cells', () => {
-    expect(isUserCellWithValue({ type: 'puzzle' })).toBe(false);
+    expect(isPlayerCellWithValue({ type: 'given' })).toBe(false);
   });
 });
 
-describe('isUserCellWithMarks', () => {
-  it('is true for user cells with no value', () => {
-    expect(isUserCellWithMarks({ type: 'user', value: [] })).toBe(true);
+describe('isPlayerCellWithMarks', () => {
+  it('is true for player cells with no value', () => {
+    expect(isPlayerCellWithMarks({ type: 'player', value: [] })).toBe(true);
   });
 
   it('is false for puzzle cells', () => {
-    expect(isUserCellWithMarks({ type: 'puzzle' })).toBe(false);
+    expect(isPlayerCellWithMarks({ type: 'given' })).toBe(false);
   });
 
-  it('is false for user cells with value', () => {
-    expect(isUserCellWithMarks({ type: 'user', value: 3 })).toBe(false);
+  it('is false for player cells with value', () => {
+    expect(isPlayerCellWithMarks({ type: 'player', value: 3 })).toBe(false);
   });
 });
 
 describe('isCellWithValue', () => {
   it('is true for puzzle cells', () => {
-    expect(isCellWithValue({ type: 'puzzle', value: 'anything' })).toBe(true);
+    expect(isCellWithValue({ type: 'given', value: 'anything' })).toBe(true);
   });
 
-  it('is true for user cells with number values', () => {
-    expect(isCellWithValue({ type: 'user', value: 3 })).toBe(true);
+  it('is true for player cells with number values', () => {
+    expect(isCellWithValue({ type: 'player', value: 3 })).toBe(true);
   });
 
-  it('is false for user cells without number values', () => {
-    expect(isCellWithValue({ type: 'user', value: [] })).toBe(false);
+  it('is false for player cells without number values', () => {
+    expect(isCellWithValue({ type: 'player', value: [] })).toBe(false);
   });
 });
 
@@ -95,52 +95,52 @@ describe('cellValueEquals', () => {
 
 describe('cellHasMark', () => {
   it('is true when the cell has the mark', () => {
-    expect(cellHasMark(4, { type: 'user', value: [1, 2, 3, 4] })).toBe(true);
+    expect(cellHasMark(4, { type: 'player', value: [1, 2, 3, 4] })).toBe(true);
   });
 
   it('is false when the cell does not have the mark', () => {
-    expect(cellHasMark(4, { type: 'user', value: [1, 2, 3, 5] })).toBe(false);
+    expect(cellHasMark(4, { type: 'player', value: [1, 2, 3, 5] })).toBe(false);
   });
 
   it('is false for puzzle cells', () => {
-    expect(cellHasMark(4, { type: 'puzzle' })).toBe(false);
+    expect(cellHasMark(4, { type: 'given' })).toBe(false);
   });
 });
 
 describe('getCellMarksOr', () => {
-  it('gets cell marks for unassigned user cell', () => {
-    expect(getCellMarksOr('doesnt matter', { type: 'user', value: [1, 2, 3] })).toStrictEqual([1, 2, 3]);
+  it('gets cell marks for player cell without a value', () => {
+    expect(getCellMarksOr('doesnt matter', { type: 'player', value: [1, 2, 3] })).toStrictEqual([1, 2, 3]);
   });
 
-  it('returns the default for assigned user cell', () => {
-    expect(getCellMarksOr(99, { type: 'user', value: 3 })).toBe(99);
+  it('returns the default for player cell with a value', () => {
+    expect(getCellMarksOr(99, { type: 'player', value: 3 })).toBe(99);
   });
 
   it('returns the default for puzzle cell', () => {
-    expect(getCellMarksOr(99, { type: 'puzzle' })).toBe(99);
+    expect(getCellMarksOr(99, { type: 'given' })).toBe(99);
   });
 });
 
 describe('setMark', () => {
   it('adds the mark', () => {
-    expect(setMark(4, { type: 'user', value: [] })).toStrictEqual({ type: 'user', value: [4] });
+    expect(setMark(4, { type: 'player', value: [] })).toStrictEqual({ type: 'player', value: [4] });
   });
 
   it('does not duplicate marks', () => {
-    expect(setMark(4, { type: 'user', value: [1, 2, 3, 4] })).toStrictEqual({ type: 'user', value: [1, 2, 3, 4] });
+    expect(setMark(4, { type: 'player', value: [1, 2, 3, 4] })).toStrictEqual({ type: 'player', value: [1, 2, 3, 4] });
   });
 
   it('sorts the results', () => {
-    expect(setMark(4, { type: 'user', value: [8, 3] })).toStrictEqual({ type: 'user', value: [3, 4, 8] });
+    expect(setMark(4, { type: 'player', value: [8, 3] })).toStrictEqual({ type: 'player', value: [3, 4, 8] });
   });
 });
 
 describe('clearMark', () => {
   it('clears the mark', () => {
-    expect(clearMark(4, { type: 'user', value: [1, 2, 3, 4] })).toStrictEqual({ type: 'user', value: [1, 2, 3] });
+    expect(clearMark(4, { type: 'player', value: [1, 2, 3, 4] })).toStrictEqual({ type: 'player', value: [1, 2, 3] });
   });
 
   it('handles missing marks', () => {
-    expect(clearMark(4, { type: 'user', value: [1, 2] })).toStrictEqual({ type: 'user', value: [1, 2] });
+    expect(clearMark(4, { type: 'player', value: [1, 2] })).toStrictEqual({ type: 'player', value: [1, 2] });
   });
 });

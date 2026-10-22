@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import MenuItem from '@mui/material/MenuItem';
-import MiniPuzzle from './MiniBoard';
+import MiniPuzzle from './MiniPuzzle';
 import stockPuzzles from './puzzles/top95';
 
 const TabPanel = ({
