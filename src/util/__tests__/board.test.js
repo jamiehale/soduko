@@ -12,6 +12,8 @@ import {
   boardWithSetValues,
   findBoxSingles,
   nextBulkSet,
+  possibleMarks,
+  boardWithFilledMarks,
 } from '../board';
 import { makeCell } from '../cell';
 
@@ -509,5 +511,71 @@ describe('nextBulkSet', () => {
 
   it('returns nothing when the board has a conflict', () => {
     expect(nextBulkSet(board, [30, 31])).toStrictEqual([]);
+  });
+});
+
+const withValues = R.curry((type, values, board) => R.reduce(
+  (acc, [i, value]) => R.update(Number(i), makeCell(type, value), acc),
+  board,
+  R.toPairs(values),
+));
+
+describe('possibleMarks', () => {
+  it('leaves out the digits held in the row, column, and box', () => {
+    // 3 is in row 0, 27 in column 0, 10 and 20 in box 0; 80 is unrelated
+    const board = R.compose(
+      withValues('given', { 3: 1, 10: 5 }),
+      withValues('player', { 27: 2, 20: 8, 80: 9 }),
+    )(emptyBoard());
+    expect(possibleMarks(0, board)).toStrictEqual([3, 4, 6, 7, 9]);
+  });
+
+  it('gives every digit on an empty board', () => {
+    expect(possibleMarks(40, emptyBoard())).toStrictEqual(R.range(1, 10));
+  });
+
+  it('gives nothing when every digit is held by a peer', () => {
+    const board = withValues('player', { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9 }, emptyBoard());
+    expect(possibleMarks(0, board)).toStrictEqual([]);
+  });
+
+  it('counts both values of a conflict', () => {
+    const board = withValues('player', { 1: 5, 2: 5 }, emptyBoard());
+    expect(possibleMarks(0, board)).toStrictEqual([1, 2, 3, 4, 6, 7, 8, 9]);
+  });
+});
+
+describe('boardWithFilledMarks', () => {
+  it('fills every cell of an empty board with 1 to 9', () => {
+    expect(boardWithFilledMarks(emptyBoard())).toStrictEqual(R.repeat(makeCell('player', R.range(1, 10)), 81));
+  });
+
+  it('replaces existing marks', () => {
+    const board = R.compose(
+      withValues('given', { 1: 4 }),
+      board => withMarks({ 0: [1, 4], 80: [2] }, board),
+    )(emptyBoard());
+    const next = boardWithFilledMarks(board);
+    expect(next[0]).toStrictEqual(makeCell('player', [1, 2, 3, 5, 6, 7, 8, 9]));
+    expect(next[80]).toStrictEqual(makeCell('player', R.range(1, 10)));
+  });
+
+  it('leaves given cells and player values unchanged', () => {
+    const board = R.compose(
+      withValues('given', { 0: 3 }),
+      withValues('player', { 40: 6 }),
+    )(emptyBoard());
+    const next = boardWithFilledMarks(board);
+    expect(next[0]).toStrictEqual(makeCell('given', 3));
+    expect(next[40]).toStrictEqual(makeCell('player', 6));
+    expect(next[41]).toStrictEqual(makeCell('player', [1, 2, 3, 4, 5, 7, 8, 9]));
+  });
+
+  it('gives a cell with no possible digit no marks', () => {
+    const board = R.compose(
+      withValues('player', { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9 }),
+      board => withMarks({ 0: [3, 5] }, board),
+    )(emptyBoard());
+    expect(boardWithFilledMarks(board)[0]).toStrictEqual(makeCell('player', []));
   });
 });

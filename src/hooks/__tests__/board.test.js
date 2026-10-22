@@ -16,6 +16,7 @@ const apply = (state, ...actions) => R.reduce(boardReducer, state, actions);
 const set = (cellIndex, value) => ({ type: 'set', payload: { cellIndex, value } });
 const toggleMark = (cells, mark) => ({ type: 'toggleMark', payload: { cells, mark } });
 const setMany = (placements) => ({ type: 'setMany', payload: { placements } });
+const fillMarks = { type: 'fillMarks' };
 const undo = { type: 'undo' };
 const redo = { type: 'redo' };
 
@@ -185,5 +186,35 @@ describe('setMany', () => {
     const state = marked();
     const set = boardReducer(state, setMany(placements));
     expect(apply(set, undo, redo).board).toStrictEqual(set.board);
+  });
+});
+
+describe('fillMarks', () => {
+  const marked = () => apply(initialState(), toggleMark([0, 2], 4), set(3, 7));
+
+  it('fills every empty player cell in one history entry and clears future', () => {
+    const state = marked();
+    const next = boardReducer({ ...state, future: [state.board] }, fillMarks);
+    // Cell 0 sees givens 8 and 4 in its row, 3, 9, and 2 in its column, and player value 7 in its row
+    expect(next.board[0]).toStrictEqual({ type: 'player', value: [1, 5, 6] });
+    expect(next.board[1]).toStrictEqual(state.board[1]);
+    expect(next.board[3]).toStrictEqual({ type: 'player', value: 7 });
+    expect(next.history).toStrictEqual([state.board, ...state.history]);
+    expect(next.future).toStrictEqual([]);
+  });
+
+  it('is undone in one step, restoring every mark', () => {
+    const state = marked();
+    expect(apply(state, fillMarks, undo).board).toStrictEqual(state.board);
+  });
+
+  it('is redone in one step', () => {
+    const filled = boardReducer(marked(), fillMarks);
+    expect(apply(filled, undo, redo).board).toStrictEqual(filled.board);
+  });
+
+  it('returns the same state when nothing changes', () => {
+    const filled = boardReducer(marked(), fillMarks);
+    expect(boardReducer(filled, fillMarks)).toBe(filled);
   });
 });
