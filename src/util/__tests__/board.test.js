@@ -9,6 +9,9 @@ import {
   boardWithMarkSet,
   boardWithMarkCleared,
   boardWithRelatedMarksCleared,
+  boardWithSetValues,
+  findBoxSingles,
+  nextBulkSet,
 } from '../board';
 import { makeCell } from '../cell';
 
@@ -426,5 +429,85 @@ describe('boardWithRelatedMarksCleared', () => {
     it(`leaves other cells alone (cell ${i})`, () => {
       expect(boardToTest[i]).toStrictEqual(board[i]);
     });
+  });
+});
+
+const emptyBoard = () => makeBoard(R.repeat('.', 81));
+
+const withMarks = (marks, board) => R.reduce(
+  (acc, [cellIndex, cellMarks]) => R.reduce(
+    (b, mark) => boardWithMarkSet(mark, [parseInt(cellIndex, 10)], b),
+    acc,
+    cellMarks,
+  ),
+  board,
+  R.toPairs(marks),
+);
+
+describe('findBoxSingles', () => {
+  it('finds a digit marked in only one cell of a box', () => {
+    const board = withMarks({ 0: [4, 5], 1: [5] }, emptyBoard());
+    expect(findBoxSingles(board)).toStrictEqual([{ cellIndex: 0, value: 4 }]);
+  });
+
+  it('skips a digit already held as a value in the box', () => {
+    const board = R.update(10, makeCell('player', 4), withMarks({ 0: [4] }, emptyBoard()));
+    expect(findBoxSingles(board)).toStrictEqual([]);
+  });
+
+  it('skips a digit already held by a given cell in the box', () => {
+    const board = R.update(10, makeCell('given', 4), withMarks({ 0: [4] }, emptyBoard()));
+    expect(findBoxSingles(board)).toStrictEqual([]);
+  });
+
+  it('gives no placement when a digit is marked in two cells of a box', () => {
+    const board = withMarks({ 0: [4], 20: [4] }, emptyBoard());
+    expect(findBoxSingles(board)).toStrictEqual([]);
+  });
+
+  it('gives a cell that is single for two digits the lower one', () => {
+    const board = withMarks({ 0: [3, 8] }, emptyBoard());
+    expect(findBoxSingles(board)).toStrictEqual([{ cellIndex: 0, value: 3 }]);
+  });
+
+  it('returns singles from several boxes, sorted by cell index', () => {
+    const board = withMarks({ 80: [2], 40: [7], 0: [4] }, emptyBoard());
+    expect(findBoxSingles(board)).toStrictEqual([
+      { cellIndex: 0, value: 4 },
+      { cellIndex: 40, value: 7 },
+      { cellIndex: 80, value: 2 },
+    ]);
+  });
+});
+
+describe('boardWithSetValues', () => {
+  it('sets every placement and clears related marks', () => {
+    // 2 shares a row with 0; 41 shares a box with 40; 80 is unrelated
+    const board = withMarks({ 0: [4], 2: [4, 9], 40: [7], 41: [7], 80: [7] }, emptyBoard());
+    const next = boardWithSetValues([{ cellIndex: 0, value: 4 }, { cellIndex: 40, value: 7 }], board);
+    expect(next[0]).toStrictEqual(makeCell('player', 4));
+    expect(next[40]).toStrictEqual(makeCell('player', 7));
+    expect(next[2]).toStrictEqual(makeCell('player', [9]));
+    expect(next[41]).toStrictEqual(makeCell('player', []));
+    expect(next[80]).toStrictEqual(makeCell('player', [7]));
+  });
+
+  it('sets two placements of one digit in a row, leaving a conflict', () => {
+    const board = withMarks({ 0: [5], 4: [5] }, emptyBoard());
+    const next = boardWithSetValues([{ cellIndex: 0, value: 5 }, { cellIndex: 4, value: 5 }], board);
+    expect(next[0]).toStrictEqual(makeCell('player', 5));
+    expect(next[4]).toStrictEqual(makeCell('player', 5));
+  });
+});
+
+describe('nextBulkSet', () => {
+  const board = withMarks({ 0: [4] }, emptyBoard());
+
+  it('returns the box singles when there are no conflicts', () => {
+    expect(nextBulkSet(board, [])).toStrictEqual([{ cellIndex: 0, value: 4 }]);
+  });
+
+  it('returns nothing when the board has a conflict', () => {
+    expect(nextBulkSet(board, [30, 31])).toStrictEqual([]);
   });
 });

@@ -29,3 +29,6 @@ export const clearPlayerValue = R.assoc('value', []);
 export const setMark = R.curry((mark, cell) => R.assoc('value', R.sort(R.comparator(R.lt), R.uniq(R.append(mark, getCellMarks(cell)))), cell));
 
 export const clearMark = R.curry((mark, cell) => R.assoc('value', R.without([mark], getCellMarks(cell)), cell));
+
+// Typing `value` on this cell sets a value (rather than clearing it or doing nothing)
+export const isValueSet = R.curry((value, cell) => isPlayerCell(cell) && !cellValueEquals(value, cell));

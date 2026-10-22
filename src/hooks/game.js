@@ -69,6 +69,8 @@ const allPartsComplete = R.compose(
   R.values,
 );
 
+export const findErrorCells = R.compose(collectErrorCells, collectValues);
+
 const useGame = (board) => {
   const values = collectValues(board);
 

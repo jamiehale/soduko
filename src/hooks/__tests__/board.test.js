@@ -15,6 +15,7 @@ const apply = (state, ...actions) => R.reduce(boardReducer, state, actions);
 
 const set = (cellIndex, value) => ({ type: 'set', payload: { cellIndex, value } });
 const toggleMark = (cells, mark) => ({ type: 'toggleMark', payload: { cells, mark } });
+const setMany = (placements) => ({ type: 'setMany', payload: { placements } });
 const undo = { type: 'undo' };
 const redo = { type: 'redo' };
 
@@ -150,5 +151,39 @@ describe('unknown action', () => {
   it('returns the same state', () => {
     const state = initialState();
     expect(boardReducer(state, { type: 'nope' })).toBe(state);
+  });
+});
+
+describe('setMany', () => {
+  // 0 and 2 share a row and a box; 40 and 41 share a box
+  const marked = () => apply(initialState(), toggleMark([0, 2], 4), toggleMark([2], 9), toggleMark([40, 41], 7));
+  const placements = [{ cellIndex: 0, value: 4 }, { cellIndex: 40, value: 7 }];
+
+  it('returns the same state for no placements', () => {
+    const state = marked();
+    expect(boardReducer(state, setMany([]))).toBe(state);
+  });
+
+  it('sets every placement in one history entry and clears future', () => {
+    const state = marked();
+    const next = boardReducer({ ...state, future: [state.board] }, setMany(placements));
+    expect(next.board[0]).toStrictEqual({ type: 'player', value: 4 });
+    expect(next.board[40]).toStrictEqual({ type: 'player', value: 7 });
+    expect(next.board[2]).toStrictEqual({ type: 'player', value: [9] });
+    expect(next.board[41]).toStrictEqual({ type: 'player', value: [] });
+    expect(next.history).toStrictEqual([state.board, ...state.history]);
+    expect(next.future).toStrictEqual([]);
+  });
+
+  it('is undone in one step, restoring every mark', () => {
+    const state = marked();
+    const next = apply(state, setMany(placements), undo);
+    expect(next.board).toStrictEqual(state.board);
+  });
+
+  it('is redone in one step', () => {
+    const state = marked();
+    const set = boardReducer(state, setMany(placements));
+    expect(apply(set, undo, redo).board).toStrictEqual(set.board);
   });
 });

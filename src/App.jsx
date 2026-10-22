@@ -18,6 +18,8 @@ import useBoard, { reset, toggleCellMark, setCellValue, undo, redo, newGame } fr
 import useGame from './hooks/game';
 import useConfirmation from './hooks/confirmation';
 import useWindowEvent from './hooks/window-event';
+import useAutoFill from './hooks/auto-fill';
+import { isGivenCell, isValueSet } from './util/cell';
 import Board from './Board';
 import theme from './theme';
 import ConfirmationDialog from './ConfirmationDialog';
@@ -31,12 +33,14 @@ const App = () => {
   const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
   const { isSolved, errorCells } = useGame(board);
   const highlight = useHighlight(selectedCells, board);
+  const { start: startAutoFill, cancel: cancelAutoFill } = useAutoFill({ board, dispatch: boardDispatch });
   const [showHelp, setShowHelp] = useState(false);
   
   const handleReset = useCallback(() => {
+    cancelAutoFill();
     reset(boardDispatch);
     clearSelection(selectionDispatch);
-  }, [boardDispatch, selectionDispatch]);
+  }, [boardDispatch, selectionDispatch, cancelAutoFill]);
 
   const {
     confirming: showReset,
@@ -46,8 +50,9 @@ const App = () => {
   } = useConfirmation(handleReset);
 
   const handleNewGame = useCallback((puzzle) => {
+    cancelAutoFill();
     newGame(boardDispatch, decode(puzzle));
-  }, [boardDispatch]);
+  }, [boardDispatch, cancelAutoFill]);
 
   const { confirming: showNewGame, confirm: confirmNewGame, handleConfirm: handleConfirmNewGame, handleCancel: handleCancelNewGame } = useConfirmation(handleNewGame);
 
@@ -65,25 +70,37 @@ const App = () => {
 
   const handleKeyDown = useCallback((event) => {
     if (R.includes(event.key, ['1', '2', '3', '4', '5', '6', '7', '8', '9'])) {
+      const value = parseInt(event.key, 10);
       if (isMouseDown || R.length(selectedCells) > 1) {
-        toggleCellMark(boardDispatch, selectedCells, parseInt(event.key, 10));
+        cancelAutoFill();
+        toggleCellMark(boardDispatch, selectedCells, value);
       } else if (R.length(selectedCells) === 1) {
-        setCellValue(boardDispatch, R.head(selectedCells), parseInt(event.key, 10));
+        const cellIndex = R.head(selectedCells);
+        if (isGivenCell(board[cellIndex])) {
+          return;
+        }
+        cancelAutoFill();
+        setCellValue(boardDispatch, cellIndex, value);
+        if (isValueSet(value, board[cellIndex])) {
+          startAutoFill();
+        }
       }
     } else if (event.key === 'Escape') {
       clearSelection(selectionDispatch);
     }
-  }, [isMouseDown, selectedCells, boardDispatch, selectionDispatch]);
+  }, [isMouseDown, selectedCells, board, boardDispatch, selectionDispatch, startAutoFill, cancelAutoFill]);
 
   useWindowEvent('keydown', handleKeyDown);
 
   const handleUndo = useCallback(() => {
+    cancelAutoFill();
     undo(boardDispatch);
-  }, [boardDispatch]);
+  }, [boardDispatch, cancelAutoFill]);
 
   const handleRedo = useCallback(() => {
+    cancelAutoFill();
     redo(boardDispatch);
-  }, [boardDispatch]);
+  }, [boardDispatch, cancelAutoFill]);
 
   return (
     <ThemeProvider theme={theme}>

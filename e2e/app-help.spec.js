@@ -14,6 +14,14 @@ test('help shows the version and usage instructions', async ({ page }) => {
     .toHaveAttribute('href', 'http://norvig.com/top95.txt');
 });
 
+test('help explains auto-fill', async ({ page }) => {
+  await open(page);
+  await page.getByTestId('help').click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toContainText('any digit left as a pencil mark in only one cell of a box is filled in automatically');
+  await expect(dialog).toContainText('Undo reverses each automatic fill.');
+});
+
 test('help calls starting patterns puzzles, not boards', async ({ page }) => {
   await open(page);
   await page.getByTestId('help').click();

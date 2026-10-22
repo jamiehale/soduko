@@ -26,6 +26,9 @@ const HelpDialog = ({
         With a single cell selected, type 1-9 to set the cell value. With multiple cells selected, type 1-9 to toggle pencil marks. To toggle pencil marks on a single cell, click and hold on the cell, then type 1-9.
       </DialogContentText>
       <DialogContentText>
+        After you set a value, any digit left as a pencil mark in only one cell of a box is filled in automatically, half a second apart. Undo reverses each automatic fill.
+      </DialogContentText>
+      <DialogContentText>
         Custom puzzles should be 81 characters long, using 1-9 and either &quot;.&quot; or &quot;0&quot; for blanks.
       </DialogContentText>
       <DialogContentText>

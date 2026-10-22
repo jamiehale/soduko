@@ -11,6 +11,7 @@ import {
   clearPlayerValue,
   setMark,
   clearMark,
+  isValueSet,
 } from '../cell';
 
 describe('setPlayerValue', () => {
@@ -142,5 +143,23 @@ describe('clearMark', () => {
 
   it('handles missing marks', () => {
     expect(clearMark(4, { type: 'player', value: [1, 2] })).toStrictEqual({ type: 'player', value: [1, 2] });
+  });
+});
+
+describe('isValueSet', () => {
+  it('is true for an empty player cell', () => {
+    expect(isValueSet(5, { type: 'player', value: [1, 5] })).toBe(true);
+  });
+
+  it('is true for a player cell holding another value', () => {
+    expect(isValueSet(5, { type: 'player', value: 3 })).toBe(true);
+  });
+
+  it('is false for a player cell holding the same value', () => {
+    expect(isValueSet(5, { type: 'player', value: 5 })).toBe(false);
+  });
+
+  it('is false for a given cell', () => {
+    expect(isValueSet(5, { type: 'given', value: 3 })).toBe(false);
   });
 });
