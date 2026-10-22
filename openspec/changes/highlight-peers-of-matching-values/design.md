@@ -47,6 +47,7 @@
   - add a scenario that checks a cell in the other 7's row, column, and section is peer, and a cell outside all of them is white
   - the existing "related" test seeds 7s at 0 and 40, and asserts cell 72 (column 0) is white; with this change it becomes peer, so update the assertion and its comment
 - **Visual:** `single-selection.png` changes, because cell 1 holds 8 and 8s elsewhere now project. Regenerate only that baseline. Review the new PNG against the spec, and say why in the commit. The other 11 baselines must not change.
+- **Screenshot threshold:** at Playwright's default per-pixel `threshold` of 0.2, `#ddf` and `#ffff44` count as white, so the visual suite passed unchanged with the new highlighting. The suite had never detected peer or related highlighting, though the `board-appearance` baseline requirement relies on it. The threshold is set to 0.05 in `playwright.config.js`. At 0.05 the old code passes all 14 baselines and the new code fails only `single-selection.png`. CI confirms the GitHub runner also passes at 0.05.
 
 ## Risks / Trade-offs
 

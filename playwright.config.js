@@ -12,6 +12,8 @@ module.exports = defineConfig({
   expect: {
     toHaveScreenshot: {
       animations: 'disabled',
+      // The default (0.2) treats the peer (#ddf) and related (#ffff44) backgrounds as white
+      threshold: 0.05,
       maxDiffPixelRatio: 0.01,
     },
   },
