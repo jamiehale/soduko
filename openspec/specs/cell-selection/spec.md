@@ -50,37 +50,37 @@ Every selected cell SHALL be shown in the "selected" style.
 - **THEN** it is shown with the selected background color
 
 ### Requirement: Peer highlighting
-If all selected cells share one row, that row's other cells SHALL be shown in the "peer" style. The same applies to a shared column and a shared 3×3 section. A row, column, or section that the selected cells do not all share SHALL NOT be highlighted.
+If all selected cells share one row, that row's other cells SHALL be shown in the "peer" style. The same applies to a shared column and a shared box. A row, column, or box that the selected cells do not all share SHALL NOT be highlighted.
 
 #### Scenario: Single cell peers
 - **WHEN** a single cell is selected
-- **THEN** every other cell in its row, column, and section is shown in the peer style
+- **THEN** every other cell in its row, column, and box is shown in the peer style
 
 #### Scenario: Multi-cell selection in one row
-- **WHEN** three cells in the same row but different sections are selected
-- **THEN** the rest of that row is shown in the peer style, and no column or section is highlighted
+- **WHEN** three cells in the same row but different boxes are selected
+- **THEN** the rest of that row is shown in the peer style, and no column or box is highlighted
 
 ### Requirement: Value highlighting
-When exactly one cell is selected and it holds a value N (clue or entered), every other cell holding N SHALL be shown in the "selected" style. The row, column, and 3×3 section of every cell holding N, and every other cell holding a value, SHALL be shown in the "peer" style. Empty cells outside those areas with pencil mark N SHALL be shown in the "related" style. An empty or pencil-marked selected cell SHALL get no value highlighting.
+When exactly one cell is selected and it holds a value N (given or player), every other cell holding N SHALL be shown in the "selected" style. The row, column, and box of every cell holding N, and every other cell holding a value, SHALL be shown in the "peer" style. Empty cells outside those areas with pencil mark N SHALL be shown in the "related" style. An empty or pencil-marked selected cell SHALL get no value highlighting.
 
 #### Scenario: Matching values
 - **WHEN** the single selected cell holds 7
 - **THEN** all other cells holding 7 are shown in the selected style
 
 #### Scenario: Peers of every matching value
-- **WHEN** the single selected cell holds 7 and another cell holds 7 in a different row, column, and section
-- **THEN** the other cells in that cell's row, column, and section are shown in the peer style, as are those of the selected cell
+- **WHEN** the single selected cell holds 7 and another cell holds 7 in a different row, column, and box
+- **THEN** the other cells in that cell's row, column, and box are shown in the peer style, as are those of the selected cell
 
 #### Scenario: Filled cells are blocked
-- **WHEN** the single selected cell holds 7 and a cell outside every 7's row, column, and section holds a clue or an entered value other than 7
+- **WHEN** the single selected cell holds 7 and a cell outside every 7's row, column, and box holds a given or player value other than 7
 - **THEN** that cell is shown in the peer style
 
 #### Scenario: Remaining placements stay unhighlighted
 - **WHEN** the single selected cell holds 7
-- **THEN** an empty cell that shares no row, column, or section with any cell holding 7, and has no pencil mark 7, is not highlighted
+- **THEN** an empty cell that shares no row, column, or box with any cell holding 7, and has no pencil mark 7, is not highlighted
 
 #### Scenario: Matching marks
-- **WHEN** the single selected cell holds 7 and an empty cell sharing no row, column, or section with any cell holding 7 has pencil mark 7
+- **WHEN** the single selected cell holds 7 and an empty cell sharing no row, column, or box with any cell holding 7 has pencil mark 7
 - **THEN** that cell is shown in the related style
 
 #### Scenario: Matching mark inside a projected area
@@ -89,7 +89,7 @@ When exactly one cell is selected and it holds a value N (clue or entered), ever
 
 #### Scenario: Empty cell selected
 - **WHEN** the single selected cell has no value
-- **THEN** only its own row, column, and section are shown in the peer style, and no value, mark, or filled-cell highlighting is applied
+- **THEN** only its own row, column, and box are shown in the peer style, and no value, mark, or filled-cell highlighting is applied
 
 ### Requirement: Errors take precedence over highlighting
 A cell in conflict SHALL be shown in the error style whatever its selection or highlight state.
