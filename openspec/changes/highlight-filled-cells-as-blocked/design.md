@@ -33,7 +33,7 @@ if (!R.isNil(highlightValue) && isCellWithValue(cell)) return 'peer';
   - selecting an empty cell leaves a far-off filled cell white
   - the existing "stays unhighlighted" test still uses an empty cell
 - **Unit:** none. `useHighlight` doesn't change, and `highlightLevel` lives in a component module. Its behavior is covered end-to-end, which is the project's pattern for `Board`.
-- **Visual:** `single-selection.png` changes, because PUZZLE's clues outside the 8s' areas turn blue. Regenerate only that baseline at the current 0.05 threshold, review it, and explain in the commit.
+- **Visual:** `single-selection.png` changes, because PUZZLE's clues outside the 8s' areas turn blue. Regenerate only that baseline at the current 0.05 threshold, review it, and explain in the commit. The "text color follows content" test in `visual.spec.js` also changes: it expected the entered value at cell 13 to stay white with an 8 selected. It now expects the peer background, with its text color still indigo.
 
 ## Risks / Trade-offs
 

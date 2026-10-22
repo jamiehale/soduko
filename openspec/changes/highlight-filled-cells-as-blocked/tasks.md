@@ -14,7 +14,7 @@
 
 ## 4. Integration check
 
-- [ ] 4.1 Run the full gate: `npx vitest run`, `npm run lint`, `npm run build`, and `npm run test:e2e`. On a stock puzzle, select a placed value. Verify that the white cells are exactly the empty cells outside every matching value's row, column, and section.
+- [x] 4.1 Run the full gate: `npx vitest run`, `npm run lint`, `npm run build`, and `npm run test:e2e`. On a stock puzzle, select a placed value. Verify that the white cells are exactly the empty cells outside every matching value's row, column, and section.
 
 ## Workflow follow-up
 
