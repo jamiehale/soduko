@@ -131,8 +131,9 @@ test.describe('cell state colors', () => {
     expect(states[2]).toMatchObject({ background: COLORS.peer });
     // Related mark
     expect(states[70]).toMatchObject({ background: COLORS.related });
-    // Unhighlighted entered value and empty cell
-    expect(states[13]).toMatchObject({ background: COLORS.white, color: COLORS.indigo });
+    // A filled cell is blocked for the selected value, but keeps its text color
+    expect(states[13]).toMatchObject({ background: COLORS.peer, color: COLORS.indigo });
+    // Unhighlighted empty cell
     expect(states[80]).toMatchObject({ background: COLORS.white });
     // Conflicting clue and entered value (both 1 in row 1) keep their text colors
     expect(states[16]).toMatchObject({ background: COLORS.error, color: COLORS.black });

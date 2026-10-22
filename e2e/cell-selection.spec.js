@@ -165,6 +165,24 @@ test.describe('value highlighting', () => {
     expect(await cellBackground(page, 70)).toBe(COLORS.white);
   });
 
+  test('filled cells outside the projected areas use the peer style', async ({ page }) => {
+    // 61 (row 6, column 7, section 8) holds an entered 3; 79 (row 8, column 7) is a clue 5
+    const puzzle = `${EMPTY.slice(0, 79)}5${EMPTY.slice(80)}`;
+    await open(page, puzzle, { ...options, values: { ...options.values, 61: 3 } });
+    await click(page, 40);
+    expect(await backgrounds(page, [61, 79, 70])).toEqual({
+      61: COLORS.peer,
+      79: COLORS.peer,
+      70: COLORS.white,
+    });
+  });
+
+  test('an empty selected cell leaves far-off filled cells unhighlighted', async ({ page }) => {
+    await open(page, EMPTY, { ...options, values: { ...options.values, 61: 3 } });
+    await click(page, 20);
+    expect(await cellBackground(page, 61)).toBe(COLORS.white);
+  });
+
   test('a matching mark inside a projected area uses the peer style', async ({ page }) => {
     await open(page, EMPTY, options);
     await click(page, 40);
