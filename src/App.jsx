@@ -8,13 +8,15 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import HelpIcon from '@mui/icons-material/Help';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import { decode } from './util/decoder';
 import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection } from './hooks/selection';
 import useHighlight from './hooks/highlight';
-import useBoard, { reset, toggleCellMark, setCellValue, undo, redo, newGame } from './hooks/board';
+import useBoard, { reset, toggleCellMark, setCellValue, fillCellMarks, undo, redo, newGame } from './hooks/board';
 import useGame from './hooks/game';
 import useConfirmation from './hooks/confirmation';
 import useWindowEvent from './hooks/window-event';
@@ -92,6 +94,11 @@ const App = () => {
 
   useWindowEvent('keydown', handleKeyDown);
 
+  const handleFillMarks = useCallback(() => {
+    cancelAutoFill();
+    fillCellMarks(boardDispatch);
+  }, [boardDispatch, cancelAutoFill]);
+
   const handleUndo = useCallback(() => {
     cancelAutoFill();
     undo(boardDispatch);
@@ -129,10 +136,14 @@ const App = () => {
                 <Button onClick={confirmNewGame}>New</Button>
                 <Button onClick={confirmReset}>Reset</Button>
               </Grid>
-              <Grid size={4}>
-                {isSolved && (
+              <Grid size={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                {isSolved ? (
                   <Typography variant="h5" align="center">Solved</Typography>
-                  )}
+                ) : (
+                  <Tooltip title="Fill pencil marks">
+                    <IconButton data-testid="fill-marks" onClick={handleFillMarks}><EditNoteIcon /></IconButton>
+                  </Tooltip>
+                )}
               </Grid>
               <Grid size={4}>
                 <IconButton data-testid="help" onClick={R.thunkify(setShowHelp)(true)}><HelpIcon /></IconButton>

@@ -46,6 +46,18 @@ const shouldClear = (cellIndex, i) => sameRow(cellIndex, i)
   || sameColumn(cellIndex, i)
   || sameBox(cellIndex, i);
 
+const peerValues = (cellIndex, board) => R.addIndex(R.chain)(
+  (cell, i) => (i !== cellIndex && shouldClear(cellIndex, i) && isCellWithValue(cell) ? [getCellValue(cell)] : []),
+  board,
+);
+
+export const possibleMarks = R.curry((cellIndex, board) => R.difference(R.range(1, 10), peerValues(cellIndex, board)));
+
+export const boardWithFilledMarks = board => R.addIndex(R.map)(
+  (cell, i) => (isPlayerCellWithMarks(cell) ? makeCell('player', possibleMarks(i, board)) : cell),
+  board,
+);
+
 export const boardWithRelatedMarksCleared = R.curry((mark, sourceCellIndex, board) => R.addIndex(R.map)(
   (cell, i) => ((shouldClear(sourceCellIndex, i) && isPlayerCellWithMarks(cell)) ? clearMark(mark, cell) : cell),
   board,

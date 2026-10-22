@@ -11,9 +11,21 @@ const {
   click,
   settle,
   boardValues,
+  givenValues,
+  PUZZLE,
+  EMPTY,
 } = require('./helpers');
 
 // In the default puzzle, cells 1 (8) and 4 (4) are given cells; 0, 2, 3 are empty.
+
+// Installs the clock, seeds the game, and selects a cell while time still
+// flows. Then the clock is paused, so each 500ms step is run by hand.
+const openAndSelect = async (page, cellIndex, options, puzzle) => {
+  await page.clock.install();
+  await open(page, puzzle, options);
+  await click(page, cellIndex);
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
+};
 
 const undoButton = (page) => page.getByTestId('undo');
 const redoButton = (page) => page.getByTestId('redo');
@@ -212,15 +224,6 @@ test.describe('auto-fill box singles', () => {
   // Box 0 holds cells 0, 2, 10, 11, 18, 19, 20 (empty) and givens 8 and 3.
   // Setting 21 (row 2, box 1) to 7 clears mark 7 from 20, leaving 0 as box 0's only 7.
   const BOX_0_SINGLE = { 0: [7], 20: [7] };
-
-  // Installs the clock, seeds the game, and selects a cell while time still
-  // flows. Then the clock is paused, so each 500ms step is run by hand.
-  const openAndSelect = async (page, cellIndex, options) => {
-    await page.clock.install();
-    await open(page, undefined, options);
-    await click(page, cellIndex);
-    await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
-  };
 
   test('fills a box single 500ms after the player sets a value', async ({ page }) => {
     await openAndSelect(page, 21, { marks: BOX_0_SINGLE });
@@ -453,5 +456,151 @@ test.describe('auto-fill box singles', () => {
       await page.clock.runFor(300);
       expect(await cellValue(page, 80)).toBe(7);
     });
+  });
+});
+
+test.describe('fill pencil marks', () => {
+  // In the default puzzle, cell 0 sees 8 and 4 in its row, 3, 9, and 2 in its
+  // column, and 8 and 3 in its box, so its possible digits are 1, 5, 6, 7.
+  const fillButton = (page) => page.getByTestId('fill-marks');
+
+  const fill = async (page) => {
+    await fillButton(page).click();
+    await settle(page);
+  };
+
+  // Reads every cell's marks in index order, or null for a cell with a value
+  const boardMarks = (page) => page.locator('[data-cell]').evaluateAll((els) => els.map((el) => {
+    const content = el.firstElementChild;
+    if (!content || content.children.length !== 9) {
+      return null;
+    }
+    return Array.from(content.children).map((c) => c.textContent.trim()).filter((t) => t !== '').map(Number);
+  }));
+
+  const peers = (i) => Array.from({ length: 81 }, (_, j) => j).filter((j) => j !== i && (
+    Math.floor(j / 9) === Math.floor(i / 9)
+    || j % 9 === i % 9
+    || (Math.floor(j / 27) === Math.floor(i / 27) && Math.floor((j % 9) / 3) === Math.floor((i % 9) / 3))
+  ));
+
+  // The only 4s are outside box 0, in rows 1 and 2 and columns 1 and 2, so a
+  // fill leaves cell 0 as box 0's only cell with pencil mark 4.
+  const BOX_SINGLE = EMPTY.split('').map((ch, i) => ([13, 25, 37, 65].includes(i) ? '4' : ch)).join('');
+
+  test('marks follow the row, column, and box', async ({ page }) => {
+    await open(page);
+    await fill(page);
+    expect(await cellMarks(page, 0)).toEqual([1, 5, 6, 7]);
+  });
+
+  test('fills every empty cell and leaves given cells alone', async ({ page }) => {
+    await open(page);
+    await fill(page);
+    expect(await boardValues(page)).toEqual(givenValues(PUZZLE));
+    const marks = await boardMarks(page);
+    givenValues(PUZZLE).forEach((value, i) => {
+      if (value === null) {
+        expect(marks[i].length, `cell ${i}`).toBeGreaterThan(0);
+      }
+    });
+  });
+
+  test('player values count and are kept', async ({ page }) => {
+    await open(page, PUZZLE, { values: { 13: 6 } });
+    await fill(page);
+    expect(await cellValue(page, 13)).toBe(6);
+    const marks = await boardMarks(page);
+    peers(13).filter((i) => marks[i] !== null).forEach((i) => {
+      expect(marks[i], `cell ${i}`).not.toContain(6);
+    });
+  });
+
+  test('an empty board gets every digit everywhere', async ({ page }) => {
+    await open(page, EMPTY);
+    await fill(page);
+    expect(await boardMarks(page)).toEqual(Array(81).fill([1, 2, 3, 4, 5, 6, 7, 8, 9]));
+  });
+
+  test('keeps the selection', async ({ page }) => {
+    await open(page);
+    await drag(page, [0, 2]);
+    await fill(page);
+    expect(await cellBackground(page, 0)).toBe(COLORS.selected);
+    expect(await cellBackground(page, 2)).toBe(COLORS.selected);
+  });
+
+  test('replaces existing marks', async ({ page }) => {
+    // 8 is in cell 0's row; 1 is missing
+    await open(page, PUZZLE, { marks: { 0: [5, 8] } });
+    await fill(page);
+    expect(await cellMarks(page, 0)).toEqual([1, 5, 6, 7]);
+  });
+
+  test('a cell with no possible digit gets no marks', async ({ page }) => {
+    // With 1, 5, 6, 7 in its row, cell 0 sees every digit
+    await open(page, PUZZLE, { values: { 2: 1, 3: 5, 5: 6, 6: 7 }, marks: { 0: [3, 5] } });
+    await fill(page);
+    expect(await cellMarks(page, 0)).toEqual([]);
+    expect((await cellMarks(page, 80)).length).toBeGreaterThan(0);
+  });
+
+  test('works with a conflict, which still shows', async ({ page }) => {
+    await open(page, PUZZLE, { values: { 3: 5, 5: 5 } });
+    await fill(page);
+    expect(await cellBackground(page, 3)).toBe(COLORS.error);
+    expect(await cellBackground(page, 5)).toBe(COLORS.error);
+    for (const i of [0, 2, 6, 7, 8]) {
+      expect(await cellMarks(page, i), `cell ${i}`).not.toContain(5);
+    }
+  });
+
+  test('is one undo step, and redo reapplies it', async ({ page }) => {
+    await open(page, PUZZLE, { marks: { 0: [2, 8], 80: [1] } });
+    const before = await boardMarks(page);
+    await fill(page);
+    const filled = await boardMarks(page);
+    await undoButton(page).click();
+    expect(await boardMarks(page)).toEqual(before);
+    await expect(undoButton(page)).toBeDisabled();
+    await redoButton(page).click();
+    expect(await boardMarks(page)).toEqual(filled);
+  });
+
+  test('a second fill changes nothing and adds no undo step', async ({ page }) => {
+    await open(page);
+    await fill(page);
+    await fill(page);
+    await undoButton(page).click();
+    expect(await cellMarks(page, 0)).toEqual([]);
+    await expect(undoButton(page)).toBeDisabled();
+  });
+
+  test('clears redo', async ({ page }) => {
+    await open(page);
+    await click(page, 0);
+    await page.keyboard.press('5');
+    await undoButton(page).click();
+    await expect(redoButton(page)).toBeEnabled();
+    await fill(page);
+    await expect(redoButton(page)).toBeDisabled();
+  });
+
+  test('does not start auto-fill', async ({ page }) => {
+    await openAndSelect(page, 80, {}, BOX_SINGLE);
+    await fillButton(page).click();
+    expect(await cellMarks(page, 0)).toContain(4);
+    await page.clock.runFor(1000);
+    expect(await boardValues(page)).toEqual(givenValues(BOX_SINGLE));
+  });
+
+  test('cancels a pending auto-fill', async ({ page }) => {
+    await openAndSelect(page, 80, {}, BOX_SINGLE);
+    await page.keyboard.press('5');
+    await page.clock.runFor(200);
+    await fillButton(page).click();
+    await page.clock.runFor(1000);
+    expect(await cellValue(page, 0)).toBeNull();
+    expect(await cellValue(page, 80)).toBe(5);
   });
 });
