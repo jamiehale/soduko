@@ -62,4 +62,4 @@ Run the unit tests, lint, and the end-to-end/visual tests:
 
 ## CI and deployment
 
-GitHub Actions runs the unit tests, lint, build, and end-to-end/visual tests on every pull request. Every push to `main` runs the same checks and then deploys the build to [soduko.me](https://soduko.me) over FTPS. The deploy uses the `production` environment, which holds the `FTP_USER` and `FTP_PASSWORD` secrets and the `FTP_HOST`, `FTP_PORT`, and `FTP_REMOTE_DIR` variables. To rehearse a deploy without writing anything, run the Deploy workflow by hand with **dry run** checked.
+GitHub Actions runs the unit tests, lint, build, and end-to-end/visual tests on every pull request. Every push to `main` (except one that only changes `openspec/`, `README.md`, or `CLAUDE.md`) runs the same checks and then deploys the build to [soduko.me](https://soduko.me) over FTPS. The deploy uses the `production` environment, which holds the `FTP_USER` and `FTP_PASSWORD` secrets and the `FTP_HOST`, `FTP_PORT`, and `FTP_REMOTE_DIR` variables. To rehearse a deploy without writing anything, run the Deploy workflow by hand with **dry run** checked.

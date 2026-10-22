@@ -38,7 +38,7 @@ See proposal.md for why. Current state:
   - uploads `build/` as an artifact named `build`
   - uploads the Playwright report as an artifact on failure
 - **`deploy.yml`:**
-  - triggers on `push` to `main` and `workflow_dispatch`
+  - triggers on `push` to `main` and `workflow_dispatch`. The push trigger has `paths-ignore` for `openspec/**`, `README.md`, and `CLAUDE.md`, because docs-only pushes don't change the site. A push that touches any other file still deploys.
   - has a `ci` job (`uses: ./.github/workflows/ci.yml`) and a `deploy` job (`needs: ci`)
   - the `deploy` job downloads the `build` artifact and uploads it to the host
 

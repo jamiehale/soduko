@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    # Docs-only pushes don't change the site
+    paths-ignore:
+      - 'openspec/**'
+      - 'README.md'
+      - 'CLAUDE.md'
   workflow_dispatch:
     inputs:
       dry_run:
