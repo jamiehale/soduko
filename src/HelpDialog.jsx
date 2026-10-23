@@ -29,6 +29,9 @@ const HelpDialog = ({
         Hold Shift and type 1-9 to strike out that digit in the selected cells.
       </DialogContentText>
       <DialogContentText>
+        With nothing selected, type 1-9 to highlight that digit.
+      </DialogContentText>
+      <DialogContentText>
         Click the pencil button to fill every empty cell with the pencil marks its row, column, and box allow.
       </DialogContentText>
       <DialogContentText>

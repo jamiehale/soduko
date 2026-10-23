@@ -70,6 +70,12 @@ test.describe('board screenshots', () => {
     await expect(page).toHaveScreenshot('struck-marks.png');
   });
 
+  test('digit highlight', async ({ page }) => {
+    await open(page, PUZZLE, highlightOptions);
+    await page.keyboard.press('8');
+    await expect(page).toHaveScreenshot('digit-highlight.png');
+  });
+
   test('conflict', async ({ page }) => {
     await open(page, PUZZLE, { values: { 13: 3 } });
     await expect(page).toHaveScreenshot('conflict.png');

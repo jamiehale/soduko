@@ -226,3 +226,162 @@ test('errors take precedence over selection', async ({ page }) => {
   await click(page, 0);
   expect(await backgrounds(page, [0, 8])).toEqual({ 0: COLORS.error, 8: COLORS.error });
 });
+
+test.describe('digit highlight', () => {
+  // 40 and 0 hold 7; 80 has pencil mark 7 outside every 7's areas; 61 is outside them too
+  const options = { values: { 40: 7, 0: 7 }, marks: { 80: [7] } };
+
+  const type = async (page, key) => {
+    await page.keyboard.press(key);
+    await settle(page);
+  };
+
+  test('highlights matching values and their areas', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await type(page, '7');
+    expect(await backgrounds(page, [0, 40, 8, 44, 4, 30])).toEqual({
+      0: COLORS.selected,
+      40: COLORS.selected,
+      8: COLORS.peer,
+      44: COLORS.peer,
+      4: COLORS.peer,
+      30: COLORS.peer,
+    });
+  });
+
+  test('filled cells are peers and matching marks are related', async ({ page }) => {
+    await open(page, EMPTY, { ...options, values: { ...options.values, 61: 3 } });
+    await type(page, '7');
+    expect(await backgrounds(page, [61, 80, 70])).toEqual({
+      61: COLORS.peer,
+      80: COLORS.related,
+      70: COLORS.white,
+    });
+  });
+
+  test('struck marks are shown as peers, not related', async ({ page }) => {
+    await open(page, EMPTY, { ...options, strikes: { 70: [7] } });
+    await type(page, '7');
+    expect(await cellBackground(page, 70)).toBe(COLORS.peer);
+  });
+
+  test('a digit no cell holds still highlights filled cells and marks', async ({ page }) => {
+    await open(page, EMPTY, { values: { 61: 3 }, marks: { 80: [5] } });
+    await type(page, '5');
+    expect(await backgrounds(page, [61, 80, 70, 0])).toEqual({
+      61: COLORS.peer,
+      80: COLORS.related,
+      70: COLORS.white,
+      0: COLORS.white,
+    });
+  });
+
+  test('does not change the board or add an undo step', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await type(page, '5');
+    expect((await cellState(page, 0)).value).toBe(7);
+    expect((await cellState(page, 1)).value).toBeNull();
+    expect((await cellState(page, 80)).marks).toEqual([7]);
+    await expect(page.getByTestId('undo')).toBeDisabled();
+  });
+
+  test('typing a different digit switches', async ({ page }) => {
+    await open(page, EMPTY, { ...options, values: { ...options.values, 80: 4 } });
+    await type(page, '7');
+    await type(page, '4');
+    expect(await backgrounds(page, [80, 40])).toEqual({ 80: COLORS.selected, 40: COLORS.peer });
+  });
+
+  test('typing the same digit again clears it', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await type(page, '7');
+    await type(page, '7');
+    expect(await backgrounds(page, [0, 40, 8])).toEqual({ 0: COLORS.white, 40: COLORS.white, 8: COLORS.white });
+  });
+
+  test('Escape clears it', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await type(page, '7');
+    await type(page, 'Escape');
+    expect(await backgrounds(page, [0, 40, 8])).toEqual({ 0: COLORS.white, 40: COLORS.white, 8: COLORS.white });
+  });
+
+  test('clicking a cell selects it normally', async ({ page }) => {
+    // 70 is row 7, column 7, box 8: 71 is its peer, 0 is not
+    await open(page, EMPTY, options);
+    await type(page, '7');
+    await click(page, 70);
+    expect(await backgrounds(page, [70, 71, 0, 40])).toEqual({
+      70: COLORS.selected,
+      71: COLORS.peer,
+      0: COLORS.white,
+      40: COLORS.white,
+    });
+  });
+
+  test('deselecting does not bring it back', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await type(page, '7');
+    await click(page, 70);
+    await click(page, 70);
+    expect(await backgrounds(page, [0, 40, 70])).toEqual({ 0: COLORS.white, 40: COLORS.white, 70: COLORS.white });
+  });
+
+  test('typing after a click sets a value', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await type(page, '7');
+    await click(page, 70);
+    await type(page, '5');
+    expect((await cellState(page, 70)).value).toBe(5);
+  });
+
+  test('Reset clears it', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await type(page, '7');
+    await page.getByRole('button', { name: 'Reset' }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByRole('button', { name: 'Reset' }).click();
+    await expect(dialog).toBeHidden();
+    expect(await backgrounds(page, [8, 44])).toEqual({ 8: COLORS.white, 44: COLORS.white });
+  });
+
+  test('a reload clears it', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await type(page, '7');
+    await page.reload();
+    await page.getByTestId('board').waitFor();
+    expect(await backgrounds(page, [0, 40, 8])).toEqual({ 0: COLORS.white, 40: COLORS.white, 8: COLORS.white });
+  });
+
+  test('follows the board through undo', async ({ page }) => {
+    await open(page, EMPTY);
+    await click(page, 0);
+    await type(page, '7');
+    await click(page, 0);
+    await type(page, '7');
+    expect(await cellBackground(page, 0)).toBe(COLORS.selected);
+    await page.getByTestId('undo').click();
+    await settle(page);
+    expect((await cellState(page, 0)).value).toBeNull();
+    expect(await cellBackground(page, 0)).toBe(COLORS.white);
+  });
+
+  test('lights up an auto-filled value', async ({ page }) => {
+    // Setting 21 to 7 clears mark 7 from 20, leaving 0 as box 0's only 7
+    await page.clock.install();
+    await open(page, EMPTY, { marks: { 0: [7], 20: [7] } });
+    await click(page, 21);
+    await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
+    await page.keyboard.press('7');
+    await page.clock.runFor(100);
+    await cell(page, 21).click();
+    await page.clock.runFor(100);
+    await page.keyboard.press('7');
+    await page.clock.runFor(100);
+    expect(await cellBackground(page, 21)).toBe(COLORS.selected);
+    expect((await cellState(page, 0)).value).toBeNull();
+    await page.clock.runFor(200);
+    expect((await cellState(page, 0)).value).toBe(7);
+    expect(await cellBackground(page, 0)).toBe(COLORS.selected);
+  });
+});
