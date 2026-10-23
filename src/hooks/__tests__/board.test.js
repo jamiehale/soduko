@@ -53,7 +53,7 @@ describe('set', () => {
   });
 
   it('replaces marks with the value', () => {
-    const next = apply(initialState(), toggleMark([0], 2), set(0, 5));
+    const next = apply(initialState(), toggleMark([0], 1), set(0, 5));
     expect(next.board[0]).toStrictEqual({ type: 'player', value: 5 });
   });
 
@@ -64,28 +64,28 @@ describe('set', () => {
 
   it('clears the mark from cells in the same row, column, and box', () => {
     // 2 shares the row, 10 the box, 27 the column; 80 is unrelated
-    const state = apply(initialState(), toggleMark([2, 10, 27, 80], 6), toggleMark([2], 3));
-    const next = boardReducer(state, set(0, 6));
-    expect(next.board[2]).toStrictEqual({ type: 'player', value: [3] });
+    const state = apply(initialState(), toggleMark([2, 10, 27, 80], 7), toggleMark([2], 9));
+    const next = boardReducer(state, set(0, 7));
+    expect(next.board[2]).toStrictEqual({ type: 'player', value: [9] });
     expect(next.board[10]).toStrictEqual({ type: 'player', value: [] });
     expect(next.board[27]).toStrictEqual({ type: 'player', value: [] });
-    expect(next.board[80]).toStrictEqual({ type: 'player', value: [6] });
+    expect(next.board[80]).toStrictEqual({ type: 'player', value: [7] });
   });
 });
 
 describe('toggleMark', () => {
   it('adds the mark to every selected player cell', () => {
-    const next = apply(initialState(), toggleMark([0, 2, 3], 2));
-    expect(R.map((i) => next.board[i].value, [0, 2, 3])).toStrictEqual([[2], [2], [2]]);
+    const next = apply(initialState(), toggleMark([0, 2, 3], 7));
+    expect(R.map((i) => next.board[i].value, [0, 2, 3])).toStrictEqual([[7], [7], [7]]);
   });
 
   it('adds the mark to all cells when only some have it', () => {
-    const next = apply(initialState(), toggleMark([0, 2], 2), toggleMark([0, 2, 3], 2));
-    expect(R.map((i) => next.board[i].value, [0, 2, 3])).toStrictEqual([[2], [2], [2]]);
+    const next = apply(initialState(), toggleMark([0, 2], 7), toggleMark([0, 2, 3], 7));
+    expect(R.map((i) => next.board[i].value, [0, 2, 3])).toStrictEqual([[7], [7], [7]]);
   });
 
   it('removes the mark when every selected player cell has it', () => {
-    const next = apply(initialState(), toggleMark([0, 2, 3], 2), toggleMark([0, 2, 3], 2));
+    const next = apply(initialState(), toggleMark([0, 2, 3], 7), toggleMark([0, 2, 3], 7));
     expect(R.map((i) => next.board[i].value, [0, 2, 3])).toStrictEqual([[], [], []]);
   });
 
@@ -97,8 +97,19 @@ describe('toggleMark', () => {
   });
 
   it('keeps marks sorted', () => {
-    const next = apply(initialState(), toggleMark([0], 9), toggleMark([0], 1), toggleMark([0], 5));
-    expect(next.board[0].value).toStrictEqual([1, 5, 9]);
+    const next = apply(initialState(), toggleMark([0], 7), toggleMark([0], 1), toggleMark([0], 5));
+    expect(next.board[0].value).toStrictEqual([1, 5, 7]);
+  });
+
+  it('returns the same state when every selected cell is blocked', () => {
+    // Cells 0, 2, and 3 share row 0 with the given 8
+    const state = initialState();
+    expect(boardReducer(state, toggleMark([0, 2, 3], 8))).toBe(state);
+  });
+
+  it('returns the same state when only given cells are selected', () => {
+    const state = initialState();
+    expect(boardReducer(state, toggleMark([1, 4], 2))).toBe(state);
   });
 
   it('pushes history and clears future', () => {
@@ -111,18 +122,18 @@ describe('toggleMark', () => {
 
 describe('toggleStrike', () => {
   it('strikes the digit in every selected empty player cell in one history entry and clears future', () => {
-    const state = apply(initialState(), toggleMark([0], 4));
-    const next = boardReducer({ ...state, future: [state.board] }, toggleStrike([0, 1, 2], 4));
-    expect(next.board[0]).toStrictEqual({ type: 'player', value: [], strikes: [4] });
+    const state = apply(initialState(), toggleMark([0], 6));
+    const next = boardReducer({ ...state, future: [state.board] }, toggleStrike([0, 1, 2], 6));
+    expect(next.board[0]).toStrictEqual({ type: 'player', value: [], strikes: [6] });
     expect(next.board[1]).toStrictEqual({ type: 'given', value: 8 });
-    expect(next.board[2]).toStrictEqual({ type: 'player', value: [], strikes: [4] });
+    expect(next.board[2]).toStrictEqual({ type: 'player', value: [], strikes: [6] });
     expect(next.history).toStrictEqual([state.board, ...state.history]);
     expect(next.future).toStrictEqual([]);
   });
 
   it('is undone and redone in one step', () => {
-    const state = apply(initialState(), toggleMark([0], 4));
-    const struck = boardReducer(state, toggleStrike([0, 2], 4));
+    const state = apply(initialState(), toggleMark([0], 6));
+    const struck = boardReducer(state, toggleStrike([0, 2], 6));
     expect(apply(struck, undo).board).toStrictEqual(state.board);
     expect(apply(struck, undo, redo).board).toStrictEqual(struck.board);
   });
@@ -131,11 +142,16 @@ describe('toggleStrike', () => {
     const state = apply(initialState(), set(0, 5));
     expect(boardReducer(state, toggleStrike([0, 1], 4))).toBe(state);
   });
+
+  it('returns the same state when every selected cell is blocked', () => {
+    const state = initialState();
+    expect(boardReducer(state, toggleStrike([0, 2, 3], 8))).toBe(state);
+  });
 });
 
 describe('reset', () => {
   it('clears player cells, keeps given cells, and clears history', () => {
-    const next = apply(initialState(), set(0, 5), toggleMark([2], 3), undo, { type: 'reset' });
+    const next = apply(initialState(), set(0, 5), toggleMark([2], 9), undo, { type: 'reset' });
     expect(next).toStrictEqual(initialState());
   });
 });
@@ -182,8 +198,8 @@ describe('unknown action', () => {
 
 describe('setMany', () => {
   // 0 and 2 share a row and a box; 40 and 41 share a box
-  const marked = () => apply(initialState(), toggleMark([0, 2], 4), toggleMark([2], 9), toggleMark([40, 41], 7));
-  const placements = [{ cellIndex: 0, value: 4 }, { cellIndex: 40, value: 7 }];
+  const marked = () => apply(initialState(), toggleMark([0, 2], 6), toggleMark([2], 9), toggleMark([40, 41], 7));
+  const placements = [{ cellIndex: 0, value: 6 }, { cellIndex: 40, value: 7 }];
 
   it('returns the same state for no placements', () => {
     const state = marked();
@@ -193,7 +209,7 @@ describe('setMany', () => {
   it('sets every placement in one history entry and clears future', () => {
     const state = marked();
     const next = boardReducer({ ...state, future: [state.board] }, setMany(placements));
-    expect(next.board[0]).toStrictEqual({ type: 'player', value: 4 });
+    expect(next.board[0]).toStrictEqual({ type: 'player', value: 6 });
     expect(next.board[40]).toStrictEqual({ type: 'player', value: 7 });
     expect(next.board[2]).toStrictEqual({ type: 'player', value: [9] });
     expect(next.board[41]).toStrictEqual({ type: 'player', value: [] });
@@ -215,7 +231,7 @@ describe('setMany', () => {
 });
 
 describe('fillMarks', () => {
-  const marked = () => apply(initialState(), toggleMark([0, 2], 4), set(3, 7));
+  const marked = () => apply(initialState(), toggleMark([0, 2], 6), set(3, 7));
 
   it('fills every empty player cell in one history entry and clears future', () => {
     const state = marked();

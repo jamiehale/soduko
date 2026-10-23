@@ -73,10 +73,10 @@ test.describe('given cells are immutable', () => {
   test('marks skip given cells', async ({ page }) => {
     await open(page);
     await drag(page, [0, 1, 2]);
-    await page.keyboard.press('2');
-    expect(await cellMarks(page, 0)).toEqual([2]);
+    await page.keyboard.press('6');
+    expect(await cellMarks(page, 0)).toEqual([6]);
     expect(await cellValue(page, 1)).toBe(8);
-    expect(await cellMarks(page, 2)).toEqual([2]);
+    expect(await cellMarks(page, 2)).toEqual([6]);
   });
 });
 
@@ -95,17 +95,17 @@ test.describe('toggle pencil marks across a selection', () => {
   test('adds a mark to several cells', async ({ page }) => {
     await open(page);
     await drag(page, [2, 3]);
-    await page.keyboard.press('2');
-    expect(await cellMarks(page, 2)).toEqual([2]);
-    expect(await cellMarks(page, 3)).toEqual([2]);
+    await page.keyboard.press('7');
+    expect(await cellMarks(page, 2)).toEqual([7]);
+    expect(await cellMarks(page, 3)).toEqual([7]);
   });
 
   test('adds the mark to all cells when only some have it', async ({ page }) => {
-    await open(page, undefined, { marks: { 5: [2], 6: [2] } });
+    await open(page, undefined, { marks: { 5: [6], 6: [6] } });
     await drag(page, [5, 6, 7]);
-    await page.keyboard.press('2');
+    await page.keyboard.press('6');
     for (const i of [5, 6, 7]) {
-      expect(await cellMarks(page, i)).toEqual([2]);
+      expect(await cellMarks(page, i)).toEqual([6]);
     }
   });
 
@@ -124,9 +124,9 @@ test.describe('toggle pencil marks across a selection', () => {
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
     await settle(page);
-    await page.keyboard.press('8');
+    await page.keyboard.press('7');
     await page.mouse.up();
-    expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [8] });
+    expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [7] });
   });
 
   test('marks display in ascending order in fixed positions', async ({ page }) => {
@@ -134,12 +134,12 @@ test.describe('toggle pencil marks across a selection', () => {
     await drag(page, [2, 3]);
     await page.keyboard.press('9');
     await page.keyboard.press('1');
-    await page.keyboard.press('5');
-    expect(await cellMarks(page, 2)).toEqual([1, 5, 9]);
+    await page.keyboard.press('6');
+    expect(await cellMarks(page, 2)).toEqual([1, 6, 9]);
     const slots = await cell(page, 2).evaluate(
       (el) => Array.from(el.firstElementChild.children).map((c) => c.textContent),
     );
-    expect(slots).toEqual(['1', '', '', '', '5', '', '', '', '9']);
+    expect(slots).toEqual(['1', '', '', '', '', '6', '', '', '9']);
   });
 });
 
@@ -617,8 +617,8 @@ test.describe('struck marks', () => {
   test('strikes a digit in one cell', async ({ page }) => {
     await open(page);
     await click(page, 0);
-    await page.keyboard.press('Shift+Digit3');
-    expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [], strikes: [3] });
+    await page.keyboard.press('Shift+Digit6');
+    expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [], strikes: [6] });
   });
 
   test('draws the strike as a red line', async ({ page }) => {
@@ -633,26 +633,26 @@ test.describe('struck marks', () => {
   test('strikes a digit in several cells', async ({ page }) => {
     await open(page);
     await drag(page, [5, 6, 7]);
-    await page.keyboard.press('Shift+Digit2');
+    await page.keyboard.press('Shift+Digit6');
     for (const i of [5, 6, 7]) {
-      expect(await cellStrikes(page, i)).toEqual([2]);
+      expect(await cellStrikes(page, i)).toEqual([6]);
     }
   });
 
   test('strikes while the mouse is held', async ({ page }) => {
     await open(page);
     await holdOn(page, 0);
-    await page.keyboard.press('Shift+Digit8');
+    await page.keyboard.press('Shift+Digit7');
     await page.mouse.up();
-    expect(await cellState(page, 0)).toMatchObject({ value: null, strikes: [8] });
+    expect(await cellState(page, 0)).toMatchObject({ value: null, strikes: [7] });
   });
 
   test('adds the strike to all cells when only some have it', async ({ page }) => {
-    await open(page, undefined, { strikes: { 5: [2], 6: [2] } });
+    await open(page, undefined, { strikes: { 5: [6], 6: [6] } });
     await drag(page, [5, 6, 7]);
-    await page.keyboard.press('Shift+Digit2');
+    await page.keyboard.press('Shift+Digit6');
     for (const i of [5, 6, 7]) {
-      expect(await cellStrikes(page, i)).toEqual([2]);
+      expect(await cellStrikes(page, i)).toEqual([6]);
     }
   });
 
@@ -674,10 +674,10 @@ test.describe('struck marks', () => {
   test('skips given cells and cells with values', async ({ page }) => {
     await open(page, undefined, { values: { 3: 5 } });
     await drag(page, [1, 2, 3]);
-    await page.keyboard.press('Shift+Digit5');
+    await page.keyboard.press('Shift+Digit6');
     expect(await cellValue(page, 1)).toBe(8);
     expect(await cellValue(page, 3)).toBe(5);
-    expect(await cellStrikes(page, 2)).toEqual([5]);
+    expect(await cellStrikes(page, 2)).toEqual([6]);
   });
 
   test('adds no undo step when nothing changes', async ({ page }) => {
@@ -689,18 +689,18 @@ test.describe('struck marks', () => {
   });
 
   test('a struck mark replaces a pencil mark', async ({ page }) => {
-    await open(page, undefined, { marks: { 0: [3] } });
+    await open(page, undefined, { marks: { 0: [6] } });
     await click(page, 0);
-    await page.keyboard.press('Shift+Digit3');
-    expect(await cellState(page, 0)).toMatchObject({ marks: [], strikes: [3] });
+    await page.keyboard.press('Shift+Digit6');
+    expect(await cellState(page, 0)).toMatchObject({ marks: [], strikes: [6] });
   });
 
   test('a pencil mark replaces a struck mark', async ({ page }) => {
-    await open(page, undefined, { strikes: { 0: [3] } });
+    await open(page, undefined, { strikes: { 0: [6] } });
     await holdOn(page, 0);
-    await page.keyboard.press('3');
+    await page.keyboard.press('6');
     await page.mouse.up();
-    expect(await cellState(page, 0)).toMatchObject({ marks: [3], strikes: [] });
+    expect(await cellState(page, 0)).toMatchObject({ marks: [6], strikes: [] });
   });
 
   test('a struck mark counts as unmarked for a pencil-mark toggle', async ({ page }) => {
@@ -729,16 +729,16 @@ test.describe('struck marks', () => {
   });
 
   test('undo and redo a toggle', async ({ page }) => {
-    await open(page, undefined, { marks: { 5: [4] } });
+    await open(page, undefined, { marks: { 5: [6] } });
     await drag(page, [5, 6, 7]);
-    await page.keyboard.press('Shift+Digit4');
-    expect(await cellState(page, 5)).toMatchObject({ marks: [], strikes: [4] });
+    await page.keyboard.press('Shift+Digit6');
+    expect(await cellState(page, 5)).toMatchObject({ marks: [], strikes: [6] });
     await undoButton(page).click();
-    expect(await cellState(page, 5)).toMatchObject({ marks: [4], strikes: [] });
+    expect(await cellState(page, 5)).toMatchObject({ marks: [6], strikes: [] });
     expect(await cellStrikes(page, 6)).toEqual([]);
     await redoButton(page).click();
     for (const i of [5, 6, 7]) {
-      expect(await cellStrikes(page, i)).toEqual([4]);
+      expect(await cellStrikes(page, i)).toEqual([6]);
     }
   });
 
@@ -804,5 +804,104 @@ test.describe('struck marks', () => {
       await page.clock.runFor(1000);
       expect(await cellMarks(page, 80)).toEqual([7]);
     });
+  });
+});
+
+test.describe('marks skip digits a peer holds', () => {
+  const holdOn = async (page, cellIndex) => {
+    const box = await cell(page, cellIndex).boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await settle(page);
+  };
+
+  test('one cell whose row holds the digit gets no pencil mark', async ({ page }) => {
+    await open(page);
+    await holdOn(page, 0);
+    await page.keyboard.press('8');
+    await page.mouse.up();
+    expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [] });
+    await expect(undoButton(page)).toBeDisabled();
+  });
+
+  test('one cell whose box holds the digit gets no struck mark', async ({ page }) => {
+    // Cell 9, in box 0, is a given 3
+    await open(page);
+    await click(page, 0);
+    await page.keyboard.press('Shift+Digit3');
+    expect(await cellStrikes(page, 0)).toEqual([]);
+  });
+
+  test('a selection skips only the blocked cells', async ({ page }) => {
+    // 72 shares column 0 with cell 0
+    await open(page, EMPTY, { values: { 72: 6 } });
+    await drag(page, [0, 1, 2]);
+    await page.keyboard.press('6');
+    expect(await cellMarks(page, 0)).toEqual([]);
+    expect(await cellMarks(page, 1)).toEqual([6]);
+    expect(await cellMarks(page, 2)).toEqual([6]);
+  });
+
+  test('a player value counts', async ({ page }) => {
+    // 4 is in row 0; 9 and 18 share no row, column, or box with it
+    await open(page, EMPTY, { values: { 4: 5 } });
+    await drag(page, [0, 9, 18]);
+    await page.keyboard.press('Shift+Digit5');
+    expect(await cellStrikes(page, 0)).toEqual([]);
+    expect(await cellStrikes(page, 9)).toEqual([5]);
+    expect(await cellStrikes(page, 18)).toEqual([5]);
+  });
+
+  test('conflicting values count', async ({ page }) => {
+    await open(page, EMPTY, { values: { 3: 2, 5: 2 } });
+    await holdOn(page, 0);
+    await page.keyboard.press('2');
+    await page.mouse.up();
+    expect(await cellMarks(page, 0)).toEqual([]);
+  });
+
+  test('every selected cell blocked adds no undo step', async ({ page }) => {
+    await open(page);
+    await drag(page, [0, 2, 3]);
+    await page.keyboard.press('8');
+    for (const i of [0, 2, 3]) {
+      expect(await cellMarks(page, i)).toEqual([]);
+    }
+    await expect(undoButton(page)).toBeDisabled();
+  });
+
+  test('only given cells selected adds no undo step', async ({ page }) => {
+    await open(page, `12${EMPTY.slice(2)}`);
+    await drag(page, [0, 1]);
+    await page.keyboard.press('5');
+    await expect(undoButton(page)).toBeDisabled();
+  });
+
+  test('an ignored keystroke keeps redo', async ({ page }) => {
+    await open(page);
+    await click(page, 2);
+    await page.keyboard.press('7');
+    await undoButton(page).click();
+    await expect(redoButton(page)).toBeEnabled();
+    await drag(page, [0, 2, 3]);
+    await page.keyboard.press('8');
+    await expect(redoButton(page)).toBeEnabled();
+  });
+
+  test('skipped cells do not block removing a pencil mark', async ({ page }) => {
+    // 0 shares column 0 with the 2 at 72, so only 1 and 2 can take mark 2
+    await open(page, EMPTY, { values: { 72: 2 }, marks: { 1: [2], 2: [2] } });
+    await drag(page, [0, 1, 2]);
+    await page.keyboard.press('2');
+    for (const i of [0, 1, 2]) {
+      expect(await cellMarks(page, i)).toEqual([]);
+    }
+  });
+
+  test('a struck mark on a digit a peer holds can be removed', async ({ page }) => {
+    await open(page, EMPTY, { values: { 72: 6 }, strikes: { 0: [6] } });
+    await click(page, 0);
+    await page.keyboard.press('Shift+Digit6');
+    expect(await cellStrikes(page, 0)).toEqual([]);
   });
 });
