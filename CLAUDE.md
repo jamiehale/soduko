@@ -66,10 +66,11 @@ Use these words in specs, code, tests, on-screen text, and docs.
 | peer | A cell sharing a row, column, or box with another; also the highlight style | `'peer'` |
 | related | An empty cell with a pencil mark of the selected value; also the highlight style | `'related'` |
 | conflict | Two cells with the same value in one row, column, or box; shown in the error style | `errorCells` |
-| auto-set | The feature that sets forced cells by itself, 500ms after the player sets a value (not "auto-fill": fill is what Fill pencil marks does) | `useAutoSet`, `startAutoSet`, `cancelAutoSet` |
+| auto-set | The feature that sets forced cells in the trigger box by itself, 500ms after the player sets a value (not "auto-fill": fill is what Fill pencil marks does) | `useAutoSet`, `startAutoSet`, `cancelAutoSet` |
+| trigger box | The box holding the cell whose value the player just set; the only box auto-set scans, for the whole cascade | `box` in `useAutoSet`'s `start` |
 | box single | A digit that is a pencil mark in exactly one cell of a box, where no cell of that box holds it; what auto-set places | `findBoxSingles` |
 | bulk set | One round of auto-set: every box single found is set at once, as one undo step | `nextBulkSet`, `setCellValues`, `'setMany'` |
-| cascade | The chain of bulk sets, each 500ms after the last, that ends when a round finds no box single or the board has a conflict | the `step` loop in `hooks/auto-set.js` |
+| cascade | The chain of bulk sets in the trigger box, each 500ms after the last, that ends when a round finds no box single there or the board has a conflict | the `step` loop in `hooks/auto-set.js` |
 | selection | The selected cells | `selectedCells` |
 | game | The board plus its undo/redo history; what is saved | `{ board, history, future }` |
 

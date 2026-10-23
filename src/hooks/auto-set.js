@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import * as R from 'ramda';
-import { nextBulkSet, boardWithSetValues } from '../util/board';
+import { nextBulkSet, boardWithSetValues, boxFromCount } from '../util/board';
 import { findErrorCells } from './game';
 import { setCellValues } from './board';
 
@@ -19,10 +19,11 @@ const useAutoSet = ({ board, dispatch }) => {
     timeoutRef.current = null;
   }, []);
 
-  const start = useCallback(() => {
+  const start = useCallback((cellIndex) => {
+    const box = boxFromCount(cellIndex);
     const step = () => {
       const current = boardRef.current;
-      const placements = nextBulkSet(current, findErrorCells(current));
+      const placements = nextBulkSet(current, findErrorCells(current), box);
       if (R.isEmpty(placements)) {
         timeoutRef.current = null;
         return;

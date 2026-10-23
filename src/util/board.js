@@ -133,4 +133,8 @@ export const findBoxSingles = board => R.compose(
   R.chain(boxSingles(board)),
 )(R.range(0, 9));
 
-export const nextBulkSet = R.curry((board, errorCells) => (R.isEmpty(errorCells) ? findBoxSingles(board) : []));
+const inBox = box => R.propSatisfies(i => boxFromCount(i) === box, 'cellIndex');
+
+export const nextBulkSet = R.curry((board, errorCells, box) => (
+  R.isEmpty(errorCells) ? R.filter(inBox(box), findBoxSingles(board)) : []
+));

@@ -529,11 +529,25 @@ describe('nextBulkSet', () => {
   const board = withMarks({ 0: [4] }, emptyBoard());
 
   it('returns the box singles when there are no conflicts', () => {
-    expect(nextBulkSet(board, [])).toStrictEqual([{ cellIndex: 0, value: 4 }]);
+    expect(nextBulkSet(board, [], 0)).toStrictEqual([{ cellIndex: 0, value: 4 }]);
   });
 
   it('returns nothing when the board has a conflict', () => {
-    expect(nextBulkSet(board, [30, 31])).toStrictEqual([]);
+    expect(nextBulkSet(board, [30, 31], 0)).toStrictEqual([]);
+  });
+
+  it('leaves singles in other boxes', () => {
+    const twoBoxes = withMarks({ 0: [4], 40: [6] }, emptyBoard());
+    expect(nextBulkSet(twoBoxes, [], 4)).toStrictEqual([{ cellIndex: 40, value: 6 }]);
+    expect(nextBulkSet(twoBoxes, [], 8)).toStrictEqual([]);
+  });
+
+  it('returns the singles of the box sorted by cell, a cell keeping its lower digit', () => {
+    const singles = withMarks({ 20: [3], 1: [7, 8] }, emptyBoard());
+    expect(nextBulkSet(singles, [], 0)).toStrictEqual([
+      { cellIndex: 1, value: 7 },
+      { cellIndex: 20, value: 3 },
+    ]);
   });
 });
 
