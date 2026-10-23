@@ -307,6 +307,16 @@ test.describe('auto-fill box singles', () => {
     expect(await cellMarks(page, 8)).toEqual([9]);
   });
 
+  test('auto-filled values clear related struck marks', async ({ page }) => {
+    // 27 shares column 0 with 0, but nothing with 21
+    await openAndSelect(page, 21, { marks: { ...BOX_0_SINGLE, 27: [9] }, strikes: { 27: [7] } });
+    await page.keyboard.press('7');
+    expect(await cellStrikes(page, 27)).toEqual([7]);
+    await page.clock.runFor(500);
+    expect(await cellValue(page, 0)).toBe(7);
+    expect(await cellState(page, 27)).toMatchObject({ marks: [9], strikes: [] });
+  });
+
   test('a cell single for two digits takes the lower one', async ({ page }) => {
     await openAndSelect(page, 80, { marks: { 0: [5, 6] } });
     await page.keyboard.press('1');
@@ -721,10 +731,23 @@ test.describe('struck marks', () => {
     expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [], strikes: [] });
   });
 
-  test('setting a value keeps struck marks in related cells', async ({ page }) => {
+  test('setting a value clears struck marks in related cells', async ({ page }) => {
+    // 2 shares the row with 0, 27 the column, 10 the box; 80 shares nothing
+    await open(page, undefined, { strikes: { 2: [6], 27: [4, 6], 10: [6], 80: [6] } });
+    await click(page, 0);
+    await page.keyboard.press('6');
+    expect(await cellStrikes(page, 2)).toEqual([]);
+    expect(await cellStrikes(page, 27)).toEqual([4]);
+    expect(await cellStrikes(page, 10)).toEqual([]);
+    expect(await cellStrikes(page, 80)).toEqual([6]);
+  });
+
+  test('undo brings cleared struck marks back', async ({ page }) => {
     await open(page, undefined, { strikes: { 2: [6] } });
     await click(page, 0);
     await page.keyboard.press('6');
+    expect(await cellStrikes(page, 2)).toEqual([]);
+    await undoButton(page).click();
     expect(await cellStrikes(page, 2)).toEqual([6]);
   });
 
