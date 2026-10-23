@@ -7,7 +7,7 @@ Gives players in-app instructions and shows which version they are running.
 ## Requirements
 
 ### Requirement: Help dialog
-The help icon button SHALL open a dialog titled "soduko v<version>", where <version> is the current package version. The dialog explains selection, entering values, pencil marks, struck marks, highlighting a digit with nothing selected, the Fill pencil marks button, the custom puzzle format, and credits the stock puzzles' source with a link to `http://norvig.com/top95.txt`. It SHALL call starting patterns "puzzles" (stock or custom), never "boards". "Okay", or dismissing the dialog, SHALL close it.
+The help icon button SHALL open a dialog titled "soduko v<version>", where <version> is the current package version. The dialog explains how to use the app and credits the stock puzzles' source with a link to `http://norvig.com/top95.txt`. It SHALL call starting patterns "puzzles" (stock or custom), never "boards". "Okay", or dismissing the dialog, SHALL close it.
 
 #### Scenario: Open help
 - **WHEN** the player clicks the help icon
