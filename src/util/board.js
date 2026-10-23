@@ -10,6 +10,10 @@ import {
   getCellValue,
   clearPlayerValue,
   setPlayerValue,
+  getCellStrikes,
+  cellHasStrike,
+  setStrike,
+  clearStrike,
 } from './cell';
 
 export const rowFromCount = count => Math.floor(count / 9);
@@ -32,15 +36,14 @@ export const allCellsHaveMark = R.curry((mark, cells) => R.all(cellHasMark(mark)
 
 const isCandidateCell = (cellIndices, cell, index) => R.includes(index, cellIndices) && isPlayerCellWithMarks(cell);
 
-export const boardWithMarkSet = (mark, cellIndices, board) => R.addIndex(R.map)(
-  (cell, i) => (isCandidateCell(cellIndices, cell, i) ? setMark(mark, cell) : cell),
+const boardWithCandidateCells = (fn, cellIndices, board) => R.addIndex(R.map)(
+  (cell, i) => (isCandidateCell(cellIndices, cell, i) ? fn(cell) : cell),
   board,
 );
 
-export const boardWithMarkCleared = (mark, cellIndices, board) => R.addIndex(R.map)(
-  (cell, i) => (isCandidateCell(cellIndices, cell, i) ? clearMark(mark, cell) : cell),
-  board,
-);
+export const boardWithMarkSet = (mark, cellIndices, board) => boardWithCandidateCells(setMark(mark), cellIndices, board);
+
+export const boardWithMarkCleared = (mark, cellIndices, board) => boardWithCandidateCells(clearMark(mark), cellIndices, board);
 
 const shouldClear = (cellIndex, i) => sameRow(cellIndex, i)
   || sameColumn(cellIndex, i)
@@ -54,7 +57,7 @@ const peerValues = (cellIndex, board) => R.addIndex(R.chain)(
 export const possibleMarks = R.curry((cellIndex, board) => R.difference(R.range(1, 10), peerValues(cellIndex, board)));
 
 export const boardWithFilledMarks = board => R.addIndex(R.map)(
-  (cell, i) => (isPlayerCellWithMarks(cell) ? makeCell('player', possibleMarks(i, board)) : cell),
+  (cell, i) => (isPlayerCellWithMarks(cell) ? R.assoc('value', R.difference(possibleMarks(i, board), getCellStrikes(cell)), cell) : cell),
   board,
 );
 
@@ -68,17 +71,24 @@ const cellSet = R.curry((cellIndices, board) => R.addIndex(R.filter)(
   board,
 ));
 
-const allMarkableCellsHaveMark = (mark, cellIndices, board) => R.compose(
-  R.all(cellHasMark(mark)),
+const allMarkableCellsHave = (predicate, cellIndices, board) => R.compose(
+  R.all(predicate),
   R.filter(isPlayerCellWithMarks),
   cellSet(cellIndices),
 )(board);
 
 export const boardWithToggledMark = R.curry((mark, cellIndices, board) => {
-  if (allMarkableCellsHaveMark(mark, cellIndices, board)) {
+  if (allMarkableCellsHave(cellHasMark(mark), cellIndices, board)) {
     return boardWithMarkCleared(mark, cellIndices, board);
   }
   return boardWithMarkSet(mark, cellIndices, board);
+});
+
+export const boardWithToggledStrike = R.curry((mark, cellIndices, board) => {
+  if (allMarkableCellsHave(cellHasStrike(mark), cellIndices, board)) {
+    return boardWithCandidateCells(clearStrike(mark), cellIndices, board);
+  }
+  return boardWithCandidateCells(setStrike(mark), cellIndices, board);
 });
 
 export const boardWithToggledValue = R.curry((value, cellIndex, board) => {

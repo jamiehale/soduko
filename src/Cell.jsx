@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import MarkedCell from './MarkedCell';
-import { isGivenCell, isPlayerCellWithValue, getCellValue, getCellMarks } from './util/cell';
+import { isGivenCell, isPlayerCellWithValue, getCellValue, getCellMarks, getCellStrikes } from './util/cell';
 
 const Container = styled(({ highlight, error, borderLeft, borderRight, borderTop, borderBottom, ...props }) => <div {...props} />)`
   border-left: ${({ borderLeft }) => (borderLeft ? '3px solid darkgrey' : '1px solid lightgrey')};
@@ -33,7 +33,7 @@ const cellType = (cell) => {
   if (isPlayerCellWithValue(cell)) {
     return <PlayerCell>{getCellValue(cell)}</PlayerCell>;
   }
-  return <MarkedCell marks={getCellMarks(cell)} />
+  return <MarkedCell marks={getCellMarks(cell)} strikes={getCellStrikes(cell)} />
 };
 
 const Cell = ({

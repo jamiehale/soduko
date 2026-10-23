@@ -15,6 +15,7 @@ const apply = (state, ...actions) => R.reduce(boardReducer, state, actions);
 
 const set = (cellIndex, value) => ({ type: 'set', payload: { cellIndex, value } });
 const toggleMark = (cells, mark) => ({ type: 'toggleMark', payload: { cells, mark } });
+const toggleStrike = (cells, mark) => ({ type: 'toggleStrike', payload: { cells, mark } });
 const setMany = (placements) => ({ type: 'setMany', payload: { placements } });
 const fillMarks = { type: 'fillMarks' };
 const undo = { type: 'undo' };
@@ -105,6 +106,30 @@ describe('toggleMark', () => {
     const next = boardReducer({ ...state, future: [state.board] }, toggleMark([0], 1));
     expect(next.history).toStrictEqual([state.board]);
     expect(next.future).toStrictEqual([]);
+  });
+});
+
+describe('toggleStrike', () => {
+  it('strikes the digit in every selected empty player cell in one history entry and clears future', () => {
+    const state = apply(initialState(), toggleMark([0], 4));
+    const next = boardReducer({ ...state, future: [state.board] }, toggleStrike([0, 1, 2], 4));
+    expect(next.board[0]).toStrictEqual({ type: 'player', value: [], strikes: [4] });
+    expect(next.board[1]).toStrictEqual({ type: 'given', value: 8 });
+    expect(next.board[2]).toStrictEqual({ type: 'player', value: [], strikes: [4] });
+    expect(next.history).toStrictEqual([state.board, ...state.history]);
+    expect(next.future).toStrictEqual([]);
+  });
+
+  it('is undone and redone in one step', () => {
+    const state = apply(initialState(), toggleMark([0], 4));
+    const struck = boardReducer(state, toggleStrike([0, 2], 4));
+    expect(apply(struck, undo).board).toStrictEqual(state.board);
+    expect(apply(struck, undo, redo).board).toStrictEqual(struck.board);
+  });
+
+  it('returns the same state when nothing changes', () => {
+    const state = apply(initialState(), set(0, 5));
+    expect(boardReducer(state, toggleStrike([0, 1], 4))).toBe(state);
   });
 });
 

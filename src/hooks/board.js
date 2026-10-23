@@ -7,6 +7,7 @@ import {
   makeBoard,
   resetBoard,
   boardWithToggledMark,
+  boardWithToggledStrike,
   boardWithSetValue,
   boardWithSetValues,
   boardWithFilledMarks,
@@ -33,6 +34,21 @@ export const boardReducer = (state, action) => {
       const { cells, mark } = action.payload;
       return {
         board: boardWithToggledMark(mark, cells, state.board),
+        history: R.prepend(
+          state.board,
+          state.history,
+        ),
+        future: [],
+      };
+    }
+    case 'toggleStrike': {
+      const { cells, mark } = action.payload;
+      const board = boardWithToggledStrike(mark, cells, state.board);
+      if (R.equals(board, state.board)) {
+        return state;
+      }
+      return {
+        board,
         history: R.prepend(
           state.board,
           state.history,
@@ -152,6 +168,10 @@ export const reset = (dispatch, board) => {
 
 export const toggleCellMark = (dispatch, cells, mark) => {
   dispatch({ type: 'toggleMark', payload: { cells, mark } });
+};
+
+export const toggleCellStrike = (dispatch, cells, mark) => {
+  dispatch({ type: 'toggleStrike', payload: { cells, mark } });
 };
 
 export const setCellValue = (dispatch, cellIndex, value) => {

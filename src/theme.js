@@ -24,6 +24,9 @@ const theme = {
       text: '#3f51b5',
       cell: 'white',
     },
+    strike: {
+      line: '#ff0000',
+    },
     error: {
       text: 'white',
       cell: '#ff5252',
