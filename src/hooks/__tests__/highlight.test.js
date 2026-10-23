@@ -20,6 +20,35 @@ describe('useHighlight', () => {
     expect(useHighlight([], board)).toStrictEqual({});
   });
 
+  it('highlights a typed digit with no selection like a selected cell holding it', () => {
+    // 0 holds the given 7
+    expect(useHighlight([], board, 7)).toStrictEqual(useHighlight([0], board));
+    expect(useHighlight([], board, 7).highlightValue).toBe(7);
+  });
+
+  it('projects every cell holding the typed digit', () => {
+    const b = withValues({ 0: makeCell('given', 7), 40: makeCell('player', 7) });
+    expect(useHighlight([], b, 7)).toStrictEqual({
+      highlightRows: [0, 4],
+      highlightColumns: [0, 4],
+      highlightBoxes: [0, 4],
+      highlightValue: 7,
+    });
+  });
+
+  it('highlights a typed digit no cell holds with no areas', () => {
+    expect(useHighlight([], board, 5)).toStrictEqual({
+      highlightRows: [],
+      highlightColumns: [],
+      highlightBoxes: [],
+      highlightValue: 5,
+    });
+  });
+
+  it('ignores the typed digit when cells are selected', () => {
+    expect(useHighlight([40], board, 7)).toStrictEqual(useHighlight([40], board));
+  });
+
   it("highlights a single cell's row, column, and box", () => {
     expect(useHighlight([40], board)).toStrictEqual({
       highlightRows: [4],

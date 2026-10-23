@@ -40,9 +40,22 @@ export const selectionReducer = (state, action) => {
     }
     case 'clearSelection': {
       return {
-        ...state,
+        ...R.dissoc('highlightDigit', state),
         selectedCells: [],
       };
+    }
+    case 'highlightDigit': {
+      const { digit } = action.payload;
+      if (state.highlightDigit === digit) {
+        return R.dissoc('highlightDigit', state);
+      }
+      return {
+        ...state,
+        highlightDigit: digit,
+      };
+    }
+    case 'clearHighlightDigit': {
+      return R.dissoc('highlightDigit', state);
     }
     default: {
       return state;
@@ -61,6 +74,7 @@ const useSelection = () => {
     dispatch,
     selectedCells: selectedCellsOf(state),
     isMouseDown: state.isMouseDown,
+    highlightDigit: state.highlightDigit,
   };
 };
 
@@ -78,6 +92,14 @@ export const mouseOver = (dispatch, cell) => {
 
 export const clearSelection = (dispatch) => {
   dispatch({ type: 'clearSelection' });
+};
+
+export const highlightDigit = (dispatch, digit) => {
+  dispatch({ type: 'highlightDigit', payload: { digit } });
+};
+
+export const clearHighlightDigit = (dispatch) => {
+  dispatch({ type: 'clearHighlightDigit' });
 };
 
 export default useSelection;

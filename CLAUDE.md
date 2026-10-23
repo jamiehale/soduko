@@ -90,7 +90,7 @@ Saves from before v0.4.0 used `'puzzle'`/`'user'`; `migrateSavedGame` (`src/util
 - `window-event.js` — `useWindowEvent(type, handler)`: one `window` listener per event type, latest handler read from a ref. Drives the keyboard input.
 - `logging-reducer.js` — debug wrapper for reducers (not used by default).
 
-**Input semantics** (in `App.jsx`'s `keydown` handler, via `useWindowEvent`): a digit with one selected cell sets its value; with multiple cells selected (or while still dragging) it toggles that pencil mark across them. Shift plus a digit (matched by `event.code`, so any layout works) toggles that struck mark across the selected cells, however many. Escape clears the selection.
+**Input semantics** (in `App.jsx`'s `keydown` handler, via `useWindowEvent`): a digit with one selected cell sets its value; with multiple cells selected (or while still dragging) it toggles that pencil mark across them. Shift plus a digit (matched by `event.code`, so any layout works) toggles that struck mark across the selected cells, however many. With nothing selected, a digit highlights that digit as if a cell holding it were selected (`highlightDigit` in the selection state); the same digit again, Escape, or a press on a cell clears it. Escape clears the selection.
 
 **Rendering:** `Board` → `Cell`, which delegates to `MarkedCell` for pencil marks; `hooks/border.js` computes the thicker box borders. `MiniPuzzle` is the read-only puzzle preview in `NewGameDialog`. Board colors and styling tokens come from `src/theme.js` via styled-components' `ThemeProvider`; layout and dialogs use MUI.
 

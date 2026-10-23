@@ -14,7 +14,7 @@ import RedoIcon from '@mui/icons-material/Redo';
 import HelpIcon from '@mui/icons-material/Help';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { decode } from './util/decoder';
-import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection } from './hooks/selection';
+import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection, highlightDigit, clearHighlightDigit } from './hooks/selection';
 import useHighlight from './hooks/highlight';
 import useBoard, { reset, toggleCellMark, toggleCellStrike, setCellValue, fillCellMarks, undo, redo, newGame } from './hooks/board';
 import useGame from './hooks/game';
@@ -32,9 +32,9 @@ import GitHubLink from './GitHubLink';
 
 const App = () => {
   const { dispatch: boardDispatch, board, canUndo, canRedo } = useBoard();
-  const { dispatch: selectionDispatch, selectedCells, isMouseDown } = useSelection();
+  const { dispatch: selectionDispatch, selectedCells, isMouseDown, highlightDigit: typedDigit } = useSelection();
   const { isSolved, errorCells } = useGame(board);
-  const highlight = useHighlight(selectedCells, board);
+  const highlight = useHighlight(selectedCells, board, typedDigit);
   const { start: startAutoFill, cancel: cancelAutoFill } = useAutoFill({ board, dispatch: boardDispatch });
   const [showHelp, setShowHelp] = useState(false);
   
@@ -54,7 +54,8 @@ const App = () => {
   const handleNewGame = useCallback((puzzle) => {
     cancelAutoFill();
     newGame(boardDispatch, decode(puzzle));
-  }, [boardDispatch, cancelAutoFill]);
+    clearHighlightDigit(selectionDispatch);
+  }, [boardDispatch, selectionDispatch, cancelAutoFill]);
 
   const { confirming: showNewGame, confirm: confirmNewGame, handleConfirm: handleConfirmNewGame, handleCancel: handleCancelNewGame } = useConfirmation(handleNewGame);
 
@@ -93,6 +94,8 @@ const App = () => {
         if (isValueSet(value, board[cellIndex])) {
           startAutoFill();
         }
+      } else {
+        highlightDigit(selectionDispatch, value);
       }
     } else if (event.key === 'Escape') {
       clearSelection(selectionDispatch);

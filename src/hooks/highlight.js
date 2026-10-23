@@ -25,12 +25,12 @@ const cellsHolding = (value, board) => R.compose(
   R.length,
 )(board);
 
-const useHighlight = (selectedCells, board) => {
-  if (R.isEmpty(selectedCells)) {
+const useHighlight = (selectedCells, board, highlightDigit) => {
+  if (R.isEmpty(selectedCells) && R.isNil(highlightDigit)) {
     return {};
   }
 
-  const highlightValue = singleValue(selectedCells, board);
+  const highlightValue = R.isEmpty(selectedCells) ? highlightDigit : singleValue(selectedCells, board);
 
   // A selected value projects the row, column, and box of every cell holding it
   const projected = R.isNil(highlightValue) ? null : cellsHolding(highlightValue, board);
