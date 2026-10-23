@@ -166,12 +166,12 @@ Typing a different digit while a digit is highlighted SHALL switch the highlight
 - **THEN** no cell is highlighted
 
 ### Requirement: The digit highlight follows the board
-While a digit N is highlighted, the highlighting SHALL reflect the current board, including after undo, redo, Fill pencil marks, and auto-filled values.
+While a digit N is highlighted, the highlighting SHALL reflect the current board, including after undo, redo, Fill pencil marks, and auto-set values.
 
 #### Scenario: Undo while highlighted
 - **WHEN** a player cell holds 7, the player deselects it, types `7`, and clicks undo to remove that value
 - **THEN** the cell is no longer shown in the selected style
 
-#### Scenario: Auto-filled value
-- **WHEN** a value set starts an auto-fill that places a 7, and the player deselects and types `7` before it fires
-- **THEN** after the auto-fill the new 7 is shown in the selected style
+#### Scenario: Auto-set value
+- **WHEN** a value set starts an auto-set that places a 7, and the player deselects and types `7` before it fires
+- **THEN** after the auto-set the new 7 is shown in the selected style

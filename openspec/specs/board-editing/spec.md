@@ -113,7 +113,7 @@ After the player confirms, Reset SHALL clear every player cell (values and marks
 - **WHEN** the player clicks Reset and cancels
 - **THEN** the board and history are unchanged
 
-### Requirement: Auto-fill box singles after a value set
+### Requirement: Auto-set box singles after a value set
 500ms after the player sets a value in a player cell, the board SHALL be scanned for box singles: a digit N that is a pencil mark in exactly one cell of a box whose cells hold no value N. A struck mark N SHALL NOT count as a pencil mark N. Every box single found SHALL be set at once (a bulk set), each as if the player had entered it. Toggling a value off, toggling marks, undo, and redo SHALL NOT start a scan.
 
 #### Scenario: A value set leaves a box single
@@ -131,7 +131,7 @@ After the player confirms, Reset SHALL clear every player cell (values and marks
 
 #### Scenario: Digit already placed in the box
 - **WHEN** a box holds the value 2, one of its empty cells still has pencil mark 2, and the player sets a value elsewhere
-- **THEN** that cell is not auto-filled
+- **THEN** that cell is not auto-set
 
 #### Scenario: Struck marks don't count
 - **WHEN** a box has one cell with pencil mark 7, other cells there with struck mark 7, no value 7, and the player sets a value elsewhere
@@ -139,28 +139,28 @@ After the player confirms, Reset SHALL clear every player cell (values and marks
 
 #### Scenario: Only struck marks
 - **WHEN** a box has no cell with pencil mark 7, exactly one cell with struck mark 7, no value 7, and the player sets a value elsewhere
-- **THEN** that cell is not auto-filled
+- **THEN** that cell is not auto-set
 
 #### Scenario: Toggling a value off
 - **WHEN** a box has a single cell with pencil mark 3, and the player types the value a selected player cell already holds
-- **THEN** the cell with mark 3 is not auto-filled
+- **THEN** the cell with mark 3 is not auto-set
 
 #### Scenario: Toggling marks
 - **WHEN** a mark toggle leaves a box with a single cell with pencil mark 5
-- **THEN** that cell is not auto-filled
+- **THEN** that cell is not auto-set
 
 #### Scenario: No box singles
 - **WHEN** the player sets a value and no box single exists afterwards
 - **THEN** no other cell changes and the player's value set is the only new undo step
 
-### Requirement: Auto-filled values clear related pencil marks
+### Requirement: Auto-set values clear related pencil marks
 Each value set by a bulk set SHALL remove that digit's pencil mark and struck mark from every empty player cell in the same row, column, or box, as a player-entered value does.
 
-#### Scenario: Marks cleared by an auto-filled value
+#### Scenario: Marks cleared by an auto-set value
 - **WHEN** a bulk set fills cell X with 4 and a cell in X's row has pencil marks 4 and 9
 - **THEN** that cell shows only pencil mark 9
 
-#### Scenario: Struck marks cleared by an auto-filled value
+#### Scenario: Struck marks cleared by an auto-set value
 - **WHEN** a bulk set fills cell X with 4 and a cell in X's column has struck mark 4 and pencil mark 9
 - **THEN** that cell shows pencil mark 9 and no struck mark 4
 
@@ -183,7 +183,7 @@ When one cell is the only cell in its box with pencil mark N and also the only o
 - **THEN** no further cells change
 
 ### Requirement: Each bulk set is one undo step
-A bulk set SHALL add exactly one undo step. Undoing it SHALL restore every cell it changed, including the auto-filled cells' pencil marks and the marks it cleared from related cells. Redo SHALL reapply it. Undo and redo SHALL NOT start a new cascade.
+A bulk set SHALL add exactly one undo step. Undoing it SHALL restore every cell it changed, including the auto-set cells' pencil marks and the marks it cleared from related cells. Redo SHALL reapply it. Undo and redo SHALL NOT start a new cascade.
 
 #### Scenario: Undo a bulk set
 - **WHEN** a bulk set fills two cells and the player clicks undo once
@@ -207,7 +207,7 @@ A bulk set SHALL set its box singles even if that creates a conflict, which show
 
 #### Scenario: Player value set leaves a conflict
 - **WHEN** the player sets a value that conflicts with another cell and a box single exists
-- **THEN** the box single is not auto-filled
+- **THEN** the box single is not auto-set
 
 #### Scenario: Undo out of a conflict
 - **WHEN** a bulk set created a conflict and the player clicks undo
@@ -218,15 +218,15 @@ Any board change by the player (setting a value, toggling pencil marks or struck
 
 #### Scenario: Undo during the pause
 - **WHEN** the player sets a value that leaves a box single and clicks undo within 500ms
-- **THEN** the board is as it was before the value set, and no cell is auto-filled afterwards
+- **THEN** the board is as it was before the value set, and no cell is auto-set afterwards
 
 #### Scenario: Mark toggle during the pause
 - **WHEN** the player sets a value that leaves a box single and toggles a pencil mark within 500ms
-- **THEN** no cell is auto-filled afterwards
+- **THEN** no cell is auto-set afterwards
 
 #### Scenario: Fill pencil marks during the pause
 - **WHEN** the player sets a value that leaves a box single and clicks Fill pencil marks within 500ms
-- **THEN** no cell is auto-filled afterwards
+- **THEN** no cell is auto-set afterwards
 
 #### Scenario: Selection change during the pause
 - **WHEN** the player sets a value that leaves a box single and clicks another cell within 500ms
@@ -308,7 +308,7 @@ Filling pencil marks SHALL add exactly one undo step and clear the redo steps. U
 - **WHEN** the player undoes a value set and then clicks Fill pencil marks
 - **THEN** redo is disabled
 
-### Requirement: Filling pencil marks does not start auto-fill
+### Requirement: Filling pencil marks does not start auto-set
 Filling pencil marks SHALL NOT start a scan for box singles, even if the new marks leave box singles. The player's next value set SHALL scan as usual.
 
 #### Scenario: Box singles left by a fill
@@ -391,7 +391,7 @@ Each Shift+digit toggle that changes the board SHALL add exactly one undo step a
 - **WHEN** the player undoes a struck toggle and clicks redo
 - **THEN** the struck marks are shown again
 
-### Requirement: Struck marks do not start auto-fill
+### Requirement: Struck marks do not start auto-set
 A struck toggle SHALL cancel any bulk set still pending and SHALL NOT start a scan for box singles, even if it leaves box singles.
 
 #### Scenario: Toggle leaves a box single
@@ -400,7 +400,7 @@ A struck toggle SHALL cancel any bulk set still pending and SHALL NOT start a sc
 
 #### Scenario: Toggle during the pause
 - **WHEN** the player sets a value that leaves a box single and types Shift+digit on a selected empty cell within 500ms
-- **THEN** no cell is auto-filled afterwards
+- **THEN** no cell is auto-set afterwards
 
 ### Requirement: Marks skip digits a peer holds
 Adding pencil mark N or struck mark N SHALL skip every cell whose row, column, or box holds the value N, given or player, including a value in a conflict. Other selected cells SHALL get the mark as usual. Removing a mark SHALL never be skipped.

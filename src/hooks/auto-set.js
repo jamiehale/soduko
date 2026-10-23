@@ -6,7 +6,7 @@ import { setCellValues } from './board';
 
 const DELAY = 500;
 
-const useAutoFill = ({ board, dispatch }) => {
+const useAutoSet = ({ board, dispatch }) => {
   const boardRef = useRef(board);
   const timeoutRef = useRef(null);
 
@@ -41,4 +41,4 @@ const useAutoFill = ({ board, dispatch }) => {
   return { start, cancel };
 };
 
-export default useAutoFill;
+export default useAutoSet;

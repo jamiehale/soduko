@@ -366,7 +366,7 @@ test.describe('digit highlight', () => {
     expect(await cellBackground(page, 0)).toBe(COLORS.white);
   });
 
-  test('lights up an auto-filled value', async ({ page }) => {
+  test('lights up an auto-set value', async ({ page }) => {
     // Setting 21 to 7 clears mark 7 from 20, leaving 0 as box 0's only 7
     await page.clock.install();
     await open(page, EMPTY, { marks: { 0: [7], 20: [7] } });

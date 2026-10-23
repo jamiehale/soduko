@@ -221,7 +221,7 @@ test.describe('reset', () => {
   });
 });
 
-test.describe('auto-fill box singles', () => {
+test.describe('auto-set box singles', () => {
   // Box 0 holds cells 0, 2, 10, 11, 18, 19, 20 (empty) and givens 8 and 3.
   // Setting 21 (row 2, box 1) to 7 clears mark 7 from 20, leaving 0 as box 0's only 7.
   const BOX_0_SINGLE = { 0: [7], 20: [7] };
@@ -297,7 +297,7 @@ test.describe('auto-fill box singles', () => {
     await expect(undoButton(page)).toBeDisabled();
   });
 
-  test('auto-filled values clear related marks', async ({ page }) => {
+  test('auto-set values clear related marks', async ({ page }) => {
     // 7 and 8 share box 2, so neither is single for 7 (17 keeps 9 from being single); filling 0 clears 7 from both
     await openAndSelect(page, 21, { marks: { ...BOX_0_SINGLE, 7: [7], 8: [7, 9], 17: [9] } });
     await page.keyboard.press('7');
@@ -307,7 +307,7 @@ test.describe('auto-fill box singles', () => {
     expect(await cellMarks(page, 8)).toEqual([9]);
   });
 
-  test('auto-filled values clear related struck marks', async ({ page }) => {
+  test('auto-set values clear related struck marks', async ({ page }) => {
     // 27 shares column 0 with 0, but nothing with 21
     await openAndSelect(page, 21, { marks: { ...BOX_0_SINGLE, 27: [9] }, strikes: { 27: [7] } });
     await page.keyboard.press('7');
@@ -597,7 +597,7 @@ test.describe('fill pencil marks', () => {
     await expect(redoButton(page)).toBeDisabled();
   });
 
-  test('does not start auto-fill', async ({ page }) => {
+  test('does not start auto-set', async ({ page }) => {
     await openAndSelect(page, 80, {}, BOX_SINGLE);
     await fillButton(page).click();
     expect(await cellMarks(page, 0)).toContain(4);
@@ -605,7 +605,7 @@ test.describe('fill pencil marks', () => {
     expect(await boardValues(page)).toEqual(givenValues(BOX_SINGLE));
   });
 
-  test('cancels a pending auto-fill', async ({ page }) => {
+  test('cancels a pending auto-set', async ({ page }) => {
     await openAndSelect(page, 80, {}, BOX_SINGLE);
     await page.keyboard.press('5');
     await page.clock.runFor(200);
@@ -793,7 +793,7 @@ test.describe('struck marks', () => {
     });
   });
 
-  test.describe('auto-fill', () => {
+  test.describe('auto-set', () => {
     test('a box single next to struck marks is filled', async ({ page }) => {
       await openAndSelect(page, 80, { marks: { 0: [7] }, strikes: { 2: [7], 20: [7] } });
       await page.keyboard.press('1');
