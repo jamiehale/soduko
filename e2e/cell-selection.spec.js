@@ -367,18 +367,18 @@ test.describe('digit highlight', () => {
   });
 
   test('lights up an auto-set value', async ({ page }) => {
-    // Setting 21 to 7 clears mark 7 from 20, leaving 0 as box 0's only 7
+    // Setting 20 to 6 drops its mark 7, leaving 0 as box 0's only 7
     await page.clock.install();
     await open(page, EMPTY, { marks: { 0: [7], 20: [7] } });
-    await click(page, 21);
+    await click(page, 20);
     await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
+    await page.keyboard.press('6');
+    await page.clock.runFor(100);
+    await cell(page, 20).click();
+    await page.clock.runFor(100);
     await page.keyboard.press('7');
     await page.clock.runFor(100);
-    await cell(page, 21).click();
-    await page.clock.runFor(100);
-    await page.keyboard.press('7');
-    await page.clock.runFor(100);
-    expect(await cellBackground(page, 21)).toBe(COLORS.selected);
+    expect(await cellBackground(page, 0)).toBe(COLORS.related);
     expect((await cellState(page, 0)).value).toBeNull();
     await page.clock.runFor(200);
     expect((await cellState(page, 0)).value).toBe(7);

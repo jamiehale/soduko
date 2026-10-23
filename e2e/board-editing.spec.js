@@ -223,13 +223,13 @@ test.describe('reset', () => {
 
 test.describe('auto-set box singles', () => {
   // Box 0 holds cells 0, 2, 10, 11, 18, 19, 20 (empty) and givens 8 and 3.
-  // Setting 21 (row 2, box 1) to 7 clears mark 7 from 20, leaving 0 as box 0's only 7.
+  // Setting 20 to 6 drops its mark 7, leaving 0 as box 0's only 7.
   const BOX_0_SINGLE = { 0: [7], 20: [7] };
 
   test('fills a box single 500ms after the player sets a value', async ({ page }) => {
-    await openAndSelect(page, 21, { marks: BOX_0_SINGLE });
-    await page.keyboard.press('7');
-    expect(await cellMarks(page, 20)).toEqual([]);
+    await openAndSelect(page, 20, { marks: BOX_0_SINGLE });
+    await page.keyboard.press('6');
+    expect(await cellValue(page, 20)).toBe(6);
     expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [7] });
     await page.clock.runFor(499);
     expect(await cellMarks(page, 0)).toEqual([7]);
@@ -237,38 +237,64 @@ test.describe('auto-set box singles', () => {
     expect(await cellState(page, 0)).toMatchObject({ value: 7, color: COLORS.indigo });
   });
 
-  test('fills box singles across the board together', async ({ page }) => {
-    // 21 also clears mark 7 from 30 (same column), leaving 40 as box 4's only 7
-    await openAndSelect(page, 21, { marks: { ...BOX_0_SINGLE, 30: [7], 40: [7] } });
-    await page.keyboard.press('7');
+  test('fills only the trigger box when another box also has a single', async ({ page }) => {
+    // 40 is box 4's only 7
+    await openAndSelect(page, 20, { marks: { ...BOX_0_SINGLE, 40: [7] } });
+    await page.keyboard.press('6');
+    await page.clock.runFor(500);
+    expect(await cellValue(page, 0)).toBe(7);
+    await page.clock.runFor(1000);
+    expect(await cellState(page, 40)).toMatchObject({ value: null, marks: [7] });
+  });
+
+  test('fills box singles in the trigger box together', async ({ page }) => {
+    // 20 kept 1 and 7 from being single; setting it leaves 2 as the only 1 and 0 as the only 7
+    await openAndSelect(page, 20, { marks: { 0: [7], 2: [1], 20: [1, 7] } });
+    await page.keyboard.press('6');
     await page.clock.runFor(499);
     expect(await cellValue(page, 0)).toBeNull();
-    expect(await cellValue(page, 40)).toBeNull();
+    expect(await cellValue(page, 2)).toBeNull();
     await page.clock.runFor(1);
     expect(await cellValue(page, 0)).toBe(7);
-    expect(await cellValue(page, 40)).toBe(7);
+    expect(await cellValue(page, 2)).toBe(1);
   });
 
   test('fills a box single that existed before the value set', async ({ page }) => {
-    await openAndSelect(page, 0, { marks: { 80: [7] } });
-    await page.keyboard.press('5');
+    await openAndSelect(page, 78, { marks: { 80: [7] } });
+    await page.keyboard.press('1');
     await page.clock.runFor(500);
     expect(await cellValue(page, 80)).toBe(7);
   });
 
+  test('leaves a single that was already in another box', async ({ page }) => {
+    await openAndSelect(page, 2, { marks: { 80: [7] } });
+    await page.keyboard.press('1');
+    await page.clock.runFor(1000);
+    expect(await cellState(page, 80)).toMatchObject({ value: null, marks: [7] });
+  });
+
+  test('leaves a single the value set creates in another box', async ({ page }) => {
+    // Setting 0 to 7 clears mark 7 from 6 (same row), leaving 15 as box 2's only 7
+    await openAndSelect(page, 0, { marks: { 6: [7], 15: [7] } });
+    await page.keyboard.press('7');
+    expect(await cellMarks(page, 6)).toEqual([]);
+    await page.clock.runFor(1000);
+    expect(await cellState(page, 15)).toMatchObject({ value: null, marks: [7] });
+  });
+
   test('skips a digit the box already holds', async ({ page }) => {
     // box 0 holds the given 3
-    await openAndSelect(page, 80, { marks: { 0: [3] } });
+    await openAndSelect(page, 2, { marks: { 0: [3] } });
     await page.keyboard.press('1');
     await page.clock.runFor(1000);
     expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [3] });
   });
 
   test('toggling a value off does not fill', async ({ page }) => {
-    await openAndSelect(page, 80, { values: { 80: 1 }, marks: { 0: [7] } });
+    await openAndSelect(page, 2, { values: { 2: 1 }, marks: { 0: [7] } });
     await page.keyboard.press('1');
     await page.clock.runFor(1000);
-    expect(await cellValue(page, 80)).toBeNull();
+    expect(await cellValue(page, 2)).toBeNull();
     expect(await cellMarks(page, 0)).toEqual([7]);
   });
 
@@ -298,19 +324,18 @@ test.describe('auto-set box singles', () => {
   });
 
   test('auto-set values clear related marks', async ({ page }) => {
-    // 7 and 8 share box 2, so neither is single for 7 (17 keeps 9 from being single); filling 0 clears 7 from both
-    await openAndSelect(page, 21, { marks: { ...BOX_0_SINGLE, 7: [7], 8: [7, 9], 17: [9] } });
-    await page.keyboard.press('7');
+    // 8 shares row 0 with 0
+    await openAndSelect(page, 20, { marks: { ...BOX_0_SINGLE, 8: [7, 9] } });
+    await page.keyboard.press('6');
     await page.clock.runFor(500);
     expect(await cellValue(page, 0)).toBe(7);
-    expect(await cellMarks(page, 7)).toEqual([]);
     expect(await cellMarks(page, 8)).toEqual([9]);
   });
 
   test('auto-set values clear related struck marks', async ({ page }) => {
-    // 27 shares column 0 with 0, but nothing with 21
-    await openAndSelect(page, 21, { marks: { ...BOX_0_SINGLE, 27: [9] }, strikes: { 27: [7] } });
-    await page.keyboard.press('7');
+    // 27 shares column 0 with 0, but nothing with 20
+    await openAndSelect(page, 20, { marks: { ...BOX_0_SINGLE, 27: [9] }, strikes: { 27: [7] } });
+    await page.keyboard.press('6');
     expect(await cellStrikes(page, 27)).toEqual([7]);
     await page.clock.runFor(500);
     expect(await cellValue(page, 0)).toBe(7);
@@ -318,64 +343,74 @@ test.describe('auto-set box singles', () => {
   });
 
   test('a cell single for two digits takes the lower one', async ({ page }) => {
-    await openAndSelect(page, 80, { marks: { 0: [5, 6] } });
+    await openAndSelect(page, 2, { marks: { 0: [5, 6] } });
     await page.keyboard.press('1');
     await page.clock.runFor(500);
     expect(await cellValue(page, 0)).toBe(5);
   });
 
   test.describe('cascade', () => {
-    // Filling 0 with 7 clears mark 7 from 6, leaving 15 as box 2's only 7
-    const CASCADE = { ...BOX_0_SINGLE, 6: [7], 15: [7] };
+    // Filling 0 with 7 drops its mark 1, leaving 2 as box 0's only 1
+    const CASCADE = { 0: [1, 7], 2: [1], 20: [7] };
 
     test('a second round fills 500ms after the first, then the cascade ends', async ({ page }) => {
-      await openAndSelect(page, 21, { marks: CASCADE });
-      await page.keyboard.press('7');
+      await openAndSelect(page, 20, { marks: CASCADE });
+      await page.keyboard.press('6');
       await page.clock.runFor(500);
       expect(await cellValue(page, 0)).toBe(7);
-      expect(await cellMarks(page, 15)).toEqual([7]);
+      expect(await cellMarks(page, 2)).toEqual([1]);
       await page.clock.runFor(499);
-      expect(await cellValue(page, 15)).toBeNull();
+      expect(await cellValue(page, 2)).toBeNull();
       await page.clock.runFor(1);
-      expect(await cellValue(page, 15)).toBe(7);
+      expect(await cellValue(page, 2)).toBe(1);
       const before = await boardValues(page);
       await page.clock.runFor(2000);
       expect(await boardValues(page)).toEqual(before);
     });
 
     test('each round is one undo step', async ({ page }) => {
-      await openAndSelect(page, 21, { marks: CASCADE });
-      await page.keyboard.press('7');
+      await openAndSelect(page, 20, { marks: CASCADE });
+      await page.keyboard.press('6');
       await page.clock.runFor(1000);
       await undoButton(page).click();
-      expect(await cellMarks(page, 15)).toEqual([7]);
+      expect(await cellMarks(page, 2)).toEqual([1]);
       expect(await cellValue(page, 0)).toBe(7);
       await undoButton(page).click();
-      expect(await cellMarks(page, 0)).toEqual([7]);
-      expect(await cellMarks(page, 6)).toEqual([7]);
-      expect(await cellValue(page, 21)).toBe(7);
+      expect(await cellMarks(page, 0)).toEqual([1, 7]);
+      expect(await cellValue(page, 20)).toBe(6);
       await undoButton(page).click();
-      expect(await cellValue(page, 21)).toBeNull();
+      expect(await cellValue(page, 20)).toBeNull();
       expect(await cellMarks(page, 20)).toEqual([7]);
       await expect(undoButton(page)).toBeDisabled();
+    });
+
+    test('stays in the trigger box', async ({ page }) => {
+      // Filling 0 with 7 clears mark 7 from 6, leaving 15 as box 2's only 7
+      await openAndSelect(page, 20, { marks: { ...BOX_0_SINGLE, 6: [7], 15: [7] } });
+      await page.keyboard.press('6');
+      await page.clock.runFor(500);
+      expect(await cellValue(page, 0)).toBe(7);
+      expect(await cellMarks(page, 6)).toEqual([]);
+      await page.clock.runFor(1000);
+      expect(await cellState(page, 15)).toMatchObject({ value: null, marks: [7] });
     });
   });
 
   test('undo twice returns to before the player set the value', async ({ page }) => {
-    await openAndSelect(page, 21, { marks: BOX_0_SINGLE });
-    await page.keyboard.press('7');
+    await openAndSelect(page, 20, { marks: BOX_0_SINGLE });
+    await page.keyboard.press('6');
     await page.clock.runFor(1000);
     await undoButton(page).click();
     await undoButton(page).click();
-    expect(await cellValue(page, 21)).toBeNull();
+    expect(await cellValue(page, 20)).toBeNull();
     expect(await cellMarks(page, 0)).toEqual([7]);
     expect(await cellMarks(page, 20)).toEqual([7]);
     await expect(undoButton(page)).toBeDisabled();
   });
 
   test('redo reapplies a round without starting a cascade', async ({ page }) => {
-    await openAndSelect(page, 21, { marks: BOX_0_SINGLE });
-    await page.keyboard.press('7');
+    await openAndSelect(page, 20, { marks: BOX_0_SINGLE });
+    await page.keyboard.press('6');
     await page.clock.runFor(500);
     await undoButton(page).click();
     expect(await cellMarks(page, 0)).toEqual([7]);
@@ -386,45 +421,42 @@ test.describe('auto-set box singles', () => {
     await undoButton(page).click();
     await undoButton(page).click();
     await redoButton(page).click();
-    expect(await cellValue(page, 21)).toBe(7);
+    expect(await cellValue(page, 20)).toBe(6);
     await page.clock.runFor(1000);
     expect(await cellMarks(page, 0)).toEqual([7]);
     await expect(redoButton(page)).toBeEnabled();
   });
 
   test.describe('conflicts', () => {
-    // 0 and 6 are the only 5s in boxes 0 and 2, but share row 0. Filling 6
-    // clears mark 5 from 51, leaving 52 as box 5's only 5.
-    const CONFLICT = { 0: [5], 6: [5], 51: [5], 52: [5] };
+    // 2 is box 0's only 5, a mark left from an older save: column 2 holds the given 5 at 29.
+    // Filling 2 drops its mark 7, leaving 0 as box 0's only 7.
+    const CONFLICT = { 0: [7], 2: [5, 7] };
 
     test('a round that creates a conflict shows it and stops the cascade', async ({ page }) => {
-      await openAndSelect(page, 80, { marks: CONFLICT });
-      await page.keyboard.press('1');
+      await openAndSelect(page, 20, { marks: CONFLICT });
+      await page.keyboard.press('6');
       await page.clock.runFor(500);
-      expect(await cellState(page, 0)).toMatchObject({ value: 5, background: COLORS.error });
-      expect(await cellState(page, 6)).toMatchObject({ value: 5, background: COLORS.error });
-      expect(await cellMarks(page, 51)).toEqual([]);
+      expect(await cellState(page, 2)).toMatchObject({ value: 5, background: COLORS.error });
+      expect(await cellBackground(page, 29)).toBe(COLORS.error);
       await page.clock.runFor(1000);
-      expect(await cellState(page, 52)).toMatchObject({ value: null, marks: [5] });
+      expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [7] });
     });
 
     test('undo removes the conflict', async ({ page }) => {
-      await openAndSelect(page, 80, { marks: CONFLICT });
-      await page.keyboard.press('1');
+      await openAndSelect(page, 20, { marks: CONFLICT });
+      await page.keyboard.press('6');
       await page.clock.runFor(500);
       await undoButton(page).click();
-      expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [5] });
-      expect(await cellState(page, 6)).toMatchObject({ value: null, marks: [5] });
-      expect(await cellBackground(page, 0)).not.toBe(COLORS.error);
-      expect(await cellBackground(page, 6)).not.toBe(COLORS.error);
-      expect(await cellMarks(page, 51)).toEqual([5]);
+      expect(await cellState(page, 2)).toMatchObject({ value: null, marks: [5, 7] });
+      expect(await cellBackground(page, 2)).not.toBe(COLORS.error);
+      expect(await cellBackground(page, 29)).not.toBe(COLORS.error);
     });
 
     test('no cascade after a player value set that leaves a conflict', async ({ page }) => {
-      // row 0 already holds the given 8
-      await openAndSelect(page, 0, { marks: { 80: [7] } });
-      await page.keyboard.press('8');
-      expect(await cellBackground(page, 0)).toBe(COLORS.error);
+      // box 8 already holds the given 5
+      await openAndSelect(page, 78, { marks: { 80: [7] } });
+      await page.keyboard.press('5');
+      expect(await cellBackground(page, 78)).toBe(COLORS.error);
       await page.clock.runFor(1000);
       expect(await cellMarks(page, 80)).toEqual([7]);
     });
@@ -435,18 +467,18 @@ test.describe('auto-set box singles', () => {
     const PENDING = { marks: { 80: [7] } };
 
     test('undo during the pause cancels the cascade', async ({ page }) => {
-      await openAndSelect(page, 0, PENDING);
-      await page.keyboard.press('5');
+      await openAndSelect(page, 78, PENDING);
+      await page.keyboard.press('1');
       await page.clock.runFor(200);
       await undoButton(page).click();
-      expect(await cellValue(page, 0)).toBeNull();
+      expect(await cellValue(page, 78)).toBeNull();
       await page.clock.runFor(1000);
       expect(await cellMarks(page, 80)).toEqual([7]);
     });
 
     test('a mark toggle during the pause cancels the cascade', async ({ page }) => {
-      await openAndSelect(page, 0, PENDING);
-      await page.keyboard.press('5');
+      await openAndSelect(page, 78, PENDING);
+      await page.keyboard.press('1');
       await page.clock.runFor(100);
       const box = await cell(page, 2).boundingBox();
       await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
@@ -460,8 +492,8 @@ test.describe('auto-set box singles', () => {
     });
 
     test('a selection change during the pause does not cancel it', async ({ page }) => {
-      await openAndSelect(page, 0, PENDING);
-      await page.keyboard.press('5');
+      await openAndSelect(page, 78, PENDING);
+      await page.keyboard.press('1');
       await page.clock.runFor(200);
       await cell(page, 40).click();
       await page.clock.runFor(300);
@@ -795,14 +827,14 @@ test.describe('struck marks', () => {
 
   test.describe('auto-set', () => {
     test('a box single next to struck marks is filled', async ({ page }) => {
-      await openAndSelect(page, 80, { marks: { 0: [7] }, strikes: { 2: [7], 20: [7] } });
+      await openAndSelect(page, 18, { marks: { 0: [7] }, strikes: { 2: [7], 20: [7] } });
       await page.keyboard.press('1');
       await page.clock.runFor(500);
       expect(await cellValue(page, 0)).toBe(7);
     });
 
     test('a lone struck mark is not filled', async ({ page }) => {
-      await openAndSelect(page, 80, { strikes: { 0: [7] } });
+      await openAndSelect(page, 18, { strikes: { 0: [7] } });
       await page.keyboard.press('1');
       await page.clock.runFor(1000);
       expect(await cellState(page, 0)).toMatchObject({ value: null, strikes: [7] });
@@ -817,8 +849,8 @@ test.describe('struck marks', () => {
     });
 
     test('a toggle during the pause cancels the cascade', async ({ page }) => {
-      await openAndSelect(page, 0, { marks: { 80: [7] } });
-      await page.keyboard.press('5');
+      await openAndSelect(page, 78, { marks: { 80: [7] } });
+      await page.keyboard.press('1');
       await page.clock.runFor(100);
       await cell(page, 2).click();
       await page.clock.runFor(100);

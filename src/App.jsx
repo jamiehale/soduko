@@ -92,7 +92,7 @@ const App = () => {
         cancelAutoSet();
         setCellValue(boardDispatch, cellIndex, value);
         if (isValueSet(value, board[cellIndex])) {
-          startAutoSet();
+          startAutoSet(cellIndex);
         }
       } else {
         highlightDigit(selectionDispatch, value);
