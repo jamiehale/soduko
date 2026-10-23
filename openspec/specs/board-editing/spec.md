@@ -40,12 +40,21 @@ Given cells, populated from the puzzle, SHALL NOT be changed by entering values 
 - **THEN** only the empty player cells change
 
 ### Requirement: Setting a value clears related pencil marks
-Setting value N in a cell SHALL remove pencil mark N from every empty player cell in the same row, column, or box.
+Setting value N in a cell SHALL remove pencil mark N and struck mark N from every empty player cell in the same row, column, or box.
 
 #### Scenario: Peer marks removed
 - **WHEN** cells in the same row, column, and box as cell X have pencil mark 6, and the player sets X to 6
 - **THEN** none of those cells show pencil mark 6, and marks for other digits are unchanged
 - **AND** cells outside X's row, column, and box keep their mark 6
+
+#### Scenario: Peer struck marks removed
+- **WHEN** cells in the same row, column, and box as cell X have struck mark 6, and the player sets X to 6
+- **THEN** none of those cells show struck mark 6, and their other pencil marks and struck marks are unchanged
+- **AND** cells outside X's row, column, and box keep their struck mark 6
+
+#### Scenario: Undo brings struck marks back
+- **WHEN** setting X to 6 cleared struck mark 6 from a peer, and the player clicks undo
+- **THEN** the peer shows struck mark 6 again
 
 ### Requirement: Toggle pencil marks across a selection
 When more than one cell is selected, or while the mouse button is held, typing a digit N SHALL toggle mark N on the selected cells that hold no value. Only the cells that can take mark N (no peer holds N) decide the toggle: if every one of them already has mark N, mark N is removed from every selected empty cell that has it. Otherwise it is added to the cells that can take it.
@@ -145,11 +154,15 @@ After the player confirms, Reset SHALL clear every player cell (values and marks
 - **THEN** no other cell changes and the player's value set is the only new undo step
 
 ### Requirement: Auto-filled values clear related pencil marks
-Each value set by a bulk set SHALL remove that digit's pencil mark from every empty player cell in the same row, column, or box, as a player-entered value does.
+Each value set by a bulk set SHALL remove that digit's pencil mark and struck mark from every empty player cell in the same row, column, or box, as a player-entered value does.
 
 #### Scenario: Marks cleared by an auto-filled value
 - **WHEN** a bulk set fills cell X with 4 and a cell in X's row has pencil marks 4 and 9
 - **THEN** that cell shows only pencil mark 9
+
+#### Scenario: Struck marks cleared by an auto-filled value
+- **WHEN** a bulk set fills cell X with 4 and a cell in X's column has struck mark 4 and pencil mark 9
+- **THEN** that cell shows pencil mark 9 and no struck mark 4
 
 ### Requirement: A cell that is a box single for two digits takes the lower digit
 When one cell is the only cell in its box with pencil mark N and also the only one with pencil mark M, a bulk set SHALL give it the lower of N and M.
@@ -366,13 +379,6 @@ Setting a value in a player cell SHALL remove all of that cell's struck marks, a
 #### Scenario: Clear the value
 - **WHEN** the player then types `5` again
 - **THEN** the cell is empty with no pencil marks and no struck marks
-
-### Requirement: Setting a value keeps struck marks in related cells
-Setting value N in a cell SHALL NOT change the struck marks of any other cell.
-
-#### Scenario: Peer keeps its struck mark
-- **WHEN** a cell in the same row as cell X has struck mark 6 and the player sets X to 6
-- **THEN** that cell still shows struck mark 6
 
 ### Requirement: Toggling struck marks is one undo step
 Each Shift+digit toggle that changes the board SHALL add exactly one undo step and clear the redo steps. Undo SHALL restore every changed cell's pencil marks and struck marks; redo SHALL reapply the toggle.
