@@ -9,6 +9,7 @@ test('help shows the version and usage instructions', async ({ page }) => {
   await expect(dialog).toContainText(`soduko v${version}`);
   await expect(dialog).toContainText('Click to select a single cell. Click and drag to select multiple cells.');
   await expect(dialog).toContainText('type 1-9 to toggle pencil marks');
+  await expect(dialog).toContainText('Hold Shift and type 1-9 to strike out that digit in the selected cells.');
   await expect(dialog).toContainText('Click the pencil button to fill every empty cell with the pencil marks its row, column, and box allow.');
   await expect(dialog).toContainText('Custom puzzles should be 81 characters long');
   await expect(dialog.getByRole('link', { name: 'http://norvig.com/top95.txt' }))

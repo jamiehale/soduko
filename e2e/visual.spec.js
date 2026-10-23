@@ -60,6 +60,16 @@ test.describe('board screenshots', () => {
     await expect(page).toHaveScreenshot('marks.png');
   });
 
+  test('struck marks', async ({ page }) => {
+    // Selecting the given 8 makes 70 related; 71's struck 8 is not
+    await open(page, PUZZLE, {
+      ...highlightOptions,
+      strikes: { 70: [5], 71: [4, 8], 72: [7] },
+    });
+    await click(page, 1);
+    await expect(page).toHaveScreenshot('struck-marks.png');
+  });
+
   test('conflict', async ({ page }) => {
     await open(page, PUZZLE, { values: { 13: 3 } });
     await expect(page).toHaveScreenshot('conflict.png');

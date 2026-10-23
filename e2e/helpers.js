@@ -28,15 +28,16 @@ const EMPTY = '.'.repeat(81);
 const index = (row, column) => row * 9 + column;
 
 // Builds a board in the saved-game format from an 81-character puzzle string
-// ('.' or '0' blank), plus optional player values and marks keyed by cell index.
-const buildBoard = (puzzle, { values = {}, marks = {} } = {}) => puzzle.split('').map((ch, i) => {
+// ('.' or '0' blank), plus optional player values, marks, and strikes keyed by cell index.
+const buildBoard = (puzzle, { values = {}, marks = {}, strikes = {} } = {}) => puzzle.split('').map((ch, i) => {
   if (ch !== '.' && ch !== '0') {
     return { type: 'given', value: Number(ch) };
   }
   if (values[i] !== undefined) {
     return { type: 'player', value: values[i] };
   }
-  return { type: 'player', value: marks[i] || [] };
+  const cell = { type: 'player', value: marks[i] || [] };
+  return strikes[i] ? { ...cell, strikes: strikes[i] } : cell;
 });
 
 const buildState = (puzzle, options = {}) => ({
@@ -71,17 +72,21 @@ const open = async (page, puzzle = PUZZLE, options = {}) => {
 
 const cell = (page, i) => page.locator(`[data-cell="${i}"]`);
 
-// Reads what a cell shows: its value (number or null), its marks, and its colors
+// Reads what a cell shows: its value (number or null), its marks, its struck
+// marks (told apart by a line-through), and its colors
 const cellState = (page, i) => cell(page, i).evaluate((el) => {
   const content = el.firstElementChild;
   const isMarks = content && content.children.length === 9;
   const text = (node) => (node ? node.textContent.trim() : '');
   const textNode = isMarks ? null : content;
+  const isStruck = (node) => getComputedStyle(node).textDecorationLine.includes('line-through');
+  const digits = (struck) => (isMarks
+    ? Array.from(content.children).filter((node) => isStruck(node) === struck).map(text).filter((t) => t !== '').map(Number)
+    : []);
   return {
     value: isMarks || text(textNode) === '' ? null : Number(text(textNode)),
-    marks: isMarks
-      ? Array.from(content.children).map(text).filter((t) => t !== '').map(Number)
-      : [],
+    marks: digits(false),
+    strikes: digits(true),
     background: getComputedStyle(el).backgroundColor,
     color: textNode ? getComputedStyle(textNode).color : null,
   };
@@ -89,6 +94,7 @@ const cellState = (page, i) => cell(page, i).evaluate((el) => {
 
 const cellValue = async (page, i) => (await cellState(page, i)).value;
 const cellMarks = async (page, i) => (await cellState(page, i)).marks;
+const cellStrikes = async (page, i) => (await cellState(page, i)).strikes;
 const cellBackground = async (page, i) => (await cellState(page, i)).background;
 
 // Waits for a frame plus a task, so React has re-rendered and run its effects
@@ -139,6 +145,7 @@ module.exports = {
   cellState,
   cellValue,
   cellMarks,
+  cellStrikes,
   cellBackground,
   settle,
   drag,

@@ -12,6 +12,7 @@ const {
   cellState,
   cellValue,
   cellMarks,
+  cellStrikes,
   cellBackground,
   drag,
   click,
@@ -53,6 +54,16 @@ test.describe('game state is saved', () => {
     expect(await cellMarks(page, 2)).toEqual([7]);
     expect(await cellMarks(page, 3)).toEqual([7]);
     expect(await cellBackground(page, 2)).toBe(COLORS.white);
+  });
+
+  test('struck marks survive a reload', async ({ page }) => {
+    await open(page, PUZZLE);
+    await drag(page, [2, 3]);
+    await page.keyboard.press('7');
+    await page.keyboard.press('Shift+Digit5');
+    await reload(page);
+    expect(await cellState(page, 2)).toMatchObject({ marks: [7], strikes: [5] });
+    expect(await cellStrikes(page, 3)).toEqual([5]);
   });
 
   test('undo and redo history survives a reload', async ({ page }) => {

@@ -12,17 +12,29 @@ import {
   setMark,
   clearMark,
   isValueSet,
+  getCellStrikes,
+  cellHasStrike,
+  setStrike,
+  clearStrike,
 } from '../cell';
 
 describe('setPlayerValue', () => {
   it('sets the value', () => {
     expect(setPlayerValue(4, { type: 'player', value: 'anything' })).toStrictEqual({ type: 'player', value: 4 });
   });
+
+  it('drops the strikes', () => {
+    expect(setPlayerValue(4, { type: 'player', value: [1], strikes: [4, 6] })).toStrictEqual({ type: 'player', value: 4 });
+  });
 });
 
 describe('clearPlayerValue', () => {
   it('replaces the player value with empty marks', () => {
     expect(clearPlayerValue({ type: 'player', value: 'anything' })).toStrictEqual({ type: 'player', value: [] });
+  });
+
+  it('drops the strikes', () => {
+    expect(clearPlayerValue({ type: 'player', value: [1], strikes: [6] })).toStrictEqual({ type: 'player', value: [] });
   });
 });
 
@@ -106,6 +118,10 @@ describe('cellHasMark', () => {
   it('is false for puzzle cells', () => {
     expect(cellHasMark(4, { type: 'given' })).toBe(false);
   });
+
+  it('is false for a struck digit', () => {
+    expect(cellHasMark(4, { type: 'player', value: [1], strikes: [4] })).toBe(false);
+  });
 });
 
 describe('getCellMarksOr', () => {
@@ -134,6 +150,14 @@ describe('setMark', () => {
   it('sorts the results', () => {
     expect(setMark(4, { type: 'player', value: [8, 3] })).toStrictEqual({ type: 'player', value: [3, 4, 8] });
   });
+
+  it('replaces a strike of the same digit', () => {
+    expect(setMark(4, { type: 'player', value: [1], strikes: [2, 4] })).toStrictEqual({ type: 'player', value: [1, 4], strikes: [2] });
+  });
+
+  it('drops the strikes key when the last strike is replaced', () => {
+    expect(setMark(4, { type: 'player', value: [], strikes: [4] })).toStrictEqual({ type: 'player', value: [4] });
+  });
 });
 
 describe('clearMark', () => {
@@ -161,5 +185,50 @@ describe('isValueSet', () => {
 
   it('is false for a given cell', () => {
     expect(isValueSet(5, { type: 'given', value: 3 })).toBe(false);
+  });
+});
+
+describe('getCellStrikes', () => {
+  it('is empty for a cell without strikes', () => {
+    expect(getCellStrikes({ type: 'player', value: [1, 2] })).toStrictEqual([]);
+  });
+
+  it('gets the strikes', () => {
+    expect(getCellStrikes({ type: 'player', value: [], strikes: [3, 7] })).toStrictEqual([3, 7]);
+  });
+});
+
+describe('cellHasStrike', () => {
+  it('is true when the digit is struck', () => {
+    expect(cellHasStrike(3, { type: 'player', value: [], strikes: [3] })).toBe(true);
+  });
+
+  it('is false for a pencil mark', () => {
+    expect(cellHasStrike(3, { type: 'player', value: [3] })).toBe(false);
+  });
+});
+
+describe('setStrike', () => {
+  it('adds the strike', () => {
+    expect(setStrike(4, { type: 'player', value: [] })).toStrictEqual({ type: 'player', value: [], strikes: [4] });
+  });
+
+  it('keeps strikes sorted and unique', () => {
+    expect(setStrike(4, setStrike(8, setStrike(4, setStrike(1, { type: 'player', value: [] })))))
+      .toStrictEqual({ type: 'player', value: [], strikes: [1, 4, 8] });
+  });
+
+  it('replaces the pencil mark of the same digit', () => {
+    expect(setStrike(4, { type: 'player', value: [1, 4] })).toStrictEqual({ type: 'player', value: [1], strikes: [4] });
+  });
+});
+
+describe('clearStrike', () => {
+  it('clears the strike', () => {
+    expect(clearStrike(4, { type: 'player', value: [1], strikes: [2, 4] })).toStrictEqual({ type: 'player', value: [1], strikes: [2] });
+  });
+
+  it('drops the strikes key when the list empties', () => {
+    expect(clearStrike(4, { type: 'player', value: [1], strikes: [4] })).toStrictEqual({ type: 'player', value: [1] });
   });
 });

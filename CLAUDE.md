@@ -61,6 +61,7 @@ Use these words in specs, code, tests, on-screen text, and docs.
 | player cell, player value | Every other cell; the player sets its value or pencil marks (not "user" or "entered value") | `type: 'player'`, `isPlayerCell…`, `PlayerCell` |
 | value | The digit 1–9 a cell holds | `value` (a number) |
 | pencil marks | Small candidate digits in an empty player cell (not "notes") | `marks`, `value` as an array |
+| struck mark | A digit the player has ruled out for an empty player cell, shown as a pencil mark with a red line through it (not "not possible" or "excluded") | `strikes`, `setStrike`, `cellHasStrike` |
 | row, column, box | The three kinds of 9-cell group; a box is one of the nine 3×3 areas (not "section") | `rowFromCount`, `columnFromCount`, `boxFromCount` |
 | peer | A cell sharing a row, column, or box with another; also the highlight style | `'peer'` |
 | related | An empty cell with a pencil mark of the selected value; also the highlight style | `'related'` |
@@ -72,7 +73,7 @@ Use these words in specs, code, tests, on-screen text, and docs.
 
 **Board model.** A board is a flat array of 81 cells, indexed row-major (`row * 9 + column`). `src/util/board.js` provides `rowFromCount`/`columnFromCount`/`boxFromCount` to derive position from an index. A cell is `{ type, value }`:
 - `type: 'given'` — a given cell, populated from the puzzle; `value` is a number; immutable.
-- `type: 'player'` — a player cell; `value` is either a number (a player value) or an array of pencil marks (sorted, unique).
+- `type: 'player'` — a player cell; `value` is either a number (a player value) or an array of pencil marks (sorted, unique). An empty player cell may also carry `strikes`, its struck marks (sorted, unique, never overlapping its pencil marks). The key is absent when there are none, so older saves need no migration; setting a value drops it.
 
 Saves from before v0.4.0 used `'puzzle'`/`'user'`; `migrateSavedGame` (`src/util/saved-game.js`) converts them when the game loads.
 
@@ -89,7 +90,7 @@ Saves from before v0.4.0 used `'puzzle'`/`'user'`; `migrateSavedGame` (`src/util
 - `window-event.js` — `useWindowEvent(type, handler)`: one `window` listener per event type, latest handler read from a ref. Drives the keyboard input.
 - `logging-reducer.js` — debug wrapper for reducers (not used by default).
 
-**Input semantics** (in `App.jsx`'s `keydown` handler, via `useWindowEvent`): a digit with one selected cell sets its value; with multiple cells selected (or while still dragging) it toggles that pencil mark across them. Escape clears the selection.
+**Input semantics** (in `App.jsx`'s `keydown` handler, via `useWindowEvent`): a digit with one selected cell sets its value; with multiple cells selected (or while still dragging) it toggles that pencil mark across them. Shift plus a digit (matched by `event.code`, so any layout works) toggles that struck mark across the selected cells, however many. Escape clears the selection.
 
 **Rendering:** `Board` → `Cell`, which delegates to `MarkedCell` for pencil marks; `hooks/border.js` computes the thicker box borders. `MiniPuzzle` is the read-only puzzle preview in `NewGameDialog`. Board colors and styling tokens come from `src/theme.js` via styled-components' `ThemeProvider`; layout and dialogs use MUI.
 

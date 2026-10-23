@@ -23,15 +23,26 @@ const Mark = styled(Typography).attrs({
   align: 'center',
 })`
   color: ${({ theme }) => theme.colors.mark.text};
+  ${({ $struck, theme }) => $struck && `
+    text-decoration: line-through ${theme.colors.strike.line} 2px;
+  `}
 `;
+
+const markFor = (i, marks, strikes) => {
+  if (R.includes(i, marks)) {
+    return <Mark key={i}>{i}</Mark>;
+  }
+  if (R.includes(i, strikes)) {
+    return <Mark key={i} $struck>{i}</Mark>;
+  }
+  return <div key={i} />;
+};
 
 const MarkedCell = ({
   marks,
+  strikes,
 }) => {
-  const items = R.map(
-    i => (R.includes(i, marks) ? <Mark key={i}>{i}</Mark> : <div key={i} />),
-    R.range(1, 10),
-  );
+  const items = R.map(i => markFor(i, marks, strikes), R.range(1, 10));
 
   return (
     <Container>

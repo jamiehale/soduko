@@ -147,6 +147,13 @@ test.describe('value highlighting', () => {
     });
   });
 
+  test('a struck mark for the value is not related', async ({ page }) => {
+    // 70 is row 7, column 7, box 8, outside every 7's areas
+    await open(page, EMPTY, { ...options, strikes: { 70: [7] } });
+    await click(page, 40);
+    expect(await cellBackground(page, 70)).toBe(COLORS.white);
+  });
+
   test('every matching value projects its row, column, and box', async ({ page }) => {
     await open(page, EMPTY, options);
     await click(page, 40);

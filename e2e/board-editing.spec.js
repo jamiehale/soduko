@@ -6,6 +6,7 @@ const {
   cellState,
   cellValue,
   cellMarks,
+  cellStrikes,
   cellBackground,
   drag,
   click,
@@ -602,5 +603,206 @@ test.describe('fill pencil marks', () => {
     await page.clock.runFor(1000);
     expect(await cellValue(page, 0)).toBeNull();
     expect(await cellValue(page, 80)).toBe(5);
+  });
+});
+
+test.describe('struck marks', () => {
+  const holdOn = async (page, cellIndex) => {
+    const box = await cell(page, cellIndex).boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await settle(page);
+  };
+
+  test('strikes a digit in one cell', async ({ page }) => {
+    await open(page);
+    await click(page, 0);
+    await page.keyboard.press('Shift+Digit3');
+    expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [], strikes: [3] });
+  });
+
+  test('draws the strike as a red line', async ({ page }) => {
+    await open(page, undefined, { strikes: { 0: [5] } });
+    const style = await cell(page, 0).evaluate((el) => {
+      const slot = getComputedStyle(el.firstElementChild.children[4]);
+      return { line: slot.textDecorationLine, lineColor: slot.textDecorationColor, color: slot.color };
+    });
+    expect(style).toEqual({ line: 'line-through', lineColor: 'rgb(255, 0, 0)', color: COLORS.indigo });
+  });
+
+  test('strikes a digit in several cells', async ({ page }) => {
+    await open(page);
+    await drag(page, [5, 6, 7]);
+    await page.keyboard.press('Shift+Digit2');
+    for (const i of [5, 6, 7]) {
+      expect(await cellStrikes(page, i)).toEqual([2]);
+    }
+  });
+
+  test('strikes while the mouse is held', async ({ page }) => {
+    await open(page);
+    await holdOn(page, 0);
+    await page.keyboard.press('Shift+Digit8');
+    await page.mouse.up();
+    expect(await cellState(page, 0)).toMatchObject({ value: null, strikes: [8] });
+  });
+
+  test('adds the strike to all cells when only some have it', async ({ page }) => {
+    await open(page, undefined, { strikes: { 5: [2], 6: [2] } });
+    await drag(page, [5, 6, 7]);
+    await page.keyboard.press('Shift+Digit2');
+    for (const i of [5, 6, 7]) {
+      expect(await cellStrikes(page, i)).toEqual([2]);
+    }
+  });
+
+  test('removes the strike when every selected cell has it', async ({ page }) => {
+    await open(page, undefined, { strikes: { 5: [2], 6: [2, 3] } });
+    await drag(page, [5, 6]);
+    await page.keyboard.press('Shift+Digit2');
+    expect(await cellStrikes(page, 5)).toEqual([]);
+    expect(await cellStrikes(page, 6)).toEqual([3]);
+  });
+
+  test('keeps other marks', async ({ page }) => {
+    await open(page, undefined, { marks: { 0: [1, 4] } });
+    await click(page, 0);
+    await page.keyboard.press('Shift+Digit6');
+    expect(await cellState(page, 0)).toMatchObject({ marks: [1, 4], strikes: [6] });
+  });
+
+  test('skips given cells and cells with values', async ({ page }) => {
+    await open(page, undefined, { values: { 3: 5 } });
+    await drag(page, [1, 2, 3]);
+    await page.keyboard.press('Shift+Digit5');
+    expect(await cellValue(page, 1)).toBe(8);
+    expect(await cellValue(page, 3)).toBe(5);
+    expect(await cellStrikes(page, 2)).toEqual([5]);
+  });
+
+  test('adds no undo step when nothing changes', async ({ page }) => {
+    await open(page);
+    await click(page, 1);
+    await page.keyboard.press('Shift+Digit5');
+    expect(await cellValue(page, 1)).toBe(8);
+    await expect(undoButton(page)).toBeDisabled();
+  });
+
+  test('a struck mark replaces a pencil mark', async ({ page }) => {
+    await open(page, undefined, { marks: { 0: [3] } });
+    await click(page, 0);
+    await page.keyboard.press('Shift+Digit3');
+    expect(await cellState(page, 0)).toMatchObject({ marks: [], strikes: [3] });
+  });
+
+  test('a pencil mark replaces a struck mark', async ({ page }) => {
+    await open(page, undefined, { strikes: { 0: [3] } });
+    await holdOn(page, 0);
+    await page.keyboard.press('3');
+    await page.mouse.up();
+    expect(await cellState(page, 0)).toMatchObject({ marks: [3], strikes: [] });
+  });
+
+  test('a struck mark counts as unmarked for a pencil-mark toggle', async ({ page }) => {
+    await open(page, undefined, { marks: { 5: [7], 6: [7] }, strikes: { 7: [7] } });
+    await drag(page, [5, 6, 7]);
+    await page.keyboard.press('7');
+    for (const i of [5, 6, 7]) {
+      expect(await cellState(page, i)).toMatchObject({ marks: [7], strikes: [] });
+    }
+  });
+
+  test('a value replaces struck marks, and clearing it leaves none', async ({ page }) => {
+    await open(page, undefined, { strikes: { 0: [2, 5] } });
+    await click(page, 0);
+    await page.keyboard.press('5');
+    expect(await cellValue(page, 0)).toBe(5);
+    await page.keyboard.press('5');
+    expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [], strikes: [] });
+  });
+
+  test('setting a value keeps struck marks in related cells', async ({ page }) => {
+    await open(page, undefined, { strikes: { 2: [6] } });
+    await click(page, 0);
+    await page.keyboard.press('6');
+    expect(await cellStrikes(page, 2)).toEqual([6]);
+  });
+
+  test('undo and redo a toggle', async ({ page }) => {
+    await open(page, undefined, { marks: { 5: [4] } });
+    await drag(page, [5, 6, 7]);
+    await page.keyboard.press('Shift+Digit4');
+    expect(await cellState(page, 5)).toMatchObject({ marks: [], strikes: [4] });
+    await undoButton(page).click();
+    expect(await cellState(page, 5)).toMatchObject({ marks: [4], strikes: [] });
+    expect(await cellStrikes(page, 6)).toEqual([]);
+    await redoButton(page).click();
+    for (const i of [5, 6, 7]) {
+      expect(await cellStrikes(page, i)).toEqual([4]);
+    }
+  });
+
+  test.describe('fill pencil marks', () => {
+    // Cell 0's possible digits are 1, 5, 6, 7; its row holds the given 8
+    const fill = async (page) => {
+      await page.getByTestId('fill-marks').click();
+      await settle(page);
+    };
+
+    test('keeps struck marks and does not add their digits', async ({ page }) => {
+      await open(page, undefined, { strikes: { 0: [5] } });
+      await fill(page);
+      expect(await cellState(page, 0)).toMatchObject({ marks: [1, 6, 7], strikes: [5] });
+    });
+
+    test('keeps a struck mark for a digit a peer holds', async ({ page }) => {
+      await open(page, undefined, { strikes: { 0: [8] } });
+      await fill(page);
+      expect(await cellState(page, 0)).toMatchObject({ marks: [1, 5, 6, 7], strikes: [8] });
+    });
+
+    test('undo restores pencil marks and struck marks', async ({ page }) => {
+      await open(page, undefined, { marks: { 0: [1] }, strikes: { 0: [5], 2: [9] } });
+      await fill(page);
+      await undoButton(page).click();
+      expect(await cellState(page, 0)).toMatchObject({ marks: [1], strikes: [5] });
+      expect(await cellState(page, 2)).toMatchObject({ marks: [], strikes: [9] });
+    });
+  });
+
+  test.describe('auto-fill', () => {
+    test('a box single next to struck marks is filled', async ({ page }) => {
+      await openAndSelect(page, 80, { marks: { 0: [7] }, strikes: { 2: [7], 20: [7] } });
+      await page.keyboard.press('1');
+      await page.clock.runFor(500);
+      expect(await cellValue(page, 0)).toBe(7);
+    });
+
+    test('a lone struck mark is not filled', async ({ page }) => {
+      await openAndSelect(page, 80, { strikes: { 0: [7] } });
+      await page.keyboard.press('1');
+      await page.clock.runFor(1000);
+      expect(await cellState(page, 0)).toMatchObject({ value: null, strikes: [7] });
+    });
+
+    test('a toggle that leaves a box single does not fill', async ({ page }) => {
+      await openAndSelect(page, 20, { marks: { 0: [7], 20: [7] } });
+      await page.keyboard.press('Shift+Digit7');
+      expect(await cellStrikes(page, 20)).toEqual([7]);
+      await page.clock.runFor(1000);
+      expect(await cellState(page, 0)).toMatchObject({ value: null, marks: [7] });
+    });
+
+    test('a toggle during the pause cancels the cascade', async ({ page }) => {
+      await openAndSelect(page, 0, { marks: { 80: [7] } });
+      await page.keyboard.press('5');
+      await page.clock.runFor(100);
+      await cell(page, 2).click();
+      await page.clock.runFor(100);
+      await page.keyboard.press('Shift+Digit9');
+      expect(await cellStrikes(page, 2)).toEqual([9]);
+      await page.clock.runFor(1000);
+      expect(await cellMarks(page, 80)).toEqual([7]);
+    });
   });
 });

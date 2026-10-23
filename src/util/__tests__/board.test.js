@@ -14,6 +14,9 @@ import {
   nextBulkSet,
   possibleMarks,
   boardWithFilledMarks,
+  boardWithToggledMark,
+  boardWithToggledStrike,
+  boardWithSetValue,
 } from '../board';
 import { makeCell } from '../cell';
 
@@ -446,6 +449,16 @@ const withMarks = (marks, board) => R.reduce(
   R.toPairs(marks),
 );
 
+const withStrikes = R.curry((strikes, board) => R.reduce(
+  (acc, [cellIndex, cellStrikes]) => R.reduce(
+    (b, mark) => boardWithToggledStrike(mark, [parseInt(cellIndex, 10)], b),
+    acc,
+    cellStrikes,
+  ),
+  board,
+  R.toPairs(strikes),
+));
+
 describe('findBoxSingles', () => {
   it('finds a digit marked in only one cell of a box', () => {
     const board = withMarks({ 0: [4, 5], 1: [5] }, emptyBoard());
@@ -470,6 +483,16 @@ describe('findBoxSingles', () => {
   it('gives a cell that is single for two digits the lower one', () => {
     const board = withMarks({ 0: [3, 8] }, emptyBoard());
     expect(findBoxSingles(board)).toStrictEqual([{ cellIndex: 0, value: 3 }]);
+  });
+
+  it('finds a single pencil mark next to strikes of the same digit', () => {
+    const board = withStrikes({ 1: [4], 10: [4] }, withMarks({ 0: [4] }, emptyBoard()));
+    expect(findBoxSingles(board)).toStrictEqual([{ cellIndex: 0, value: 4 }]);
+  });
+
+  it('does not count a lone strike as a single', () => {
+    const board = withStrikes({ 0: [4] }, emptyBoard());
+    expect(findBoxSingles(board)).toStrictEqual([]);
   });
 
   it('returns singles from several boxes, sorted by cell index', () => {
@@ -577,5 +600,78 @@ describe('boardWithFilledMarks', () => {
       board => withMarks({ 0: [3, 5] }, board),
     )(emptyBoard());
     expect(boardWithFilledMarks(board)[0]).toStrictEqual(makeCell('player', []));
+  });
+
+  it('keeps strikes and does not add struck digits', () => {
+    const board = withStrikes({ 0: [3] }, emptyBoard());
+    expect(boardWithFilledMarks(board)[0]).toStrictEqual({ type: 'player', value: [1, 2, 4, 5, 6, 7, 8, 9], strikes: [3] });
+  });
+
+  it('keeps a strike for a digit a peer holds', () => {
+    const board = withValues('given', { 1: 3 }, withStrikes({ 0: [3] }, emptyBoard()));
+    expect(boardWithFilledMarks(board)[0]).toStrictEqual({ type: 'player', value: [1, 2, 4, 5, 6, 7, 8, 9], strikes: [3] });
+  });
+});
+
+describe('boardWithToggledStrike', () => {
+  it('adds the strike to every selected empty player cell', () => {
+    const next = boardWithToggledStrike(2, [0, 1, 2], emptyBoard());
+    expect(R.map(i => next[i], [0, 1, 2])).toStrictEqual(R.repeat({ type: 'player', value: [], strikes: [2] }, 3));
+  });
+
+  it('adds the strike to all cells when only some have it', () => {
+    const next = boardWithToggledStrike(2, [0, 1, 2], withStrikes({ 0: [2], 1: [2] }, emptyBoard()));
+    expect(R.map(i => next[i], [0, 1, 2])).toStrictEqual(R.repeat({ type: 'player', value: [], strikes: [2] }, 3));
+  });
+
+  it('removes the strike when every selected empty player cell has it', () => {
+    const next = boardWithToggledStrike(2, [0, 1], withStrikes({ 0: [2], 1: [2] }, emptyBoard()));
+    expect(R.map(i => next[i], [0, 1])).toStrictEqual(R.repeat(makeCell('player', []), 2));
+  });
+
+  it('skips given cells and player values', () => {
+    const board = R.compose(
+      withValues('given', { 0: 3 }),
+      withValues('player', { 1: 6 }),
+    )(emptyBoard());
+    const next = boardWithToggledStrike(5, [0, 1, 2], board);
+    expect(next[0]).toStrictEqual(makeCell('given', 3));
+    expect(next[1]).toStrictEqual(makeCell('player', 6));
+    expect(next[2]).toStrictEqual({ type: 'player', value: [], strikes: [5] });
+  });
+
+  it('keeps other marks and replaces the pencil mark of the same digit', () => {
+    const next = boardWithToggledStrike(4, [0], withMarks({ 0: [1, 4] }, emptyBoard()));
+    expect(next[0]).toStrictEqual({ type: 'player', value: [1], strikes: [4] });
+  });
+
+  it('returns an equal board when no empty player cell is selected', () => {
+    const board = withValues('given', { 0: 3 }, emptyBoard());
+    expect(boardWithToggledStrike(5, [0], board)).toStrictEqual(board);
+  });
+});
+
+describe('boardWithToggledMark with strikes', () => {
+  it('replaces a strike of the same digit', () => {
+    const next = boardWithToggledMark(3, [0], withStrikes({ 0: [3] }, emptyBoard()));
+    expect(next[0]).toStrictEqual(makeCell('player', [3]));
+  });
+
+  it('treats a strike as unmarked', () => {
+    const board = withStrikes({ 2: [7] }, withMarks({ 0: [7], 1: [7] }, emptyBoard()));
+    const next = boardWithToggledMark(7, [0, 1, 2], board);
+    expect(R.map(i => next[i], [0, 1, 2])).toStrictEqual(R.repeat(makeCell('player', [7]), 3));
+  });
+});
+
+describe('boardWithSetValue with strikes', () => {
+  it('keeps the strikes of related cells', () => {
+    const next = boardWithSetValue(6, 0, withStrikes({ 1: [6] }, emptyBoard()));
+    expect(next[1]).toStrictEqual({ type: 'player', value: [], strikes: [6] });
+  });
+
+  it('replaces the cell\'s own strikes', () => {
+    const next = boardWithSetValue(5, 0, withStrikes({ 0: [2, 5] }, emptyBoard()));
+    expect(next[0]).toStrictEqual(makeCell('player', 5));
   });
 });

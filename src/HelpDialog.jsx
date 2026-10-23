@@ -26,6 +26,9 @@ const HelpDialog = ({
         With a single cell selected, type 1-9 to set the cell value. With multiple cells selected, type 1-9 to toggle pencil marks. To toggle pencil marks on a single cell, click and hold on the cell, then type 1-9.
       </DialogContentText>
       <DialogContentText>
+        Hold Shift and type 1-9 to strike out that digit in the selected cells.
+      </DialogContentText>
+      <DialogContentText>
         Click the pencil button to fill every empty cell with the pencil marks its row, column, and box allow.
       </DialogContentText>
       <DialogContentText>

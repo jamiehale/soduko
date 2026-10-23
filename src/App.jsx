@@ -16,7 +16,7 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import { decode } from './util/decoder';
 import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection } from './hooks/selection';
 import useHighlight from './hooks/highlight';
-import useBoard, { reset, toggleCellMark, setCellValue, fillCellMarks, undo, redo, newGame } from './hooks/board';
+import useBoard, { reset, toggleCellMark, toggleCellStrike, setCellValue, fillCellMarks, undo, redo, newGame } from './hooks/board';
 import useGame from './hooks/game';
 import useConfirmation from './hooks/confirmation';
 import useWindowEvent from './hooks/window-event';
@@ -71,7 +71,14 @@ const App = () => {
   };
 
   const handleKeyDown = useCallback((event) => {
-    if (R.includes(event.key, ['1', '2', '3', '4', '5', '6', '7', '8', '9'])) {
+    const strikeDigit = event.shiftKey && R.match(/^Digit([1-9])$/, event.code)[1];
+    if (strikeDigit) {
+      if (R.isEmpty(selectedCells)) {
+        return;
+      }
+      cancelAutoFill();
+      toggleCellStrike(boardDispatch, selectedCells, parseInt(strikeDigit, 10));
+    } else if (R.includes(event.key, ['1', '2', '3', '4', '5', '6', '7', '8', '9'])) {
       const value = parseInt(event.key, 10);
       if (isMouseDown || R.length(selectedCells) > 1) {
         cancelAutoFill();
