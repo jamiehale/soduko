@@ -20,7 +20,7 @@ import useBoard, { reset, toggleCellMark, toggleCellStrike, setCellValue, fillCe
 import useGame from './hooks/game';
 import useConfirmation from './hooks/confirmation';
 import useWindowEvent from './hooks/window-event';
-import useAutoFill from './hooks/auto-fill';
+import useAutoSet from './hooks/auto-set';
 import { isGivenCell, isValueSet } from './util/cell';
 import Board from './Board';
 import theme from './theme';
@@ -35,14 +35,14 @@ const App = () => {
   const { dispatch: selectionDispatch, selectedCells, isMouseDown, highlightDigit: typedDigit } = useSelection();
   const { isSolved, errorCells } = useGame(board);
   const highlight = useHighlight(selectedCells, board, typedDigit);
-  const { start: startAutoFill, cancel: cancelAutoFill } = useAutoFill({ board, dispatch: boardDispatch });
+  const { start: startAutoSet, cancel: cancelAutoSet } = useAutoSet({ board, dispatch: boardDispatch });
   const [showHelp, setShowHelp] = useState(false);
   
   const handleReset = useCallback(() => {
-    cancelAutoFill();
+    cancelAutoSet();
     reset(boardDispatch);
     clearSelection(selectionDispatch);
-  }, [boardDispatch, selectionDispatch, cancelAutoFill]);
+  }, [boardDispatch, selectionDispatch, cancelAutoSet]);
 
   const {
     confirming: showReset,
@@ -52,10 +52,10 @@ const App = () => {
   } = useConfirmation(handleReset);
 
   const handleNewGame = useCallback((puzzle) => {
-    cancelAutoFill();
+    cancelAutoSet();
     newGame(boardDispatch, decode(puzzle));
     clearHighlightDigit(selectionDispatch);
-  }, [boardDispatch, selectionDispatch, cancelAutoFill]);
+  }, [boardDispatch, selectionDispatch, cancelAutoSet]);
 
   const { confirming: showNewGame, confirm: confirmNewGame, handleConfirm: handleConfirmNewGame, handleCancel: handleCancelNewGame } = useConfirmation(handleNewGame);
 
@@ -77,22 +77,22 @@ const App = () => {
       if (R.isEmpty(selectedCells)) {
         return;
       }
-      cancelAutoFill();
+      cancelAutoSet();
       toggleCellStrike(boardDispatch, selectedCells, parseInt(strikeDigit, 10));
     } else if (R.includes(event.key, ['1', '2', '3', '4', '5', '6', '7', '8', '9'])) {
       const value = parseInt(event.key, 10);
       if (isMouseDown || R.length(selectedCells) > 1) {
-        cancelAutoFill();
+        cancelAutoSet();
         toggleCellMark(boardDispatch, selectedCells, value);
       } else if (R.length(selectedCells) === 1) {
         const cellIndex = R.head(selectedCells);
         if (isGivenCell(board[cellIndex])) {
           return;
         }
-        cancelAutoFill();
+        cancelAutoSet();
         setCellValue(boardDispatch, cellIndex, value);
         if (isValueSet(value, board[cellIndex])) {
-          startAutoFill();
+          startAutoSet();
         }
       } else {
         highlightDigit(selectionDispatch, value);
@@ -100,24 +100,24 @@ const App = () => {
     } else if (event.key === 'Escape') {
       clearSelection(selectionDispatch);
     }
-  }, [isMouseDown, selectedCells, board, boardDispatch, selectionDispatch, startAutoFill, cancelAutoFill]);
+  }, [isMouseDown, selectedCells, board, boardDispatch, selectionDispatch, startAutoSet, cancelAutoSet]);
 
   useWindowEvent('keydown', handleKeyDown);
 
   const handleFillMarks = useCallback(() => {
-    cancelAutoFill();
+    cancelAutoSet();
     fillCellMarks(boardDispatch);
-  }, [boardDispatch, cancelAutoFill]);
+  }, [boardDispatch, cancelAutoSet]);
 
   const handleUndo = useCallback(() => {
-    cancelAutoFill();
+    cancelAutoSet();
     undo(boardDispatch);
-  }, [boardDispatch, cancelAutoFill]);
+  }, [boardDispatch, cancelAutoSet]);
 
   const handleRedo = useCallback(() => {
-    cancelAutoFill();
+    cancelAutoSet();
     redo(boardDispatch);
-  }, [boardDispatch, cancelAutoFill]);
+  }, [boardDispatch, cancelAutoSet]);
 
   return (
     <ThemeProvider theme={theme}>
