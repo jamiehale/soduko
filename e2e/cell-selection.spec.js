@@ -151,7 +151,14 @@ test.describe('value highlighting', () => {
     // 70 is row 7, column 7, box 8, outside every 7's areas
     await open(page, EMPTY, { ...options, strikes: { 70: [7] } });
     await click(page, 40);
-    expect(await cellBackground(page, 70)).toBe(COLORS.white);
+    expect(await cellBackground(page, 70)).toBe(COLORS.peer);
+  });
+
+  test('other struck digits do not block', async ({ page }) => {
+    // 71 is row 7, column 8, box 8, outside every 7's areas
+    await open(page, EMPTY, { ...options, strikes: { 71: [4] } });
+    await click(page, 40);
+    expect(await cellBackground(page, 71)).toBe(COLORS.white);
   });
 
   test('every matching value projects its row, column, and box', async ({ page }) => {
