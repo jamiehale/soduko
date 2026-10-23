@@ -32,8 +32,12 @@ export const boardReducer = (state, action) => {
     }
     case 'toggleMark': {
       const { cells, mark } = action.payload;
+      const board = boardWithToggledMark(mark, cells, state.board);
+      if (R.equals(board, state.board)) {
+        return state;
+      }
       return {
-        board: boardWithToggledMark(mark, cells, state.board),
+        board,
         history: R.prepend(
           state.board,
           state.history,

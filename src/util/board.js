@@ -66,30 +66,22 @@ export const boardWithRelatedMarksCleared = R.curry((mark, sourceCellIndex, boar
   board,
 ));
 
-const cellSet = R.curry((cellIndices, board) => R.addIndex(R.filter)(
-  (_, i) => R.includes(i, cellIndices),
-  board,
-));
+const canTakeMark = R.curry((mark, board, cellIndex) => isPlayerCellWithMarks(board[cellIndex])
+  && R.includes(mark, possibleMarks(cellIndex, board)));
 
-const allMarkableCellsHave = (predicate, cellIndices, board) => R.compose(
-  R.all(predicate),
-  R.filter(isPlayerCellWithMarks),
-  cellSet(cellIndices),
-)(board);
-
-export const boardWithToggledMark = R.curry((mark, cellIndices, board) => {
-  if (allMarkableCellsHave(cellHasMark(mark), cellIndices, board)) {
-    return boardWithMarkCleared(mark, cellIndices, board);
+// Only cells that can take the mark decide the toggle, but clearing reaches every
+// selected cell, so a struck mark a peer has since made redundant can still go
+const boardWithToggled = (has, set, clear) => R.curry((mark, cellIndices, board) => {
+  const takers = R.filter(canTakeMark(mark, board), cellIndices);
+  if (R.all(i => has(mark, board[i]), takers)) {
+    return boardWithCandidateCells(clear(mark), cellIndices, board);
   }
-  return boardWithMarkSet(mark, cellIndices, board);
+  return boardWithCandidateCells(set(mark), takers, board);
 });
 
-export const boardWithToggledStrike = R.curry((mark, cellIndices, board) => {
-  if (allMarkableCellsHave(cellHasStrike(mark), cellIndices, board)) {
-    return boardWithCandidateCells(clearStrike(mark), cellIndices, board);
-  }
-  return boardWithCandidateCells(setStrike(mark), cellIndices, board);
-});
+export const boardWithToggledMark = boardWithToggled(cellHasMark, setMark, clearMark);
+
+export const boardWithToggledStrike = boardWithToggled(cellHasStrike, setStrike, clearStrike);
 
 export const boardWithToggledValue = R.curry((value, cellIndex, board) => {
   if (isGivenCell(board[cellIndex])) {

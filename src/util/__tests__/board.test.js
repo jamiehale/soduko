@@ -675,3 +675,60 @@ describe('boardWithSetValue with strikes', () => {
     expect(next[0]).toStrictEqual(makeCell('player', 5));
   });
 });
+
+describe.each([
+  ['pencil marks', boardWithToggledMark, cell => cell.value],
+  ['struck marks', boardWithToggledStrike, cell => cell.strikes || []],
+])('toggling %s skips digits a peer holds', (_, toggle, marksOf) => {
+  it('skips a cell whose row holds the digit', () => {
+    const board = withValues('given', { 8: 4 }, emptyBoard());
+    expect(toggle(4, [0], board)).toStrictEqual(board);
+  });
+
+  it('skips a cell whose column holds the digit', () => {
+    const board = withValues('player', { 72: 4 }, emptyBoard());
+    expect(toggle(4, [0], board)).toStrictEqual(board);
+  });
+
+  it('skips a cell whose box holds the digit', () => {
+    const board = withValues('given', { 20: 4 }, emptyBoard());
+    expect(toggle(4, [0], board)).toStrictEqual(board);
+  });
+
+  it('marks the other cells of a selection', () => {
+    // 72 shares a column with 0 only
+    const next = toggle(4, [0, 1, 2], withValues('player', { 72: 4 }, emptyBoard()));
+    expect(R.map(i => marksOf(next[i]), [0, 1, 2])).toStrictEqual([[], [4], [4]]);
+  });
+
+  it('counts both values of a conflict', () => {
+    const board = withValues('player', { 3: 2, 4: 2 }, emptyBoard());
+    expect(toggle(2, [0, 9], board)[0]).toStrictEqual(makeCell('player', []));
+    expect(marksOf(toggle(2, [0, 9], board)[9])).toStrictEqual([2]);
+  });
+
+  it('leaves the board unchanged when every selected cell is blocked', () => {
+    const board = withValues('given', { 8: 4 }, emptyBoard());
+    expect(toggle(4, [0, 1, 2], board)).toStrictEqual(board);
+  });
+});
+
+describe('removing marks a peer blocks', () => {
+  it('removes a pencil mark from every selected cell when every taker has it', () => {
+    // 0 is blocked by the 2 at 72 but still has a mark 2 from before it was set
+    const board = withValues('player', { 72: 2 }, withMarks({ 0: [2], 1: [2], 2: [2] }, emptyBoard()));
+    const next = boardWithToggledMark(2, [0, 1, 2], board);
+    expect(R.map(i => next[i].value, [0, 1, 2])).toStrictEqual([[], [], []]);
+  });
+
+  it('removes a stale struck mark from a blocked cell in a selection', () => {
+    const board = withValues('player', { 72: 6 }, withStrikes({ 0: [6], 1: [6] }, emptyBoard()));
+    const next = boardWithToggledStrike(6, [0, 1], board);
+    expect(R.map(i => next[i], [0, 1])).toStrictEqual(R.repeat(makeCell('player', []), 2));
+  });
+
+  it('removes a stale struck mark from a single blocked cell', () => {
+    const board = withValues('player', { 72: 6 }, withStrikes({ 0: [6] }, emptyBoard()));
+    expect(boardWithToggledStrike(6, [0], board)[0]).toStrictEqual(makeCell('player', []));
+  });
+});
