@@ -61,7 +61,7 @@ If all selected cells share one row, that row's other cells SHALL be shown in th
 - **THEN** the rest of that row is shown in the peer style, and no column or box is highlighted
 
 ### Requirement: Value highlighting
-When exactly one cell is selected and it holds a value N (given or player), every other cell holding N SHALL be shown in the "selected" style. The row, column, and box of every cell holding N, and every other cell holding a value, SHALL be shown in the "peer" style. Empty cells outside those areas with pencil mark N SHALL be shown in the "related" style. An empty or pencil-marked selected cell SHALL get no value highlighting.
+When exactly one cell is selected and it holds a value N (given or player), every other cell holding N SHALL be shown in the "selected" style. The row, column, and box of every cell holding N, and every other cell holding a value, SHALL be shown in the "peer" style. Empty cells outside those areas with pencil mark N SHALL be shown in the "related" style; a struck mark N SHALL NOT make a cell related. An empty or pencil-marked selected cell SHALL get no value highlighting.
 
 #### Scenario: Matching values
 - **WHEN** the single selected cell holds 7
@@ -82,6 +82,10 @@ When exactly one cell is selected and it holds a value N (given or player), ever
 #### Scenario: Matching marks
 - **WHEN** the single selected cell holds 7 and an empty cell sharing no row, column, or box with any cell holding 7 has pencil mark 7
 - **THEN** that cell is shown in the related style
+
+#### Scenario: Struck marks are not related
+- **WHEN** the single selected cell holds 7 and an empty cell sharing no row, column, or box with any cell holding 7 has struck mark 7
+- **THEN** that cell is not highlighted
 
 #### Scenario: Matching mark inside a projected area
 - **WHEN** the single selected cell holds 7 and an empty cell with pencil mark 7 shares a column with another cell holding 7
