@@ -61,7 +61,7 @@ test.describe('board screenshots', () => {
   });
 
   test('struck marks', async ({ page }) => {
-    // Selecting the given 8 makes 70 related; 71's struck 8 is not
+    // Selecting the given 8 makes 70 related and 71, with a struck 8, a peer
     await open(page, PUZZLE, {
       ...highlightOptions,
       strikes: { 70: [5], 71: [4, 8], 72: [7] },

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import * as R from 'ramda';
 import UnstyledCell from './Cell';
 import { rowFromCount, columnFromCount, boxFromCount } from './util/board';
-import { cellValueEquals, cellHasMark, isCellWithValue } from './util/cell';
+import { cellValueEquals, cellHasMark, cellHasStrike, isCellWithValue } from './util/cell';
 import useBorder from './hooks/border';
 
 const cellKey = (row, column) => `${row}|${column}`;
@@ -23,8 +23,8 @@ const highlightLevel = (row, column, box, cell, selected, highlight) => {
   if ((!R.isNil(highlightValue) && cellValueEquals(highlightValue, cell)) || selected) {
     return 'selected';
   }
-  // A selected value can't go in any filled cell
-  if (!R.isNil(highlightValue) && isCellWithValue(cell)) {
+  // A selected value can't go in any filled cell, or in a cell where the player struck it out
+  if (!R.isNil(highlightValue) && (isCellWithValue(cell) || cellHasStrike(highlightValue, cell))) {
     return 'peer';
   }
   if (R.includes(row, highlightRows) || R.includes(column, highlightColumns) || R.includes(box, highlightBoxes)) {
