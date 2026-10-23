@@ -62,7 +62,7 @@ export const boardWithFilledMarks = board => R.addIndex(R.map)(
 );
 
 export const boardWithRelatedMarksCleared = R.curry((mark, sourceCellIndex, board) => R.addIndex(R.map)(
-  (cell, i) => ((shouldClear(sourceCellIndex, i) && isPlayerCellWithMarks(cell)) ? clearMark(mark, cell) : cell),
+  (cell, i) => ((shouldClear(sourceCellIndex, i) && isPlayerCellWithMarks(cell)) ? clearStrike(mark, clearMark(mark, cell)) : cell),
   board,
 ));
 

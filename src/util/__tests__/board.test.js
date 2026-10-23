@@ -665,9 +665,26 @@ describe('boardWithToggledMark with strikes', () => {
 });
 
 describe('boardWithSetValue with strikes', () => {
-  it('keeps the strikes of related cells', () => {
-    const next = boardWithSetValue(6, 0, withStrikes({ 1: [6] }, emptyBoard()));
-    expect(next[1]).toStrictEqual({ type: 'player', value: [], strikes: [6] });
+  it('clears the strikes of related cells', () => {
+    // 1 shares the row, 27 the column, 20 the box
+    const next = boardWithSetValue(6, 0, withStrikes({ 1: [6], 27: [6], 20: [6] }, emptyBoard()));
+    expect(R.map(i => next[i], [1, 27, 20])).toStrictEqual(R.repeat(makeCell('player', []), 3));
+  });
+
+  it('keeps other strikes and pencil marks in related cells', () => {
+    const next = boardWithSetValue(6, 0, withMarks({ 1: [2] }, withStrikes({ 1: [4, 6] }, emptyBoard())));
+    expect(next[1]).toStrictEqual({ type: 'player', value: [2], strikes: [4] });
+  });
+
+  it('keeps the strike in cells outside the row, column, and box', () => {
+    const next = boardWithSetValue(6, 0, withStrikes({ 80: [6] }, emptyBoard()));
+    expect(next[80]).toStrictEqual({ type: 'player', value: [], strikes: [6] });
+  });
+
+  it('clears related strikes in a bulk set', () => {
+    const next = boardWithSetValues([{ cellIndex: 0, value: 4 }, { cellIndex: 40, value: 7 }], withStrikes({ 8: [4], 41: [7] }, emptyBoard()));
+    expect(next[8]).toStrictEqual(makeCell('player', []));
+    expect(next[41]).toStrictEqual(makeCell('player', []));
   });
 
   it('replaces the cell\'s own strikes', () => {
