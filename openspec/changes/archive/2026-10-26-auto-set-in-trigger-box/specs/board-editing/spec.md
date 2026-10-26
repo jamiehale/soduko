@@ -3,7 +3,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Auto-set box singles after a value set
-500ms after the player sets a value in a player cell, the box holding that cell (the trigger box) SHALL be scanned for box singles: a digit N that is a pencil mark in exactly one cell of the trigger box, where no cell of that box holds the value N. A struck mark N SHALL NOT count as a pencil mark N. Every box single found SHALL be set at once (a bulk set), each as if the player had entered it. Box singles in other boxes SHALL NOT be set. Toggling a value off, toggling marks, undo, and redo SHALL NOT start a scan.
+500ms after the player sets a value, the box holding that cell (the trigger box) SHALL be scanned for box singles: a digit N that is a pencil mark in exactly one cell of the trigger box, where no cell of that box holds N. A struck mark N SHALL NOT count as a pencil mark N. Every box single found there SHALL be set at once (a bulk set), each as if the player had entered it; box singles in other boxes SHALL NOT be set. Toggling a value off, toggling marks, undo, and redo SHALL NOT start a scan.
 
 #### Scenario: A value set leaves a box single
 - **WHEN** cells X and Y in one box are the only cells there with pencil mark 6, and the player sets Y to 4
