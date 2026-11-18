@@ -27,7 +27,7 @@ Pushing branches, opening and merging PRs, and running workflows all reach GitHu
 ## 2. Move DNS to Cloudflare
 
 - [x] 2.1 The user checks the registrar for DNSSEC. If a DS record exists, they remove it and wait out its TTL. Verify that `dig +short DS soduko.me` returns nothing.
-- [ ] 2.2 The user adds `soduko.me` to Cloudflare and reviews the imported records:
+- [x] 2.2 The user adds `soduko.me` to Cloudflare and reviews the imported records:
   - keep the root A record to `38.111.114.25`, DNS-only (grey cloud)
   - delete everything else
   - add the mail records and `www` placeholder from design Decision 6
@@ -36,21 +36,21 @@ Pushing branches, opening and merging PRs, and running workflows all reach GitHu
 
 ## 3. Cut over
 
-- [ ] 3.1 Change `wrangler.jsonc` to the cutover form (design Decision 3): add `routes: [{ "pattern": "soduko.me", "custom_domain": true }]`, set `workers_dev: false`. Update the `CLAUDE.md` and README hosting notes if they mention `workers.dev`. With approval, open a PR and verify CI passes.
-- [ ] 3.2 Cutover, with the user:
+- [x] 3.1 Change `wrangler.jsonc` to the cutover form (design Decision 3): add `routes: [{ "pattern": "soduko.me", "custom_domain": true }]`, set `workers_dev: false`. Update the `CLAUDE.md` and README hosting notes if they mention `workers.dev`. With approval, open a PR and verify CI passes.
+- [x] 3.2 Cutover, with the user:
   1. The user deletes the root A record in Cloudflare.
   2. Merge the cutover PR at once (with approval).
   3. Verify the deploy job succeeds and the Worker's settings list `soduko.me` as a custom domain.
   4. Verify `https://soduko.me` serves the app with a valid certificate, and `curl -sI http://soduko.me` redirects to HTTPS.
   5. Verify a saved game in a browser that played before the cutover is still there.
   6. Verify the `workers.dev` URL no longer serves the app.
-- [ ] 3.3 The user adds the `www` Redirect Rule (design Decision 6). Verify that `curl -sI https://www.soduko.me/x?y=1` returns 301 with `location: https://soduko.me/x?y=1`.
+- [x] 3.3 The user adds the `www` Redirect Rule (design Decision 6). Verify that `curl -sI https://www.soduko.me/x?y=1` returns 301 with `location: https://soduko.me/x?y=1`.
 
 ## 4. Clean up
 
-- [ ] 4.1 The user deletes `FTP_USER` and `FTP_PASSWORD` (secrets) and `FTP_HOST`, `FTP_PORT`, and `FTP_REMOTE_DIR` (variables) from `production`. Verify that the lists show only the Cloudflare names.
-- [ ] 4.2 The user turns on DNSSEC in Cloudflare and adds the DS record at the registrar. Verify that `dig +short DS soduko.me` returns the record and `dig +dnssec soduko.me` shows the `ad` flag from a validating resolver (e.g. `@1.1.1.1`).
-- [ ] 4.3 The user removes `soduko.me` from the VPS's DNS and web server config. Verify that `https://soduko.me` still loads and `dig +short soduko.me` returns Cloudflare addresses, not `38.111.114.25`.
+- [x] 4.1 The user deletes `FTP_USER` and `FTP_PASSWORD` (secrets) and `FTP_HOST`, `FTP_PORT`, and `FTP_REMOTE_DIR` (variables) from `production`. Verify that the lists show only the Cloudflare names.
+- 4.2 Skipped by the owner: DNSSEC stays off. HTTPS already protects visitors and the site holds no accounts, so the gain is small; a DS record would also break the domain if DNS ever moves without removing it first.
+- [x] 4.3 The user removes `soduko.me` from the VPS's DNS and web server config. Verify that `https://soduko.me` still loads and `dig +short soduko.me` returns Cloudflare addresses, not `38.111.114.25`.
 
 ## Workflow follow-up
 
