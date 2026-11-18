@@ -22,17 +22,17 @@ Pushing branches, opening and merging PRs, and running workflows all reach GitHu
 
   Verify that the names in the docs match `deploy.yml` and `wrangler.jsonc`.
 - [x] 1.4 The user creates the API token (design Decision 5) and sets `CLOUDFLARE_API_TOKEN` (secret) and `CLOUDFLARE_ACCOUNT_ID` (variable) on `production`. Verify that `gh secret list --env production` and `gh variable list --env production` show both names.
-- [ ] 1.5 With approval, push a branch and open a PR. Verify CI passes, then merge with approval. Verify the push runs CI and then the deploy job, and that the `workers.dev` URL loads the app, the Help dialog shows the current version (`package.json`), and the board accepts input.
+- [x] 1.5 With approval, push a branch and open a PR. Verify CI passes, then merge with approval. Verify the push runs CI and then the deploy job, and that the `workers.dev` URL loads the app, the Help dialog shows the current version (`package.json`), and the board accepts input.
 
 ## 2. Move DNS to Cloudflare
 
-- [ ] 2.1 The user checks the registrar for DNSSEC. If a DS record exists, they remove it and wait out its TTL. Verify that `dig +short DS soduko.me` returns nothing.
+- [x] 2.1 The user checks the registrar for DNSSEC. If a DS record exists, they remove it and wait out its TTL. Verify that `dig +short DS soduko.me` returns nothing.
 - [ ] 2.2 The user adds `soduko.me` to Cloudflare and reviews the imported records:
   - keep the root A record to `38.111.114.25`, DNS-only (grey cloud)
   - delete everything else
   - add the mail records and `www` placeholder from design Decision 6
   - turn on "Always Use HTTPS"
-- [ ] 2.3 The user switches nameservers at the registrar to the two Cloudflare gives. Verify that `dig +short NS soduko.me` returns Cloudflare's nameservers, the dashboard shows the zone as active, and `https://soduko.me` still loads from the VPS.
+- [x] 2.3 The user switches nameservers at the registrar to the two Cloudflare gives. Verify that `dig +short NS soduko.me` returns Cloudflare's nameservers, the dashboard shows the zone as active, and `https://soduko.me` still loads from the VPS.
 
 ## 3. Cut over
 
