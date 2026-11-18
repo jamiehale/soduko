@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/wrangler@4.156.2/config-schema.json",
+  "name": "soduko",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./build"
+  },
+  "workers_dev": true,
+  "preview_urls": false
+}

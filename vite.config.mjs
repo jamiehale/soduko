@@ -12,7 +12,7 @@ export default defineConfig({
     strictPort: true,
   },
   build: {
-    // Kept as build/ (not Vite's dist/) for the manual deploy
+    // Kept as build/ (not Vite's dist/): CI uploads it and wrangler.jsonc serves it
     outDir: 'build',
   },
   test: {

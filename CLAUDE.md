@@ -11,7 +11,7 @@ Sudoku *helper* (not a solver or generator), served at soduko.me (deployed by Gi
 Use npm (`package-lock.json`); Node version is pinned in `.nvmrc`.
 
 - `npm start` — Vite dev server on http://localhost:3000
-- `npm run build` — production build into `build/` (not Vite's default `dist/`; the deploy uploads `build/`)
+- `npm run build` — production build into `build/` (not Vite's default `dist/`; the deploy serves `build/`)
 - `npm run preview` — serve the production build on :3000
 - `npm test` — Vitest (watch mode in a terminal; runs once when `CI` is set)
 - `npx vitest run` — unit tests once
@@ -35,17 +35,14 @@ Source files containing JSX use `.jsx`; plain JS stays `.js`. `vite.config.mjs` 
 ## CI and deployment
 
 - **`.github/workflows/ci.yml`** runs on every pull request and is also called by the deploy workflow. It runs `npm ci`, `npx vitest run`, `npm run lint`, `npm run build`, and `npm run test:e2e`, then uploads `build/` as the `build` artifact (and the Playwright report on failure). Node comes from `.nvmrc`. It is pinned to `runs-on: ubuntu-24.04` because the visual baselines pass there; moving to a newer image is a deliberate change that needs the visual suite checked first.
-- **`.github/workflows/deploy.yml`** runs on push to `main` and by hand (`workflow_dispatch`). Pushes that touch only `openspec/**`, `.claude/**`, `README.md`, or `CLAUDE.md` don't deploy (`paths-ignore`); a push that also touches anything else does. It runs CI, then deploys that exact `build` artifact without rebuilding. The upload goes to the host over FTPS with `lftp`, against the `production` environment (only `main` may deploy). Deploys queue; they never overlap.
+- **`.github/workflows/deploy.yml`** runs on push to `main` and by hand (`workflow_dispatch`). Pushes that touch only `openspec/**`, `.claude/**`, `README.md`, or `CLAUDE.md` don't deploy (`paths-ignore`); a push that also touches anything else does. It runs CI, then deploys that exact `build` artifact without rebuilding, against the `production` environment (only `main` may deploy). Deploys queue; they never overlap.
+- **Hosting:** a Cloudflare Worker with static assets, configured in `wrangler.jsonc` (no script; `assets.directory` is `./build`). The deploy job checks out only `wrangler.jsonc` and runs `wrangler deploy` through `cloudflare/wrangler-action`. Wrangler's version is pinned in `deploy.yml`, not in `package.json`; deploy by hand with `npx wrangler@<that version> deploy` after `npm run build`. Each deploy replaces the whole site at once.
+- **Domain:** until the cutover in `openspec/changes/move-hosting-to-cloudflare`, the Worker serves only its `workers.dev` URL and soduko.me is still the old VPS. Keep the site on one origin: saved games live in `localStorage`, which is per origin.
 - **Environment `production`:**
-  - secrets: `FTP_USER`, `FTP_PASSWORD`
-  - variables: `FTP_HOST`, `FTP_PORT` (default 21), `FTP_REMOTE_DIR` (the web root as the FTP user sees it, default `/`)
-  - the password reaches `lftp` through `LFTP_PASSWORD`/`--env-password`, never the command line
-- **Upload order:**
-  1. `assets/` first, so the live `index.html` never points at missing bundles
-  2. the root files, never deleting, so host files such as `.htaccess` survive
-  3. a `--delete` pass over `assets/` only, which prunes stale bundles
-- **Rehearsal:** run the workflow by hand with `dry_run` checked. It connects, verifies TLS, checks the web root exists, and lists what would change without writing. The script `cd`s into the web root before mirroring because `mirror --dry-run` alone exits 0 on connection and TLS errors.
-- **Rollback:** revert the commit on `main`; the push redeploys the previous build.
+  - secret: `CLOUDFLARE_API_TOKEN` (limited to the account and the `soduko.me` zone: Workers Scripts Edit, Workers Routes Edit)
+  - variable: `CLOUDFLARE_ACCOUNT_ID`
+- **Rehearsal:** `npx wrangler@<pinned> deploy --dry-run` after a build reads the config and lists the assets without uploading.
+- **Rollback:** revert the commit on `main`; the push redeploys the previous build. For an instant rollback, roll back to the previous version in the Cloudflare dashboard (or `wrangler rollback`), then still revert on `main`.
 - **PR screenshots:** for UI changes, the `pr-screenshots` skill (`.claude/skills/pr-screenshots/`) posts a before/after table to the PR. Images live on the orphan `pr-screenshots` branch, which nothing deploys or merges.
 
 ## Glossary
