@@ -35,7 +35,7 @@ Source files containing JSX use `.jsx`; plain JS stays `.js`. `vite.config.mjs` 
 ## CI and deployment
 
 - **`.github/workflows/ci.yml`** runs on every pull request and is also called by the deploy workflow. It runs `npm ci`, `npx vitest run`, `npm run lint`, `npm run build`, and `npm run test:e2e`, then uploads `build/` as the `build` artifact (and the Playwright report on failure). Node comes from `.nvmrc`. It is pinned to `runs-on: ubuntu-24.04` because the visual baselines pass there; moving to a newer image is a deliberate change that needs the visual suite checked first.
-- **`.github/workflows/deploy.yml`** runs on push to `main` and by hand (`workflow_dispatch`). Pushes that touch only `openspec/**`, `.claude/**`, `README.md`, or `CLAUDE.md` don't deploy (`paths-ignore`); a push that also touches anything else does. It runs CI, then deploys that exact `build` artifact without rebuilding, against the `production` environment (only `main` may deploy). Deploys queue; they never overlap.
+- **`.github/workflows/deploy.yml`** runs on push to `main` and by hand (`workflow_dispatch`). Pushes that touch only `openspec/**`, `.claude/**`, `README.md`, `CLAUDE.md`, or `GLOSSARY.md` don't deploy (`paths-ignore`); a push that also touches anything else does. It runs CI, then deploys that exact `build` artifact without rebuilding, against the `production` environment (only `main` may deploy). Deploys queue; they never overlap.
 - **Hosting:** a Cloudflare Worker with static assets, configured in `wrangler.jsonc` (no script; `assets.directory` is `./build`). The deploy job checks out only `wrangler.jsonc` and runs `wrangler deploy` through `cloudflare/wrangler-action`. Wrangler's version is pinned in `deploy.yml`, not in `package.json`; deploy by hand with `npx wrangler@<that version> deploy` after `npm run build`. Each deploy replaces the whole site at once.
 - **Domain:** `soduko.me` is the Worker's custom domain (`routes` in `wrangler.jsonc`), and its DNS is in Cloudflare. `workers_dev` is off and `www` redirects to the root (a Cloudflare Redirect Rule), so the site has one origin: saved games live in `localStorage`, which is per origin.
 - **Environment `production`:**
@@ -47,30 +47,30 @@ Source files containing JSX use `.jsx`; plain JS stays `.js`. `vite.config.mjs` 
 
 ## Glossary
 
-Use these words in specs, code, tests, on-screen text, and docs.
+`GLOSSARY.md` defines the domain words. Use them in specs, code, tests, on-screen text, and docs. This table maps each term to its names in code; add a row when you add a term there.
 
-| Term | Meaning | In code |
-|---|---|---|
-| puzzle | The starting pattern: a stock puzzle, a custom puzzle, or the mini preview in the New Game dialog. 81 characters, `.`/`0` for blanks | `puzzle`, `stockPuzzle`, `customPuzzle`, `MiniPuzzle` |
-| board | The 81 cells the player interacts with. A new game populates it from a puzzle | `board` |
-| cell | One of the 81 squares on the board | `cell`, index `0`–`80` |
-| given cell, given value | A cell populated from the puzzle; it can't be changed (not "clue") | `type: 'given'`, `isGivenCell`, `GivenCell` |
-| player cell, player value | Every other cell; the player sets its value or pencil marks (not "user" or "entered value") | `type: 'player'`, `isPlayerCell…`, `PlayerCell` |
-| value | The digit 1–9 a cell holds | `value` (a number) |
-| pencil marks | Small candidate digits in an empty player cell (not "notes") | `marks`, `value` as an array |
-| struck mark | A digit the player has ruled out for an empty player cell, shown as a pencil mark with a red line through it (not "not possible" or "excluded") | `strikes`, `setStrike`, `cellHasStrike` |
-| row, column, box | The three kinds of 9-cell group; a box is one of the nine 3×3 areas (not "section") | `rowFromCount`, `columnFromCount`, `boxFromCount` |
-| peer | A cell sharing a row, column, or box with another; also the highlight style | `'peer'` |
-| related | An empty cell with a pencil mark of the selected value; also the highlight style | `'related'` |
-| conflict | Two cells with the same value in one row, column, or box; shown in the error style | `errorCells` |
-| auto-set | The feature that sets forced cells in the trigger box by itself, 500ms after the player sets a value (not "auto-fill": fill is what Fill pencil marks does) | `useAutoSet`, `startAutoSet`, `cancelAutoSet` |
-| trigger box | The box holding the cell whose value the player just set; the only box auto-set scans, for the whole cascade | `box` in `useAutoSet`'s `start` |
-| box single | A digit that is a pencil mark in exactly one cell of a box, where no cell of that box holds it; what auto-set places | `findBoxSingles` |
-| bulk set | One round of auto-set: every box single found is set at once, as one undo step | `nextBulkSet`, `setCellValues`, `'setMany'` |
-| cascade | The chain of bulk sets in the trigger box, each 500ms after the last, that ends when a round finds no box single there or the board has a conflict | the `step` loop in `hooks/auto-set.js` |
-| selection | The selected cells | `selectedCells` |
-| game | The board plus its undo/redo history; what is saved | `{ board, history, future }` |
-| paused | The game ignores keyboard input; true while any dialog is open. Computed, never saved | `isPaused` |
+| Term | In code |
+|---|---|
+| puzzle | `puzzle`, `stockPuzzle`, `customPuzzle`, `MiniPuzzle` |
+| board | `board` |
+| cell | `cell`, index `0`–`80` |
+| given cell, given value | `type: 'given'`, `isGivenCell`, `GivenCell` |
+| player cell, player value | `type: 'player'`, `isPlayerCell…`, `PlayerCell` |
+| value | `value` (a number) |
+| pencil marks | `marks`, `value` as an array |
+| struck mark | `strikes`, `setStrike`, `cellHasStrike` |
+| row, column, box | `rowFromCount`, `columnFromCount`, `boxFromCount` |
+| peer | `'peer'` |
+| related | `'related'` |
+| conflict | `errorCells` |
+| auto-set | `useAutoSet`, `startAutoSet`, `cancelAutoSet` |
+| trigger box | `box` in `useAutoSet`'s `start` |
+| box single | `findBoxSingles` |
+| bulk set | `nextBulkSet`, `setCellValues`, `'setMany'` |
+| cascade | the `step` loop in `hooks/auto-set.js` |
+| selection | `selectedCells` |
+| game | `{ board, history, future }` |
+| paused | `isPaused` (computed, never saved) |
 
 ## Architecture
 
