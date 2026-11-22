@@ -60,9 +60,10 @@ Source files containing JSX use `.jsx`; plain JS stays `.js`. `vite.config.mjs` 
 | pencil marks | `marks`, `value` as an array |
 | struck mark | `strikes`, `setStrike`, `cellHasStrike` |
 | row, column, box | `rowFromCount`, `columnFromCount`, `boxFromCount` |
-| peer | `'peer'` |
-| related | `'related'` |
+| peer style | `'peer'` |
+| highlighted digit | `highlightValue` |
 | digit highlight | `highlightDigit` |
+| related | `'related'` |
 | conflict | `errorCells` |
 | auto-set | `useAutoSet`, `startAutoSet`, `cancelAutoSet` |
 | trigger box | `box` in `useAutoSet`'s `start` |

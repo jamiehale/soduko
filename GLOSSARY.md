@@ -23,7 +23,7 @@ The three kinds of 9-cell group. A box is one of the nine 3×3 areas.
 _Avoid_: Section, block, region
 
 **Peer**:
-A cell that shares a row, column, or box with another cell; also the style that marks the peers of the selection.
+A cell that shares a row, column, or box with another cell.
 _Avoid_: Neighbour
 
 ### Cells and values
@@ -57,11 +57,19 @@ _Avoid_: Error, clash
 **Selection**:
 The cells the player has selected.
 
-**Related**:
-An empty cell with a pencil mark of the selected value; also the style that marks it.
+**Highlighted digit**:
+The digit the board highlights: the digit highlight if there is one, otherwise the value of the single selected cell.
+_Avoid_: Selected value, highlighted value
 
 **Digit highlight**:
 A digit the board highlights as if a selected cell held it. The player gets one by typing a digit with nothing selected, or by toggling a pencil mark or struck mark on the selection.
+
+**Peer style**:
+The style for the peers of the selection, or, while there is a highlighted digit, for the rows, columns, and boxes of the cells holding it.
+_Avoid_: Peer (a peer is a cell, not a style)
+
+**Related**:
+An empty cell with a pencil mark of the highlighted digit, outside the rows, columns, and boxes of the cells holding it; also the style that marks it.
 
 ### Auto-set
 
