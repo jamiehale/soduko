@@ -10,6 +10,7 @@ const click = (cell) => [mouseDown(cell), mouseUp(cell)];
 const clearSelection = { type: 'clearSelection' };
 const highlightDigit = (digit) => ({ type: 'highlightDigit', payload: { digit } });
 const clearHighlightDigit = { type: 'clearHighlightDigit' };
+const markDigit = (digit) => ({ type: 'markDigit', payload: { digit } });
 
 describe('click', () => {
   it('selects a single cell', () => {
@@ -93,5 +94,33 @@ describe('highlightDigit', () => {
     const state = apply(initialSelectionState, ...click(4), highlightDigit(7), clearHighlightDigit);
     expect(state.highlightDigit).toBeUndefined();
     expect(selectedCellsOf(state)).toStrictEqual([4]);
+  });
+});
+
+describe('markDigit', () => {
+  it('sets the digit', () => {
+    expect(apply(initialSelectionState, mouseDown(0), mouseUp(1), markDigit(7)).highlightDigit).toBe(7);
+  });
+
+  it('keeps the digit when the same digit is marked again', () => {
+    expect(apply(initialSelectionState, mouseDown(0), mouseUp(1), markDigit(7), markDigit(7)).highlightDigit).toBe(7);
+  });
+
+  it('switches to a different digit', () => {
+    expect(apply(initialSelectionState, mouseDown(0), mouseUp(1), markDigit(7), markDigit(4)).highlightDigit).toBe(4);
+  });
+
+  it('survives the mouse release that ends the drag', () => {
+    const state = apply(initialSelectionState, mouseDown(0), mouseOver(1), markDigit(7), mouseUp(1));
+    expect(state.highlightDigit).toBe(7);
+    expect(selectedCellsOf(state)).toStrictEqual([0, 1]);
+  });
+
+  it('is cleared by pressing on a cell', () => {
+    expect(apply(initialSelectionState, mouseDown(0), mouseUp(1), markDigit(7), mouseDown(5)).highlightDigit).toBeUndefined();
+  });
+
+  it('is cleared by clearSelection', () => {
+    expect(apply(initialSelectionState, mouseDown(0), mouseUp(1), markDigit(7), clearSelection).highlightDigit).toBeUndefined();
   });
 });
