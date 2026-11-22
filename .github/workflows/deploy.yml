@@ -10,6 +10,7 @@ on:
       - '.claude/**'
       - 'README.md'
       - 'CLAUDE.md'
+      - 'GLOSSARY.md'
   workflow_dispatch:
 
 permissions:
