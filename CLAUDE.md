@@ -70,6 +70,7 @@ Use these words in specs, code, tests, on-screen text, and docs.
 | cascade | The chain of bulk sets in the trigger box, each 500ms after the last, that ends when a round finds no box single there or the board has a conflict | the `step` loop in `hooks/auto-set.js` |
 | selection | The selected cells | `selectedCells` |
 | game | The board plus its undo/redo history; what is saved | `{ board, history, future }` |
+| paused | The game ignores keyboard input; true while any dialog is open. Computed, never saved | `isPaused` |
 
 ## Architecture
 

@@ -128,6 +128,22 @@ const click = async (page, i) => {
   await settle(page);
 };
 
+// Opens New Game on the Custom tab and returns its puzzle field. Type into it
+// with pressSequentially, not fill(): fill() sends no keydown events.
+const customPuzzleField = async (page) => {
+  await page.getByRole('button', { name: 'New' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByRole('tab', { name: 'Custom' }).click();
+  return dialog.getByRole('textbox');
+};
+
+const cancelNewGame = async (page) => {
+  const dialog = page.getByRole('dialog');
+  await dialog.getByRole('button', { name: 'Cancel' }).click();
+  await dialog.waitFor({ state: 'hidden' });
+  await settle(page);
+};
+
 const savedState = (page) => page.evaluate((key) => JSON.parse(window.localStorage.getItem(key)), STORAGE_KEY);
 
 module.exports = {
@@ -150,6 +166,8 @@ module.exports = {
   settle,
   drag,
   click,
+  customPuzzleField,
+  cancelNewGame,
   savedState,
 };
 
