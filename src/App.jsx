@@ -59,6 +59,8 @@ const App = () => {
 
   const { confirming: showNewGame, confirm: confirmNewGame, handleConfirm: handleConfirmNewGame, handleCancel: handleCancelNewGame } = useConfirmation(handleNewGame);
 
+  const isPaused = showNewGame || showReset || showHelp;
+
   const handleMouseDown = cell => {
     mouseDown(selectionDispatch, cell);
   };
@@ -72,6 +74,9 @@ const App = () => {
   };
 
   const handleKeyDown = useCallback((event) => {
+    if (isPaused) {
+      return;
+    }
     const strikeDigit = event.shiftKey && R.match(/^Digit([1-9])$/, event.code)[1];
     if (strikeDigit) {
       if (R.isEmpty(selectedCells)) {
@@ -100,7 +105,7 @@ const App = () => {
     } else if (event.key === 'Escape') {
       clearSelection(selectionDispatch);
     }
-  }, [isMouseDown, selectedCells, board, boardDispatch, selectionDispatch, startAutoSet, cancelAutoSet]);
+  }, [isPaused, isMouseDown, selectedCells, board, boardDispatch, selectionDispatch, startAutoSet, cancelAutoSet]);
 
   useWindowEvent('keydown', handleKeyDown);
 

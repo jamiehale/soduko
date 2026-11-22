@@ -9,6 +9,8 @@ const {
   drag,
   click,
   settle,
+  customPuzzleField,
+  cancelNewGame,
 } = require('./helpers');
 
 // Cell 40 is row 4, column 4, box 4. Its peers include 36 (row), 4 (column),
@@ -383,5 +385,57 @@ test.describe('digit highlight', () => {
     await page.clock.runFor(200);
     expect((await cellState(page, 0)).value).toBe(7);
     expect(await cellBackground(page, 0)).toBe(COLORS.selected);
+  });
+});
+
+test.describe('while the game is paused', () => {
+  const options = { values: { 40: 7, 0: 7, 80: 4 } };
+
+  test('typing a custom puzzle highlights nothing on the board', async ({ page }) => {
+    await open(page, EMPTY, options);
+    const field = await customPuzzleField(page);
+    await field.pressSequentially('1234567');
+    await settle(page);
+    expect(await backgrounds(page, [0, 40, 80, 8])).toEqual({
+      0: COLORS.white,
+      40: COLORS.white,
+      80: COLORS.white,
+      8: COLORS.white,
+    });
+  });
+
+  test('an existing digit highlight is kept', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await page.keyboard.press('7');
+    await settle(page);
+    const field = await customPuzzleField(page);
+    await field.pressSequentially('4');
+    await settle(page);
+    expect(await backgrounds(page, [0, 40, 80])).toEqual({
+      0: COLORS.selected,
+      40: COLORS.selected,
+      80: COLORS.peer,
+    });
+  });
+
+  test('Escape closes the dialog and keeps the selection', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await click(page, 40);
+    await page.getByRole('button', { name: 'New' }).click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await settle(page);
+    expect(await cellBackground(page, 40)).toBe(COLORS.selected);
+  });
+
+  test('keys work again after the dialog closes', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await customPuzzleField(page);
+    await cancelNewGame(page);
+    await page.keyboard.press('4');
+    await settle(page);
+    expect(await backgrounds(page, [80, 40])).toEqual({ 80: COLORS.selected, 40: COLORS.peer });
   });
 });

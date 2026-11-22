@@ -15,6 +15,9 @@ const {
   givenValues,
   PUZZLE,
   EMPTY,
+  SOLUTION,
+  customPuzzleField,
+  cancelNewGame,
 } = require('./helpers');
 
 // In the default puzzle, cells 1 (8) and 4 (4) are given cells; 0, 2, 3 are empty.
@@ -958,5 +961,68 @@ test.describe('marks skip digits a peer holds', () => {
     await click(page, 0);
     await page.keyboard.press('Shift+Digit6');
     expect(await cellStrikes(page, 0)).toEqual([]);
+  });
+});
+
+test.describe('while the game is paused', () => {
+  test('a digit does not set the selected cell', async ({ page }) => {
+    await open(page);
+    await click(page, 0);
+    const field = await customPuzzleField(page);
+    await field.pressSequentially('5');
+    await cancelNewGame(page);
+    expect(await cellValue(page, 0)).toBeNull();
+    await expect(undoButton(page)).toBeDisabled();
+  });
+
+  test('a digit does not mark the selected cells', async ({ page }) => {
+    await open(page);
+    await drag(page, [0, 2, 3]);
+    const field = await customPuzzleField(page);
+    await field.pressSequentially('5');
+    await cancelNewGame(page);
+    expect(await cellMarks(page, 0)).toEqual([]);
+    expect(await cellMarks(page, 2)).toEqual([]);
+    expect(await cellMarks(page, 3)).toEqual([]);
+    await expect(undoButton(page)).toBeDisabled();
+  });
+
+  test('Shift plus a digit does not strike a mark', async ({ page }) => {
+    await open(page);
+    await click(page, 0);
+    await page.getByTestId('help').click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Shift+Digit5');
+    await dialog.getByRole('button', { name: 'Okay' }).click();
+    await expect(dialog).toBeHidden();
+    expect(await cellStrikes(page, 0)).toEqual([]);
+    await expect(undoButton(page)).toBeDisabled();
+  });
+
+  test('a digit with the Reset dialog open does not set the selected cell', async ({ page }) => {
+    await open(page);
+    await click(page, 0);
+    await page.getByRole('button', { name: 'Reset' }).click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('5');
+    await dialog.getByRole('button', { name: 'Cancel' }).click();
+    await expect(dialog).toBeHidden();
+    expect(await cellValue(page, 0)).toBeNull();
+    await expect(undoButton(page)).toBeDisabled();
+  });
+
+  test('a solved game stays solved', async ({ page }) => {
+    const nearlySolved = `${SOLUTION.slice(0, 40)}.${SOLUTION.slice(41)}`;
+    const value = Number(SOLUTION[40]);
+    const other = String((value % 9) + 1);
+    await open(page, nearlySolved, { values: { 40: value } });
+    await click(page, 40);
+    const field = await customPuzzleField(page);
+    await field.pressSequentially(other);
+    await cancelNewGame(page);
+    expect(await cellValue(page, 40)).toBe(value);
+    await expect(page.getByText('Solved', { exact: true })).toBeVisible();
   });
 });
