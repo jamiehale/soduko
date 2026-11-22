@@ -14,7 +14,7 @@ import RedoIcon from '@mui/icons-material/Redo';
 import HelpIcon from '@mui/icons-material/Help';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { decode } from './util/decoder';
-import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection, highlightDigit, clearHighlightDigit } from './hooks/selection';
+import useSelection, { mouseDown, mouseUp, mouseOver, clearSelection, highlightDigit, markDigit, clearHighlightDigit } from './hooks/selection';
 import useHighlight from './hooks/highlight';
 import useBoard, { reset, toggleCellMark, toggleCellStrike, setCellValue, fillCellMarks, undo, redo, newGame } from './hooks/board';
 import useGame from './hooks/game';
@@ -83,12 +83,15 @@ const App = () => {
         return;
       }
       cancelAutoSet();
-      toggleCellStrike(boardDispatch, selectedCells, parseInt(strikeDigit, 10));
+      const digit = parseInt(strikeDigit, 10);
+      toggleCellStrike(boardDispatch, selectedCells, digit);
+      markDigit(selectionDispatch, digit);
     } else if (R.includes(event.key, ['1', '2', '3', '4', '5', '6', '7', '8', '9'])) {
       const value = parseInt(event.key, 10);
       if (isMouseDown || R.length(selectedCells) > 1) {
         cancelAutoSet();
         toggleCellMark(boardDispatch, selectedCells, value);
+        markDigit(selectionDispatch, value);
       } else if (R.length(selectedCells) === 1) {
         const cellIndex = R.head(selectedCells);
         if (isGivenCell(board[cellIndex])) {
@@ -96,6 +99,7 @@ const App = () => {
         }
         cancelAutoSet();
         setCellValue(boardDispatch, cellIndex, value);
+        clearHighlightDigit(selectionDispatch);
         if (isValueSet(value, board[cellIndex])) {
           startAutoSet(cellIndex);
         }

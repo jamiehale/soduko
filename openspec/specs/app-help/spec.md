@@ -19,7 +19,7 @@ The help icon button SHALL open a dialog titled "soduko v<version>", where <vers
 
 #### Scenario: Digit highlight explained
 - **WHEN** the Help dialog is open
-- **THEN** it explains that typing 1-9 with nothing selected highlights that digit
+- **THEN** it explains that typing 1-9 with nothing selected highlights that digit, and that toggling pencil marks or struck marks highlights that digit too
 
 #### Scenario: Fill pencil marks explained
 - **WHEN** the Help dialog is open

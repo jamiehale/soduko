@@ -30,7 +30,7 @@ const useHighlight = (selectedCells, board, highlightDigit) => {
     return {};
   }
 
-  const highlightValue = R.isEmpty(selectedCells) ? highlightDigit : singleValue(selectedCells, board);
+  const highlightValue = R.isNil(highlightDigit) ? singleValue(selectedCells, board) : highlightDigit;
 
   // A selected value projects the row, column, and box of every cell holding it
   const projected = R.isNil(highlightValue) ? null : cellsHolding(highlightValue, board);

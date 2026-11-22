@@ -439,3 +439,159 @@ test.describe('while the game is paused', () => {
     expect(await backgrounds(page, [80, 40])).toEqual({ 80: COLORS.selected, 40: COLORS.peer });
   });
 });
+
+test.describe('marked digit highlight', () => {
+  // 0 and 40 hold 7. 78, 79, and 80 are empty cells in row 8 and box 8, outside every 7's areas.
+  // 70 (row 7, column 7, box 8) is outside them too.
+  const options = { values: { 0: 7, 40: 7 } };
+  const ROW_8 = [78, 79, 80];
+
+  const type = async (page, key) => {
+    await page.keyboard.press(key);
+    await settle(page);
+  };
+
+  test('a pencil mark on several cells highlights its digit', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await drag(page, ROW_8);
+    await type(page, '7');
+    expect(await backgrounds(page, [0, 40, 8, 44, 4, 30, ...ROW_8])).toEqual({
+      0: COLORS.selected,
+      40: COLORS.selected,
+      8: COLORS.peer,
+      44: COLORS.peer,
+      4: COLORS.peer,
+      30: COLORS.peer,
+      78: COLORS.selected,
+      79: COLORS.selected,
+      80: COLORS.selected,
+    });
+  });
+
+  test('matching marks become related', async ({ page }) => {
+    await open(page, EMPTY, { ...options, marks: { 70: [7] } });
+    await drag(page, ROW_8);
+    await type(page, '7');
+    expect(await cellBackground(page, 70)).toBe(COLORS.related);
+  });
+
+  test("the digit's areas replace the selection's", async ({ page }) => {
+    // 71 shares box 8 with the selection; 72 shares row 8; 61 has struck mark 7
+    await open(page, EMPTY, { ...options, strikes: { 61: [7] } });
+    await drag(page, ROW_8);
+    await type(page, '7');
+    expect(await backgrounds(page, [71, 72, 61])).toEqual({
+      71: COLORS.white,
+      72: COLORS.peer,
+      61: COLORS.peer,
+    });
+  });
+
+  test('a struck mark highlights its digit', async ({ page }) => {
+    await open(page, EMPTY, { values: { 0: 4 } });
+    await click(page, 80);
+    await type(page, 'Shift+Digit4');
+    expect((await cellState(page, 80)).strikes).toEqual([4]);
+    expect(await cellBackground(page, 0)).toBe(COLORS.selected);
+  });
+
+  test('removing a mark highlights its digit', async ({ page }) => {
+    await open(page, EMPTY, { ...options, marks: { 78: [7], 79: [7], 80: [7] } });
+    await drag(page, ROW_8);
+    await type(page, '7');
+    expect((await cellState(page, 80)).marks).toEqual([]);
+    expect(await cellBackground(page, 0)).toBe(COLORS.selected);
+  });
+
+  test('a pencil mark on one held cell stays highlighted after release', async ({ page }) => {
+    await open(page, EMPTY, { values: { 0: 3 } });
+    const box = await cell(page, 80).boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await settle(page);
+    await page.keyboard.press('3');
+    await page.mouse.up();
+    await settle(page);
+    expect((await cellState(page, 80)).marks).toEqual([3]);
+    expect(await backgrounds(page, [80, 0])).toEqual({ 80: COLORS.selected, 0: COLORS.selected });
+  });
+
+  test("a struck mark on a cell holding a value replaces that value's highlight", async ({ page }) => {
+    await open(page, EMPTY, { values: { 0: 7, 40: 7, 80: 4 } });
+    await click(page, 0);
+    await type(page, 'Shift+Digit4');
+    expect(await backgrounds(page, [80, 40])).toEqual({ 80: COLORS.selected, 40: COLORS.peer });
+  });
+
+  test('a digit no cell holds highlights no areas', async ({ page }) => {
+    await open(page, EMPTY, { values: { 61: 3 } });
+    await drag(page, ROW_8);
+    await type(page, '5');
+    expect(await backgrounds(page, [61, 70, 72])).toEqual({
+      61: COLORS.peer,
+      70: COLORS.white,
+      72: COLORS.white,
+    });
+  });
+
+  test('marking another digit switches', async ({ page }) => {
+    await open(page, EMPTY, { values: { ...options.values, 20: 4 } });
+    await drag(page, ROW_8);
+    await type(page, '7');
+    await type(page, '4');
+    expect(await backgrounds(page, [20, 40])).toEqual({ 20: COLORS.selected, 40: COLORS.peer });
+  });
+
+  test('marking the same digit again keeps it', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await drag(page, ROW_8);
+    await type(page, '7');
+    await type(page, '7');
+    expect(await cellBackground(page, 0)).toBe(COLORS.selected);
+  });
+
+  test('setting a value after a struck mark highlights the value', async ({ page }) => {
+    await open(page, EMPTY, { values: { 0: 4, 40: 6 } });
+    await click(page, 80);
+    await type(page, 'Shift+Digit4');
+    await type(page, '6');
+    expect((await cellState(page, 80)).value).toBe(6);
+    expect(await backgrounds(page, [40, 0])).toEqual({ 40: COLORS.selected, 0: COLORS.peer });
+  });
+
+  test('clearing a value after a struck mark drops the highlight', async ({ page }) => {
+    await open(page, EMPTY, { values: { 0: 4, 80: 6 } });
+    await click(page, 80);
+    await type(page, 'Shift+Digit4');
+    await type(page, '6');
+    expect((await cellState(page, 80)).value).toBeNull();
+    expect(await cellBackground(page, 0)).toBe(COLORS.white);
+  });
+
+  test('Escape clears it', async ({ page }) => {
+    await open(page, EMPTY, options);
+    await drag(page, ROW_8);
+    await type(page, '7');
+    await type(page, 'Escape');
+    expect(await backgrounds(page, [0, 40, 8, 80])).toEqual({
+      0: COLORS.white,
+      40: COLORS.white,
+      8: COLORS.white,
+      80: COLORS.white,
+    });
+  });
+
+  test('clicking a cell selects it normally', async ({ page }) => {
+    // 70 is row 7, column 7, box 8: 71 is its peer, 0 is not
+    await open(page, EMPTY, options);
+    await drag(page, ROW_8);
+    await type(page, '7');
+    await click(page, 70);
+    expect(await backgrounds(page, [70, 71, 0, 40])).toEqual({
+      70: COLORS.selected,
+      71: COLORS.peer,
+      0: COLORS.white,
+      40: COLORS.white,
+    });
+  });
+});

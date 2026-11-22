@@ -45,8 +45,27 @@ describe('useHighlight', () => {
     });
   });
 
-  it('ignores the typed digit when cells are selected', () => {
-    expect(useHighlight([40], board, 7)).toStrictEqual(useHighlight([40], board));
+  it("projects a marked digit's cells instead of the selection's shared areas", () => {
+    const b = withValues({ 40: makeCell('given', 5) });
+    expect(useHighlight([0, 1, 2], b, 5)).toStrictEqual({
+      highlightRows: [4],
+      highlightColumns: [4],
+      highlightBoxes: [4],
+      highlightValue: 5,
+    });
+  });
+
+  it("replaces a single selected cell's own value with the marked digit", () => {
+    expect(useHighlight([1], board, 7)).toStrictEqual(useHighlight([0], board));
+  });
+
+  it('highlights a marked digit no cell holds with no areas', () => {
+    expect(useHighlight([40, 41], board, 5)).toStrictEqual({
+      highlightRows: [],
+      highlightColumns: [],
+      highlightBoxes: [],
+      highlightValue: 5,
+    });
   });
 
   it("highlights a single cell's row, column, and box", () => {

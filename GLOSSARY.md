@@ -60,6 +60,9 @@ The cells the player has selected.
 **Related**:
 An empty cell with a pencil mark of the selected value; also the style that marks it.
 
+**Digit highlight**:
+A digit the board highlights as if a selected cell held it. The player gets one by typing a digit with nothing selected, or by toggling a pencil mark or struck mark on the selection.
+
 ### Auto-set
 
 **Auto-set**:

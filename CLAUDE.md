@@ -62,6 +62,7 @@ Source files containing JSX use `.jsx`; plain JS stays `.js`. `vite.config.mjs` 
 | row, column, box | `rowFromCount`, `columnFromCount`, `boxFromCount` |
 | peer | `'peer'` |
 | related | `'related'` |
+| digit highlight | `highlightDigit` |
 | conflict | `errorCells` |
 | auto-set | `useAutoSet`, `startAutoSet`, `cancelAutoSet` |
 | trigger box | `box` in `useAutoSet`'s `start` |

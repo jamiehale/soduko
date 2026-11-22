@@ -15,15 +15,10 @@ export const selectionReducer = (state, action) => {
     case 'mouseUp': {
       const { cell } = action.payload;
       const draggedCells = R.uniq(R.append(cell, state.draggedCells));
-      if (R.length(state.previouslySelectedCells) === 1 && R.equals(state.previouslySelectedCells, draggedCells)) {
-        return {
-          selectedCells: [],
-          draggedCells: [],
-          isMouseDown: false,
-        };
-      }
+      const isDeselect = R.length(state.previouslySelectedCells) === 1 && R.equals(state.previouslySelectedCells, draggedCells);
       return {
-        selectedCells: draggedCells,
+        ...R.pick(['highlightDigit'], state),
+        selectedCells: isDeselect ? [] : draggedCells,
         draggedCells: [],
         isMouseDown: false,
       };
@@ -49,6 +44,13 @@ export const selectionReducer = (state, action) => {
       if (state.highlightDigit === digit) {
         return R.dissoc('highlightDigit', state);
       }
+      return {
+        ...state,
+        highlightDigit: digit,
+      };
+    }
+    case 'markDigit': {
+      const { digit } = action.payload;
       return {
         ...state,
         highlightDigit: digit,
@@ -96,6 +98,10 @@ export const clearSelection = (dispatch) => {
 
 export const highlightDigit = (dispatch, digit) => {
   dispatch({ type: 'highlightDigit', payload: { digit } });
+};
+
+export const markDigit = (dispatch, digit) => {
+  dispatch({ type: 'markDigit', payload: { digit } });
 };
 
 export const clearHighlightDigit = (dispatch) => {
